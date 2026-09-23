@@ -279,3 +279,63 @@ export function canTrackTechnicianLocation(
 
   return false;
 }
+
+export class SecurityAccessDeniedError extends Error {
+  constructor(message = 'Access Denied: Insufficient privileges or IDOR boundary violation') {
+    super(message);
+    this.name = 'SecurityAccessDeniedError';
+  }
+}
+
+/**
+ * Enforces that the caller has one of the allowed security roles.
+ * Throws SecurityAccessDeniedError if unauthorized.
+ */
+export function requireRole(userRole: SecurityRole, allowedRoles: SecurityRole[]): void {
+  if (userRole === 'super_admin') return;
+  if (!allowedRoles.includes(userRole)) {
+    throw new SecurityAccessDeniedError(
+      `Security Violation: Role '${userRole}' is not authorized. Allowed roles: ${allowedRoles.join(', ')}`
+    );
+  }
+}
+
+/**
+ * Enforces that the caller holds a specific permission action.
+ * Throws SecurityAccessDeniedError if unauthorized.
+ */
+export function requirePermission(role: SecurityRole, action: PermissionAction): void {
+  if (!hasPermission(role, action)) {
+    throw new SecurityAccessDeniedError(
+      `Security Violation: Role '${role}' lacks required permission '${action}'`
+    );
+  }
+}
+
+/**
+ * Enforces ownership validation to prevent Insecure Direct Object References (IDOR).
+ * Throws SecurityAccessDeniedError if caller does not own or have rights to the resource.
+ */
+export function requireOwnership(
+  role: SecurityRole,
+  userId: string,
+  resourceType: 'work_order' | 'invoice' | 'technician_location',
+  resource: any,
+  context?: any
+): void {
+  let isAllowed = false;
+  if (resourceType === 'work_order') {
+    isAllowed = canAccessWorkOrder(role, userId, resource);
+  } else if (resourceType === 'invoice') {
+    isAllowed = canAccessInvoice(role, userId, resource);
+  } else if (resourceType === 'technician_location') {
+    isAllowed = canTrackTechnicianLocation(role, userId, resource?.technicianId || resource, context);
+  }
+
+  if (!isAllowed) {
+    throw new SecurityAccessDeniedError(
+      `Security Violation (IDOR): Access to ${resourceType} denied for user ${userId} (${role})`
+    );
+  }
+}
+

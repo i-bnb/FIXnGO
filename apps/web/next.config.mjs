@@ -48,7 +48,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https://images.unsplash.com https://sgp.cloud.appwrite.io https://cloud.appwrite.io https://*.tile.openstreetmap.org",
-              "connect-src 'self' http://localhost:4000 ws://localhost:4000 wss://* https://fixngo-api.onrender.com https://sgp.cloud.appwrite.io https://cloud.appwrite.io https://api.stripe.com",
+              "connect-src 'self' http://localhost:4000 ws://localhost:4000 wss://* https://fixngo-api.onrender.com https://*.onrender.com https://*.vercel.app https://sgp.cloud.appwrite.io https://cloud.appwrite.io https://api.stripe.com",
               "frame-src https://js.stripe.com https://challenges.cloudflare.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",

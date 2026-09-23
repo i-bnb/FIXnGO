@@ -184,6 +184,16 @@ corepack pnpm build
 
 ---
 
+## 🌐 Production Cloud Deployment (Vercel + Render)
+
+The project is pre-configured for seamless, zero-config multi-cloud deployment:
+- **Frontend (`apps/web`)**: 1-Click Deploy on **[Vercel](https://vercel.com)** (Root `vercel.json` and automatic workspace builds guarantee instant zero-error deployments).
+- **Backend API (`apps/api`)**: 1-Click Deploy on **[Render](https://render.com)** via [`render.yaml`](./render.yaml) Blueprint.
+- **Database & Cache**: Serverless PostgreSQL (**Neon**) with PostGIS + Redis (**Upstash**).
+- For complete step-by-step instructions, see **[`docs/DEPLOY.md`](./docs/DEPLOY.md)**.
+
+---
+
 ## 📄 License & Attribution
 
 Copyright © 2026 FIXnGO Technical Services LLC, Dubai, United Arab Emirates. All rights reserved. Built for enterprise commercial demonstration.

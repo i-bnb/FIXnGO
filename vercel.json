@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "corepack pnpm --filter @fieldops/shared build && corepack pnpm --filter @fieldops/web build",
+  "outputDirectory": "apps/web/.next"
+}

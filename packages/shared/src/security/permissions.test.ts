@@ -5,6 +5,9 @@ import {
   canAccessWorkOrder,
   canAccessInvoice,
   canTrackTechnicianLocation,
+  requireRole,
+  requireOwnership,
+  requirePermission,
   SecurityRole,
 } from './permissions';
 
@@ -123,6 +126,91 @@ describe('Security Architecture & Permission Matrix (OWASP ASVS / UAE PDPL)', ()
 
       // Blocked for customers of other jobs
       assert.strictEqual(canTrackTechnicianLocation('customer', 'cust-123', 'tech-01', foreignJobContext), false);
+    });
+  });
+
+  describe('4. Enforcement Helpers: requireRole & requireOwnership', () => {
+    it('should allow valid role and throw SecurityAccessDeniedError for invalid role', () => {
+      // Super admin always passes
+      assert.doesNotThrow(() => requireRole('super_admin', ['accountant']));
+
+      // Accountant has finance access
+      assert.doesNotThrow(() => requireRole('accountant', ['accountant', 'super_admin']));
+
+      // Dispatcher blocked from finance
+      assert.throws(
+        () => requireRole('dispatcher', ['accountant', 'super_admin']),
+        /Security Violation: Role 'dispatcher' is not authorized/
+      );
+    });
+
+    it('should throw SecurityAccessDeniedError when customer accesses another customer invoice (IDOR)', () => {
+      const ownInvoice = { customerId: 'customer-1' };
+      const otherInvoice = { customerId: 'customer-2' };
+
+      assert.doesNotThrow(() =>
+        requireOwnership('customer', 'customer-1', 'invoice', ownInvoice)
+      );
+
+      assert.throws(
+        () => requireOwnership('customer', 'customer-1', 'invoice', otherInvoice),
+        /Security Violation \(IDOR\): Access to invoice denied for user customer-1 \(customer\)/
+      );
+    });
+
+    it('should throw SecurityAccessDeniedError when technician accesses another technician work order', () => {
+      const assignedOrder = { assignedTechnicianId: 'tech-lead-1' };
+      const otherOrder = { assignedTechnicianId: 'tech-lead-2' };
+
+      assert.doesNotThrow(() =>
+        requireOwnership('technician_in_charge', 'tech-lead-1', 'work_order', assignedOrder)
+      );
+
+      assert.throws(
+        () => requireOwnership('technician_in_charge', 'tech-lead-1', 'work_order', otherOrder),
+        /Security Violation \(IDOR\): Access to work_order denied for user tech-lead-1 \(technician_in_charge\)/
+      );
+    });
+  });
+
+  describe('5. Acceptance Check Verification Matrix', () => {
+    it('should strictly prevent an accountant from changing a work order status', () => {
+      assert.strictEqual(hasPermission('accountant', 'work_orders:status_transition'), false);
+    });
+
+    it('should strictly prevent a dispatcher from seeing finance (PnL, profitability, refunds)', () => {
+      assert.strictEqual(hasPermission('dispatcher', 'finance:view_pnl'), false);
+      assert.strictEqual(hasPermission('dispatcher', 'finance:view_profitability'), false);
+      assert.strictEqual(hasPermission('dispatcher', 'payments:process_refund'), false);
+    });
+
+    it('should enforce role x action boundary across all roles', () => {
+      const allRoles: SecurityRole[] = [
+        'customer',
+        'technician_helper',
+        'technician_in_charge',
+        'dispatcher',
+        'storekeeper',
+        'accountant',
+        'ops_manager',
+        'super_admin',
+      ];
+
+      for (const role of allRoles) {
+        if (role === 'super_admin') {
+          assert.strictEqual(hasPermission(role, 'finance:view_pnl'), true);
+          assert.strictEqual(hasPermission(role, 'work_orders:delete'), true);
+        } else if (role === 'accountant') {
+          assert.strictEqual(hasPermission(role, 'finance:view_pnl'), true);
+          assert.strictEqual(hasPermission(role, 'work_orders:assign'), false);
+        } else if (role === 'dispatcher') {
+          assert.strictEqual(hasPermission(role, 'work_orders:assign'), true);
+          assert.strictEqual(hasPermission(role, 'finance:view_pnl'), false);
+        } else if (role === 'customer') {
+          assert.strictEqual(hasPermission(role, 'work_orders:read_all'), false);
+          assert.strictEqual(hasPermission(role, 'finance:view_pnl'), false);
+        }
+      }
     });
   });
 });

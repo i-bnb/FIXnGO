@@ -139,14 +139,15 @@ If not using Blueprints:
 
 ## 5. Vercel Web Deployment (`apps/web`)
 
-### 5.1 Project Import & Build Settings
+The repository includes a root `vercel.json` and an `apps/web/vercel.json` configured for zero-friction monorepo deployment.
+
+### 5.1 Project Import & Zero-Config Setup
 1. Go to [Vercel Dashboard](https://vercel.com) $\to$ **Add New Project**.
-2. Import repository: `i-bnb/FIXnGO`.
-3. Configure project settings:
-   - **Framework Preset**: `Next.js`
-   - **Root Directory**: `apps/web` (or leave root and set Build Command).
-   - **Build Command**: `pnpm --filter @fieldops/shared build && pnpm --filter @fieldops/web build` (if deploying from root, Vercel detects monorepos automatically).
-   - **Install Command**: `pnpm install`
+2. Select your repository: `https://github.com/i-bnb/FIXnGO`.
+3. **Leave all defaults as-is**:
+   - **Framework Preset**: `Next.js` (automatically detected).
+   - **Root Directory**: `./` (leave default, handled by root `vercel.json`).
+   - *Note: Even if you select `apps/web` as Root Directory, the included `apps/web/vercel.json` and package `prebuild` script automatically compile `@fieldops/shared` seamlessly.*
 
 ### 5.2 Environment Variables on Vercel
 Add the following in **Settings** $\to$ **Environment Variables**:
@@ -154,8 +155,15 @@ Add the following in **Settings** $\to$ **Environment Variables**:
 - `NEXT_PUBLIC_SOCKET_URL`: Your Render service URL (e.g. `https://fixngo-api.onrender.com`).
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: `pk_test_...` (or placeholder for mock mode).
 
+### 5.3 Deploy
+Click **Deploy**. Vercel will:
+1. Run `pnpm install` across workspace packages.
+2. Build `@fieldops/shared` (TypeScript definitions and security matrix).
+3. Build `@fieldops/web` (Next.js 14 App Router with 63 SSG pages).
+4. Serve the application globally with optimized edge caching.
+
 > [!IMPORTANT]
-> **No Localhost Fallbacks**: In production builds, the frontend strictly forbids falling back to `localhost:4000`. You must specify `NEXT_PUBLIC_API_URL` in Vercel.
+> **No Localhost Fallbacks**: In production builds, the frontend strictly forbids falling back to `localhost:4000`. You must specify `NEXT_PUBLIC_API_URL` in Vercel to connect to your live backend.
 
 ---
 
