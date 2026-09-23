@@ -19,7 +19,13 @@ export function exportToCsv<T extends Record<string, any>>(
       const val = row[key];
       if (val === null || val === undefined) return '""';
       if (typeof val === 'object') return `"${JSON.stringify(val).replace(/"/g, '""')}"`;
-      return `"${String(val).replace(/"/g, '""')}"`;
+
+      let strVal = String(val);
+      // OWASP ASVS: Prevent CSV Formula Injection by prepending single quote if value begins with =, +, -, @, tab, or newline
+      if (/^[=+\-@\t\r]/.test(strVal)) {
+        strVal = `'${strVal}`;
+      }
+      return `"${strVal.replace(/"/g, '""')}"`;
     });
     csvRows.push(values.join(','));
   }
