@@ -1,0 +1,23 @@
+{
+  "name": "fieldops-erp-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FieldOps ERP - All-in-one UAE field-service & maintenance ERP",
+  "packageManager": "pnpm@10.5.2",
+  "scripts": {
+    "dev": "corepack pnpm --filter @fieldops/api --filter @fieldops/web --parallel dev",
+    "dev:api": "corepack pnpm --filter @fieldops/api dev",
+    "dev:web": "corepack pnpm --filter @fieldops/web dev",
+    "build:shared": "corepack pnpm --filter @fieldops/shared build",
+    "build:api": "corepack pnpm --filter @fieldops/api build",
+    "build:web": "corepack pnpm --filter @fieldops/web build",
+    "build": "corepack pnpm --filter @fieldops/shared build && corepack pnpm --filter @fieldops/api build && corepack pnpm --filter @fieldops/web build",
+    "test:shared": "corepack pnpm --filter @fieldops/shared test",
+    "test:api": "corepack pnpm --filter @fieldops/api test",
+    "test": "corepack pnpm --filter @fieldops/shared test && corepack pnpm --filter @fieldops/api test",
+    "seed": "corepack pnpm --filter @fieldops/api seed"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

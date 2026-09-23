@@ -1,0 +1,62 @@
+{
+  "common": {
+    "appName": "FieldOps ERP",
+    "companyName": "FieldOps MEP & Contracting LLC",
+    "tagline": "UAE Premier Field Service, MEP Maintenance & Equipment Rental",
+    "currency": "AED",
+    "vat": "VAT (5%)",
+    "trn": "TRN",
+    "search": "Search...",
+    "filter": "Filter",
+    "exportCsv": "Export CSV",
+    "status": "Status",
+    "actions": "Actions",
+    "view": "View",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "emergency": "Emergency (Immediate)",
+    "scheduled": "Scheduled"
+  },
+  "nav": {
+    "customerPortal": "Customer On-Demand",
+    "techPortal": "Technician PWA",
+    "adminPortal": "Admin ERP",
+    "dispatchMap": "Live Dispatch Map",
+    "workOrders": "Work Orders",
+    "manpower": "Manpower Supply",
+    "equipment": "Equipment Rental",
+    "inventory": "Materials & Inventory",
+    "invoicing": "Tax Invoices",
+    "auditLogs": "Audit Logs"
+  },
+  "customer": {
+    "heroTitle": "Expert MEP & Maintenance in Dubai & UAE",
+    "heroSubtitle": "Book AC, plumbing, or electrical repairs in 60 seconds with live technician tracking and transparent AED pricing.",
+    "selectService": "Select Service Category",
+    "bookNow": "Book Service",
+    "trackTech": "Track Technician",
+    "payOnline": "Pay Online",
+    "estimatedCost": "Estimated Cost",
+    "etaMinutes": "mins away"
+  },
+  "tech": {
+    "title": "Field Technician Portal",
+    "todaysJobs": "Today's Assigned Jobs",
+    "enRoute": "Start Driving (En Route)",
+    "arrived": "Arrived at Site",
+    "startWork": "Start Work",
+    "addMaterials": "Add Parts Used",
+    "completeJob": "Sign-off & Complete",
+    "customerSignature": "Customer Signature"
+  },
+  "admin": {
+    "kpiActiveJobs": "Active Work Orders",
+    "kpiTechsOnDuty": "Technicians on Duty",
+    "kpiRevenueAed": "Month-to-Date Revenue",
+    "kpiManpowerDeployed": "Manpower Deployed",
+    "suggestNearest": "Suggest Nearest Technician",
+    "distanceKm": "km away"
+  }
+}

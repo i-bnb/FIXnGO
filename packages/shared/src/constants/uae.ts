@@ -1,0 +1,176 @@
+export const UAE_CONSTANTS = {
+  CURRENCY: 'AED',
+  VAT_RATE: 0.05,
+  VAT_PERCENTAGE: 5,
+  COMPANY_NAME: 'FieldOps MEP & Contracting LLC',
+  COMPANY_NAME_AR: 'فيلد أوبس للأعمال الكهروميكانيكية والمقاولات ذ.م.م',
+  COMPANY_TRN: '100482910300003',
+  DEFAULT_TIMEZONE: 'Asia/Dubai',
+  PHONE_PREFIX: '+971',
+  HEAD_OFFICE_ADDRESS: 'Al Quoz Industrial Area 3, Street 8, Warehouse 14, Dubai, UAE',
+  SUPPORT_PHONE: '+971 4 800 3493',
+  SUPPORT_EMAIL: 'support@fieldops.ae',
+} as const;
+
+export interface UaeLocationArea {
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  emirate: 'Dubai' | 'Sharjah' | 'Abu Dhabi' | 'Ajman';
+  latitude: number;
+  longitude: number;
+}
+
+export const UAE_KEY_LOCATIONS: UaeLocationArea[] = [
+  {
+    id: 'dubai-business-bay',
+    nameEn: 'Business Bay',
+    nameAr: 'الخليج التجاري',
+    emirate: 'Dubai',
+    latitude: 25.1856,
+    longitude: 55.2708,
+  },
+  {
+    id: 'dubai-downtown',
+    nameEn: 'Downtown Dubai',
+    nameAr: 'وسط مدينة دبي',
+    emirate: 'Dubai',
+    latitude: 25.1972,
+    longitude: 55.2744,
+  },
+  {
+    id: 'dubai-jlt',
+    nameEn: 'Jumeirah Lake Towers (JLT)',
+    nameAr: 'أبراج بحيرات جميرا',
+    emirate: 'Dubai',
+    latitude: 25.0762,
+    longitude: 55.1403,
+  },
+  {
+    id: 'dubai-marina',
+    nameEn: 'Dubai Marina',
+    nameAr: 'دبي مارينا',
+    emirate: 'Dubai',
+    latitude: 25.0805,
+    longitude: 55.1403,
+  },
+  {
+    id: 'dubai-al-quoz',
+    nameEn: 'Al Quoz Industrial Area',
+    nameAr: 'منطقة القوز الصناعية',
+    emirate: 'Dubai',
+    latitude: 25.1325,
+    longitude: 55.2341,
+  },
+  {
+    id: 'dubai-deira',
+    nameEn: 'Deira City Centre',
+    nameAr: 'ديرة',
+    emirate: 'Dubai',
+    latitude: 25.2532,
+    longitude: 55.3341,
+  },
+  {
+    id: 'dubai-al-qusais',
+    nameEn: 'Al Qusais Industrial Area',
+    nameAr: 'القصيص الصناعية',
+    emirate: 'Dubai',
+    latitude: 25.2892,
+    longitude: 55.3855,
+  },
+  {
+    id: 'sharjah-al-nahda',
+    nameEn: 'Al Nahda',
+    nameAr: 'النهدة',
+    emirate: 'Sharjah',
+    latitude: 25.3015,
+    longitude: 55.3687,
+  },
+  {
+    id: 'sharjah-industrial',
+    nameEn: 'Sharjah Industrial Area 10',
+    nameAr: 'المنطقة الصناعية 10',
+    emirate: 'Sharjah',
+    latitude: 25.3214,
+    longitude: 55.4124,
+  },
+  {
+    id: 'abudhabi-musaffah',
+    nameEn: 'Musaffah Industrial',
+    nameAr: 'مصفح الصناعية',
+    emirate: 'Abu Dhabi',
+    latitude: 24.3541,
+    longitude: 54.4925,
+  },
+  {
+    id: 'abudhabi-reem-island',
+    nameEn: 'Al Reem Island',
+    nameAr: 'جزيرة الريم',
+    emirate: 'Abu Dhabi',
+    latitude: 24.4984,
+    longitude: 54.4069,
+  },
+];
+
+export const SERVICE_PACKAGES = [
+  {
+    id: 'ac-repair-diagnostic',
+    titleEn: 'AC Diagnosis & Gas Top-up',
+    titleAr: 'فحص التكييف وتعبئة الغاز',
+    category: 'HVAC',
+    basePriceAed: 150.0,
+    durationMinutes: 60,
+    icon: 'AirVent',
+    popular: true,
+  },
+  {
+    id: 'ac-duct-cleaning',
+    titleEn: 'Deep AC Duct & Coil Sanitization',
+    titleAr: 'تنظيف وتعقيم مجاري ومكثف التكييف',
+    category: 'HVAC',
+    basePriceAed: 290.0,
+    durationMinutes: 90,
+    icon: 'Sparkles',
+    popular: true,
+  },
+  {
+    id: 'plumbing-leak-detection',
+    titleEn: 'Emergency Water Leak Repair',
+    titleAr: 'إصلاح تسرب المياه الطارئ',
+    category: 'PLUMBING',
+    basePriceAed: 180.0,
+    durationMinutes: 45,
+    icon: 'Wrench',
+    popular: true,
+  },
+  {
+    id: 'plumbing-water-heater',
+    titleEn: 'Water Heater Replacement / Repair',
+    titleAr: 'استبدال وإصلاح سخان المياه',
+    category: 'PLUMBING',
+    basePriceAed: 220.0,
+    durationMinutes: 90,
+    icon: 'Flame',
+    popular: false,
+  },
+  {
+    id: 'electrical-short-circuit',
+    titleEn: 'Short Circuit & Tripping Breaker Fix',
+    titleAr: 'إصلاح التماس الكهربائي والقاطع الرئيسي',
+    category: 'ELECTRICAL',
+    basePriceAed: 160.0,
+    durationMinutes: 45,
+    icon: 'Zap',
+    popular: true,
+  },
+  {
+    id: 'electrical-db-upgrade',
+    titleEn: 'Distribution Board (DB) Safety Upgrade',
+    titleAr: 'تحديث لوحة التوزيع الكهربائية',
+    category: 'ELECTRICAL',
+    basePriceAed: 450.0,
+    durationMinutes: 180,
+    icon: 'Cpu',
+    popular: false,
+  },
+] as const;

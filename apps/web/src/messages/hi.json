@@ -1,0 +1,62 @@
+{
+  "common": {
+    "appName": "FieldOps ERP",
+    "companyName": "FieldOps MEP & Contracting LLC",
+    "tagline": "UAE ki Pramukh Field Service aur Maintenance ERP",
+    "currency": "AED",
+    "vat": "VAT (5%)",
+    "trn": "TRN",
+    "search": "Khojein...",
+    "filter": "Filter",
+    "exportCsv": "CSV Export",
+    "status": "Sthiti",
+    "actions": "Karyavahi",
+    "view": "Dekhein",
+    "cancel": "Radd karein",
+    "save": "Surakshit karein",
+    "submit": "Jama karein",
+    "loading": "Load ho raha hai...",
+    "emergency": "Apatkaaleen (Turant)",
+    "scheduled": "Nirdharit"
+  },
+  "nav": {
+    "customerPortal": "Customer Portal",
+    "techPortal": "Technician PWA",
+    "adminPortal": "Admin ERP",
+    "dispatchMap": "Live Dispatch Map",
+    "workOrders": "Work Orders",
+    "manpower": "Manpower Supply",
+    "equipment": "Equipment Rental",
+    "inventory": "Materials & Inventory",
+    "invoicing": "Tax Invoices",
+    "auditLogs": "Audit Logs"
+  },
+  "customer": {
+    "heroTitle": "Dubai aur UAE mein MEP aur Maintenance Seva",
+    "heroSubtitle": "AC, plumbing, aur electrical repair turant book karein live tracking ke saath.",
+    "selectService": "Service chunein",
+    "bookNow": "Service Book Karein",
+    "trackTech": "Technician Track Karein",
+    "payOnline": "Online Payment",
+    "estimatedCost": "Anumanit Lagat",
+    "etaMinutes": "minute door"
+  },
+  "tech": {
+    "title": "Technician Portal",
+    "todaysJobs": "Aaj ke Kaam",
+    "enRoute": "Raste mein hain (En Route)",
+    "arrived": "Site par pahunch gaye",
+    "startWork": "Kaam shuru karein",
+    "addMaterials": "Parts jodein",
+    "completeJob": "Kaam Pura Karein",
+    "customerSignature": "Grahak ke Hasthakshar"
+  },
+  "admin": {
+    "kpiActiveJobs": "Satriya Work Orders",
+    "kpiTechsOnDuty": "Duty par Technicians",
+    "kpiRevenueAed": "Kul Kamayi (AED)",
+    "kpiManpowerDeployed": "Site par Majdoor",
+    "suggestNearest": "Najdeeki Technician Sujhav",
+    "distanceKm": "km door"
+  }
+}
