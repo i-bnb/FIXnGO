@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { locales, Locale } from '../../i18n';
 import { AppNavbar } from '../../components/layout/AppNavbar';
+import { ServerWakeupBanner } from '../../components/common/ServerWakeupBanner';
 import '../globals.css';
 
 export const dynamic = 'force-dynamic';
@@ -51,6 +52,7 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AppNavbar locale={locale} />
           <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+          <ServerWakeupBanner locale={locale} />
         </NextIntlClientProvider>
       </body>
     </html>

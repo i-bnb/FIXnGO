@@ -20,6 +20,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { AutomationModule } from './modules/automation/automation.module';
 import { ApprovalsModule } from './modules/approvals/approvals.module';
 import { AssistantModule } from './modules/assistant/assistant.module';
+import { HealthModule } from './modules/health/health.module';
+import { QueueModule } from './modules/queue/queue.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { AssistantModule } from './modules/assistant/assistant.module';
     PrismaModule,
     StorageModule,
     RealtimeModule,
+    QueueModule,
+    HealthModule,
     AuditModule,
     AuthModule,
     TechniciansModule,

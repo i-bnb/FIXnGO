@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-and-test:
+    name: Lint, Type-Check, Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Monorepo Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Shared Package
+        run: pnpm build:shared
+
+      - name: Generate Prisma Client
+        run: pnpm --filter @fieldops/api db:generate
+
+      - name: Run Monorepo Linting
+        run: pnpm lint
+
+      - name: Run TypeScript Type-Checking
+        run: pnpm type-check
+
+      - name: Run Automated Test Suites
+        run: pnpm test
+
+      - name: Build API Service
+        run: pnpm --filter @fieldops/api build
+
+      - name: Build Web Application
+        env:
+          NEXT_PUBLIC_API_URL: https://fixngo-api.onrender.com
+          NEXT_PUBLIC_SOCKET_URL: https://fixngo-api.onrender.com
+        run: pnpm --filter @fieldops/web build

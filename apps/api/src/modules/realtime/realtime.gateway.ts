@@ -9,10 +9,19 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
+import { parseCorsOrigins, isOriginAllowed } from '../../common/utils/cors.util';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: (origin: string, callback: (err: Error | null, allow?: boolean) => void) => {
+      const allowedOrigins = parseCorsOrigins(process.env.CORS_ORIGINS || process.env.CORS_ORIGIN);
+      if (isOriginAllowed(origin, allowedOrigins)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
   },
 })
 export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect {

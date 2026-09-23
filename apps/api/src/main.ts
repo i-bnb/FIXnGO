@@ -2,41 +2,85 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
-import * as express from 'express';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import * as path from 'path';
+import * as fs from 'fs';
+import { validateEnv } from './common/config/env.validation';
+import { parseCorsOrigins, isOriginAllowed } from './common/utils/cors.util';
+
+// Load environment files before bootstrap
+function loadEnv(filePaths: string[]) {
+  for (const fp of filePaths) {
+    try {
+      if (fs.existsSync(fp)) {
+        const lines = fs.readFileSync(fp, 'utf-8').split('\n');
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith('#')) continue;
+          const eqIdx = trimmed.indexOf('=');
+          if (eqIdx > 0) {
+            const key = trimmed.slice(0, eqIdx).trim();
+            let val = trimmed.slice(eqIdx + 1).trim();
+            if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+              val = val.slice(1, -1);
+            }
+            if (!process.env[key] || process.env[key] === '') {
+              process.env[key] = val;
+            }
+          }
+        }
+      }
+    } catch {
+      // Quietly ignore file read errors
+    }
+  }
+}
+
+loadEnv([
+  path.resolve(process.cwd(), '.env'),
+  path.resolve(process.cwd(), '../../.env'),
+  path.resolve(process.cwd(), '../.env'),
+]);
 
 async function bootstrap() {
   const logger = new Logger('FieldOps-API');
-  const app = await NestFactory.create(AppModule);
 
-  const allowedOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-    : [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        'http://localhost:3001',
-        'http://127.0.0.1:3001',
-      ];
+  // 1. Strict Fail-Fast Environment Validation on Startup
+  try {
+    validateEnv();
+    logger.log('Environment configuration validated successfully.');
+  } catch (err: any) {
+    logger.error(`Startup halted: ${err.message}`);
+    process.exit(1);
+  }
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // 2. Dynamic CORS Configuration (CORS_ORIGINS + Vercel preview domains)
+  const allowedOrigins = parseCorsOrigins(process.env.CORS_ORIGINS || process.env.CORS_ORIGIN);
 
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      if (isOriginAllowed(origin, allowedOrigins)) {
         callback(null, true);
       } else {
         callback(new Error(`Origin ${origin} not allowed by CORS`));
       }
     },
+    // Use Authorization Bearer tokens, not cross-site cookies
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'x-demo-role'],
   });
 
-  // Serve static upload directory for job photos, signatures, and invoices
+  // 3. Serve local fallback upload directory
   const uploadsPath = path.join(process.cwd(), 'uploads');
-  app.use('/uploads', express.static(uploadsPath));
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+  }
+  app.useStaticAssets(uploadsPath, { prefix: '/uploads' });
 
-  // OpenAPI Swagger Documentation
+  // 4. OpenAPI Swagger Documentation
   const config = new DocumentBuilder()
     .setTitle('FieldOps ERP - UAE API Documentation')
     .setDescription(
@@ -49,11 +93,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = process.env.PORT || 4000;
-  await app.listen(port);
+  // 5. Listen on process.env.PORT and 0.0.0.0
+  const port = parseInt(process.env.PORT || '4000', 10);
+  await app.listen(port, '0.0.0.0');
 
-  logger.log(`FieldOps ERP API running on http://localhost:${port}`);
-  logger.log(`Swagger OpenAPI Documentation available at http://localhost:${port}/api/docs`);
+  logger.log(`FieldOps ERP API running on http://0.0.0.0:${port}`);
+  logger.log(`Health check probe active at http://0.0.0.0:${port}/api/health`);
+  logger.log(`Swagger OpenAPI Documentation available at http://0.0.0.0:${port}/api/docs`);
 }
 
 bootstrap();

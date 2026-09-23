@@ -5,12 +5,16 @@
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
-    "start": "node dist/main",
+    "start": "node dist/src/main",
+    "start:prod": "node dist/src/main",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "ts-node prisma/seed.ts",
-    "seed": "ts-node prisma/seed.ts",
-    "test": "node --test dist/**/*.test.js"
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "ts-node -r tsconfig-paths/register prisma/seed.ts",
+    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts",
+    "test": "node --test dist/**/*.test.js",
+    "type-check": "tsc --noEmit",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@fieldops/shared": "workspace:*",

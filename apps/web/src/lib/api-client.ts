@@ -1,6 +1,7 @@
 import { UAE_CONSTANTS, SERVICE_PACKAGES, UAE_KEY_LOCATIONS, ServiceType, JobStatus, Priority, PaymentStatus } from '@fieldops/shared';
+import { getApiBaseUrl } from './config';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL = getApiBaseUrl();
 
 export async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   try {

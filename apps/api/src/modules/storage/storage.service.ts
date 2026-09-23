@@ -13,6 +13,27 @@ export interface UploadResult {
   sizeBytes: number;
 }
 
+const BUCKET_PREFIX_MAP: Record<string, string> = {
+  'job-photos': 'jobs/',
+  signatures: 'jobs/',
+  jobs: 'jobs/',
+  invoices: 'invoices/',
+  receipts: 'invoices/',
+  documents: 'documents/',
+  avatars: 'avatars/',
+};
+
+function resolvePathPrefix(category = 'jobs'): string {
+  const normalized = category.toLowerCase().trim();
+  if (BUCKET_PREFIX_MAP[normalized]) {
+    return BUCKET_PREFIX_MAP[normalized];
+  }
+  if (normalized.includes('invoice') || normalized.includes('receipt')) return 'invoices/';
+  if (normalized.includes('avatar') || normalized.includes('profile')) return 'avatars/';
+  if (normalized.includes('doc') || normalized.includes('cert') || normalized.includes('report')) return 'documents/';
+  return 'jobs/';
+}
+
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name);
@@ -30,11 +51,11 @@ export class StorageService {
   }
 
   private ensureLocalStorage() {
-    const buckets = ['job-photos', 'signatures', 'invoices', 'avatars', 'documents', 'receipts'];
-    for (const bucket of buckets) {
-      const bucketPath = path.join(this.localUploadDir, bucket);
-      if (!fs.existsSync(bucketPath)) {
-        fs.mkdirSync(bucketPath, { recursive: true });
+    const folders = ['jobs', 'invoices', 'documents', 'avatars', 'job-photos', 'signatures', 'receipts'];
+    for (const folder of folders) {
+      const folderPath = path.join(this.localUploadDir, folder);
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
       }
     }
   }
@@ -47,9 +68,9 @@ export class StorageService {
 
     if (this.endpoint && this.apiKey && this.projectId && this.apiKey.length > 10) {
       this.isAppwriteAvailable = true;
-      this.logger.log(`Appwrite Storage active. Target project: ${this.projectId} (Region: sgp)`);
+      this.logger.log(`Appwrite Storage active with bucket "${this.bucketId}". Target project: ${this.projectId}`);
     } else {
-      this.logger.warn(`Appwrite API Key not set. Project ID: ${this.projectId}. Using local storage fallback at /uploads.`);
+      this.logger.warn(`Appwrite API Key not set. Using local storage fallback at /uploads.`);
     }
   }
 
@@ -57,18 +78,21 @@ export class StorageService {
     buffer: Buffer,
     originalName: string,
     mimeType: string,
-    bucket = 'job-photos',
+    category = 'jobs',
     userId?: string,
   ): Promise<UploadResult> {
-    // 1. Attempt Appwrite Cloud Upload if API key is configured
+    const prefix = resolvePathPrefix(category);
+    const prefixedName = `${prefix}${originalName.replace(/^.*[\\\/]/, '')}`;
+
+    // 1. Attempt Appwrite Cloud Upload if API key is configured (single bucket with path prefixes)
     if (this.isAppwriteAvailable) {
       try {
         const formData = new FormData();
         const blob = new Blob([new Uint8Array(buffer)], { type: mimeType });
         formData.append('fileId', 'unique()');
-        formData.append('file', blob, originalName);
+        formData.append('file', blob, prefixedName);
 
-        const targetBucket = this.bucketId || bucket;
+        const targetBucket = this.bucketId;
         const res = await fetch(`${this.endpoint}/storage/buckets/${targetBucket}/files`, {
           method: 'POST',
           headers: {
@@ -84,11 +108,11 @@ export class StorageService {
           const publicUrl = `${this.endpoint}/storage/buckets/${targetBucket}/files/${fileId}/view?project=${this.projectId}`;
           const previewUrl = `${this.endpoint}/storage/buckets/${targetBucket}/files/${fileId}/preview?project=${this.projectId}&width=400&height=400`;
 
-          this.logger.log(`Uploaded file ${originalName} to Appwrite Cloud (${fileId})`);
+          this.logger.log(`Uploaded file ${prefixedName} to Appwrite Cloud bucket "${targetBucket}" (${fileId})`);
           return {
             bucket: targetBucket,
             fileId,
-            fileName: originalName,
+            fileName: prefixedName,
             url: publicUrl,
             previewUrl,
             mimeType,
@@ -108,22 +132,23 @@ export class StorageService {
     const ext = path.extname(originalName) || (mimeType.includes('jpeg') ? '.jpg' : '.png');
     const safeFilename = `${fileId}${ext}`;
 
-    const bucketPath = path.join(this.localUploadDir, bucket);
-    if (!fs.existsSync(bucketPath)) {
-      fs.mkdirSync(bucketPath, { recursive: true });
+    const cleanFolder = prefix.replace(/\/$/, '');
+    const folderPath = path.join(this.localUploadDir, cleanFolder);
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath, { recursive: true });
     }
 
-    const filePath = path.join(bucketPath, safeFilename);
+    const filePath = path.join(folderPath, safeFilename);
     await fs.promises.writeFile(filePath, buffer);
 
     const apiBase = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 4000}`;
-    const publicUrl = `${apiBase}/uploads/${bucket}/${safeFilename}`;
-    const previewUrl = `${apiBase}/uploads/${bucket}/${safeFilename}?preview=true&v=${Date.now()}`;
+    const publicUrl = `${apiBase}/uploads/${cleanFolder}/${safeFilename}`;
+    const previewUrl = `${apiBase}/uploads/${cleanFolder}/${safeFilename}?preview=true&v=${Date.now()}`;
 
     return {
-      bucket,
+      bucket: this.bucketId,
       fileId,
-      fileName: originalName,
+      fileName: prefixedName,
       url: publicUrl,
       previewUrl,
       mimeType,
@@ -134,7 +159,7 @@ export class StorageService {
   async uploadBase64(
     base64Data: string,
     filename: string,
-    bucket = 'job-photos',
+    category = 'jobs',
     userId?: string,
   ): Promise<UploadResult> {
     const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
@@ -148,6 +173,6 @@ export class StorageService {
       buffer = Buffer.from(base64Data, 'base64');
     }
 
-    return this.uploadBuffer(buffer, filename, mimeType, bucket, userId);
+    return this.uploadBuffer(buffer, filename, mimeType, category, userId);
   }
 }

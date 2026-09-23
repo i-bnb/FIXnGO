@@ -20,6 +20,7 @@ import {
   DollarSign,
   Layers,
 } from 'lucide-react';
+import { getApiBaseUrl } from '@/lib/config';
 
 interface AskFixngoDrawerProps {
   isOpen: boolean;
@@ -116,7 +117,7 @@ export function AskFixngoDrawer({ isOpen, onClose, locale }: AskFixngoDrawerProp
     setThinkingStatus(isArabic ? 'جاري تحليل العمليات...' : 'Analyzing live operations...');
     setActiveToolName(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const apiUrl = getApiBaseUrl();
 
     try {
       const response = await fetch(`${apiUrl}/api/assistant/chat`, {
