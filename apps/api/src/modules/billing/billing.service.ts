@@ -9,18 +9,25 @@ import { StripePaymentProvider } from './payments/stripe-payment.provider';
 export class BillingService {
   private readonly logger = new Logger(BillingService.name);
   private paymentProvider: PaymentProvider;
+  private processedWebhooks = new Set<string>();
 
   constructor(
     private prisma: PrismaService,
     private auditService: AuditService,
   ) {
     const providerType = process.env.PAYMENT_PROVIDER || 'MOCK';
+    const isDemoMode = process.env.DEMO_MODE === 'true' || process.env.NODE_ENV !== 'production';
+
     if (providerType.toUpperCase() === 'STRIPE') {
       this.paymentProvider = new StripePaymentProvider();
       this.logger.log('Payment Provider initialized: STRIPE (Test Mode)');
     } else {
+      // OWASP ASVS: Mock payment provider strictly locked behind DEMO_MODE in production
+      if (!isDemoMode && process.env.NODE_ENV === 'production') {
+        throw new Error('SECURITY VIOLATION: MockPaymentProvider is strictly forbidden in production unless DEMO_MODE=true.');
+      }
       this.paymentProvider = new MockPaymentProvider();
-      this.logger.log('Payment Provider initialized: MOCK (Offline Resilient Provider)');
+      this.logger.log('Payment Provider initialized: MOCK (Offline Resilient Demo Mode)');
     }
   }
 
@@ -108,7 +115,21 @@ export class BillingService {
       return { success: true, message: 'Invoice already paid', invoice };
     }
 
-    const payAmount = input.amount || Number(invoice.balanceDue) || Number(invoice.totalAmount);
+    // OWASP ASVS: Server-Side Amount Enforcement
+    const invoiceBalance = Number(invoice.balanceDue) || Number(invoice.totalAmount);
+    let payAmount = invoiceBalance;
+
+    if (input.amount !== undefined && input.amount !== null) {
+      if (typeof input.amount !== 'number' || isNaN(input.amount) || input.amount <= 0) {
+        throw new BadRequestException('Security Violation: Payment amount must be a positive number.');
+      }
+      if (input.amount > invoiceBalance) {
+        throw new BadRequestException(
+          `Security Violation: Payment amount (AED ${input.amount.toFixed(2)}) exceeds outstanding balance (AED ${invoiceBalance.toFixed(2)}).`
+        );
+      }
+      payAmount = input.amount;
+    }
 
     // Call payment provider confirmation
     const confirmation = await this.paymentProvider.confirmPayment(
@@ -440,5 +461,53 @@ export class BillingService {
       data: { status: 'APPROVED' },
     });
     return q;
+  }
+
+  /**
+   * Processes inbound Stripe Webhook events with idempotency and audit tracking.
+   */
+  async handleWebhookEvent(body: any, signature?: string) {
+    const eventId = body?.id || body?.data?.object?.id || `evt_${Date.now()}`;
+
+    // 1. Idempotency Check (Reject replay attacks)
+    if (this.processedWebhooks.has(eventId)) {
+      this.logger.log(`Webhook idempotency hit: Event "${eventId}" has already been processed.`);
+      return { received: true, deduplicated: true };
+    }
+
+    const eventType = body?.type || 'payment_intent.succeeded';
+    const invoiceId = body?.data?.object?.metadata?.invoiceId || body?.invoiceId;
+
+    if (invoiceId && (eventType === 'payment_intent.succeeded' || eventType === 'checkout.session.completed')) {
+      const amountReceived = body?.data?.object?.amount_received
+        ? body.data.object.amount_received / 100
+        : undefined;
+
+      const result = await this.confirmPayment(
+        {
+          invoiceId,
+          paymentIntentId: body?.data?.object?.id || eventId,
+          amount: amountReceived,
+          paymentMethod: 'STRIPE_WEBHOOK',
+        },
+        'SYSTEM_WEBHOOK'
+      );
+
+      this.processedWebhooks.add(eventId);
+
+      await this.auditService.log({
+        actorName: 'Stripe Webhook',
+        actorRole: 'SYSTEM_WEBHOOK',
+        action: 'WEBHOOK_PAYMENT_PROCESSED',
+        entityName: 'payment',
+        entityId: eventId,
+        details: { invoiceId, eventType, amountReceived },
+      });
+
+      return { received: true, processed: true, result };
+    }
+
+    this.processedWebhooks.add(eventId);
+    return { received: true };
   }
 }

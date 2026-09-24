@@ -59,16 +59,8 @@ export class BillingController {
   @Post('payments/webhook')
   @ApiOperation({ summary: 'Stripe webhook listener / payment confirmation gateway' })
   async handleWebhook(@Body() body: any, @Req() req: any) {
-    const invoiceId = body.data?.object?.metadata?.invoiceId || body.invoiceId;
-    if (invoiceId) {
-      return this.billingService.confirmPayment({
-        invoiceId,
-        paymentIntentId: body.data?.object?.id || body.paymentIntentId,
-        amount: (body.data?.object?.amount_received || 0) / 100,
-        paymentMethod: 'STRIPE_CARD',
-      }, 'SYSTEM_WEBHOOK');
-    }
-    return { received: true };
+    const signature = req.headers ? req.headers['stripe-signature'] : undefined;
+    return this.billingService.handleWebhookEvent(body, signature);
   }
 
   @Post('payments/:paymentId/refund')

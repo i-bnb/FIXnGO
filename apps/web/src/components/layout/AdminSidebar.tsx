@@ -20,6 +20,7 @@ import {
   Cpu,
   Settings,
   ShieldCheck,
+  Lock,
   UserCheck,
   Search,
   Sparkles,
@@ -74,6 +75,7 @@ export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
       title: locale === 'ar' ? 'النظام' : 'SYSTEM',
       items: [
         { label: locale === 'ar' ? 'الأتمتة والرسائل' : 'Automation', href: `/${locale}/admin/automation`, icon: Cpu },
+        { label: locale === 'ar' ? 'مركز الأمان' : 'Security', href: `/${locale}/admin/security`, icon: Lock, badge: 'ASVS' },
         { label: locale === 'ar' ? 'الإعدادات والصلاحيات' : 'Settings', href: `/${locale}/admin/settings`, icon: Settings },
         { label: locale === 'ar' ? 'سجل العمليات والتدقيق' : 'Audit logs', href: `/${locale}/admin/audit-logs`, icon: ShieldCheck },
       ],

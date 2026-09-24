@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { validateEnv } from './common/config/env.validation';
 import { parseCorsOrigins, isOriginAllowed } from './common/utils/cors.util';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 // Load environment files before bootstrap
 function loadEnv(filePaths: string[]) {
@@ -70,17 +71,20 @@ async function bootstrap() {
     // Use Authorization Bearer tokens, not cross-site cookies
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'x-demo-role'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'x-demo-role', 'X-Request-ID', 'X-Correlation-ID'],
   });
 
-  // 3. Serve local fallback upload directory
+  // 3. Global Exception Filter (Sanitizes errors, injects X-Request-ID correlation, prevents schema leakage)
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // 4. Serve local fallback upload directory
   const uploadsPath = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadsPath)) {
     fs.mkdirSync(uploadsPath, { recursive: true });
   }
   app.useStaticAssets(uploadsPath, { prefix: '/uploads' });
 
-  // 4. OpenAPI Swagger Documentation
+  // 5. OpenAPI Swagger Documentation
   const config = new DocumentBuilder()
     .setTitle('FieldOps ERP - UAE API Documentation')
     .setDescription(

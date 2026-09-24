@@ -11,6 +11,46 @@ export interface UserContext {
   permissions?: string[];
 }
 
+/**
+ * Masks email addresses for privacy: test@domain.ae -> te***@domain.ae
+ */
+export function maskPiiEmail(email?: string | null): string {
+  if (!email || !email.includes('@')) return email || '';
+  const [user, domain] = email.split('@');
+  if (user.length <= 2) return `${user[0]}***@${domain}`;
+  return `${user.substring(0, 2)}***@${domain}`;
+}
+
+/**
+ * Masks phone numbers for UAE PDPL privacy: +971 50 718 2910 -> +971 50 *** 2910
+ */
+export function maskPiiPhone(phone?: string | null): string {
+  if (!phone) return '';
+  const cleaned = phone.trim();
+  if (cleaned.startsWith('+971')) {
+    const parts = cleaned.split(/\s+/);
+    if (parts.length >= 3) {
+      return `${parts[0]} ${parts[1]} *** ${parts[parts.length - 1]}`;
+    }
+  }
+  if (cleaned.length >= 7) {
+    const prefix = cleaned.substring(0, Math.min(7, cleaned.length - 6));
+    const suffix = cleaned.substring(cleaned.length - 4);
+    return `${prefix} *** ${suffix}`.trim();
+  }
+  return '***';
+}
+
+/**
+ * Delimits untrusted external data (customer notes, complaints)
+ * so LLM engines treat it strictly as data, neutralizing prompt injection attacks.
+ */
+export function delimitUntrustedText(text?: string | null): string {
+  if (!text) return '';
+  const stripped = text.replace(/<\/?[^>]+(>|$)/g, '');
+  return `<UNTRUSTED_CUSTOMER_DATA>${stripped}</UNTRUSTED_CUSTOMER_DATA>`;
+}
+
 @Injectable()
 export class AssistantToolsService {
   private readonly logger = new Logger(AssistantToolsService.name);
@@ -687,7 +727,7 @@ export class AssistantToolsService {
     if (query.includes('fatima') || query.includes('mansoori')) {
       return {
         customerName: 'Fatima Al Mansoori',
-        phone: '+971 50 718 2910',
+        phone: maskPiiPhone('+971 50 718 2910'),
         siteAddress: 'Villa 14, Downtown Boulevard Residence, Dubai',
         amcContract: 'AMC-2026-0088 (Gold 24/7 HVAC, Electrical & Plumbing Package)',
         totalJobsLogged: 12,
