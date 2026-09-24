@@ -135,7 +135,7 @@ export class AssistantService {
     try {
       const systemInstruction = `
 You are FIXnGO's operations AI assistant for a UAE field-service, maintenance, and facility management company located in Dubai, UAE.
-Company: FIXnGO Technical Services LLC (TRN: 100482910300003).
+Company: FIXnGO Technical Services LLC — demo (TRN: 100000000000003 (demo)).
 
 CRITICAL OPERATIONAL RULES:
 1. Answer ONLY from data returned by your available tools. NEVER fabricate or invent figures.
@@ -339,21 +339,21 @@ You lack the required \`finance.view\` permission to inspect accounts receivable
       } else {
         cannedAnswer = isArabic
           ? `### 💰 الذمم المدينة والفواتير المتأخرة (إجمالي المستحقات: 94,300 د.إ):
-* **INV-2026-0003**: لصالح **Address Downtown Hotel LLC**
+* **INV-2026-00003**: لصالح **Crescent Bay Commercial Complex**
   * المبلغ المستحق: **4,410.00 د.إ** (متأخرة بـ **14 يوماً**). تم إرسال إشعار المطالبة الأول.
-* **INV-2026-0019**: لصالح **Damac Hills Residential Association**
+* **INV-2026-00019**: لصالح **Blue Sky Towers Owners Association**
   * المبلغ المستحق: **3,360.00 د.إ** (متأخرة بـ **6 أيام**).
-* **INV-2026-0027**: لصالح **Desert Rose Logistics LLC**
+* **INV-2026-00027**: لصالح **Desert Rose Logistics LLC**
   * المبلغ المستحق: **2,572.50 د.إ** (متأخرة بـ **يومين**).
-* **أكبر المدينين**: فندق العنوان وسط دبي (**18,450 د.إ**) وشركة بالم كرست العقارية (**12,800 د.إ**).`
+* **أكبر المدينين**: شركة بالم كرست العقارية (**18,450 د.إ**) ومجمع خليج الهلال التجاري (**12,800 د.إ**).`
           : `### 💰 Outstanding Receivables & Overdue Invoices (Total A/R: AED 94,300.00):
-* **INV-2026-0003**: **Address Downtown Hotel LLC**
+* **INV-2026-00003**: **Crescent Bay Commercial Complex**
   * Balance Due: **AED 4,410.00** (**14 days overdue**). Dunning notice #1 dispatched.
-* **INV-2026-0019**: **Damac Hills Residential Association**
+* **INV-2026-00019**: **Blue Sky Towers Owners Association**
   * Balance Due: **AED 3,360.00** (**6 days overdue**).
-* **INV-2026-0027**: **Desert Rose Logistics LLC**
+* **INV-2026-00027**: **Desert Rose Logistics LLC**
   * Balance Due: **AED 2,572.50** (**2 days overdue**).
-* **Top Debtors by Balance**: Address Downtown Hotel (AED 18,450.00) and Palm Crest Properties LLC (AED 12,800.00).`;
+* **Top Debtors by Balance**: Palm Crest Properties LLC (AED 18,450.00) and Crescent Bay Commercial Complex (AED 12,800.00).`;
       }
     }
     // Question 4: Where is each technician? / GPS Telematics

@@ -58,13 +58,8 @@ export const envSchema = z.object({
     .string({ required_error: 'STRIPE_WEBHOOK_SECRET is required' })
     .min(1, 'STRIPE_WEBHOOK_SECRET cannot be empty'),
 
-  GEMINI_API_KEY: z
-    .string({ required_error: 'GEMINI_API_KEY is required for Google Gen AI assistant' })
-    .min(1, 'GEMINI_API_KEY cannot be empty'),
-
-  GEMINI_MODEL: z
-    .string({ required_error: 'GEMINI_MODEL is required (e.g. gemini-3.6-flash)' })
-    .min(1, 'GEMINI_MODEL cannot be empty'),
+  GEMINI_API_KEY: z.string().optional().default(''),
+  GEMINI_MODEL: z.string().optional().default('gemini-2.5-flash'),
 
   // Optional variables with defaults
   PORT: z.string().optional().default('4000'),
