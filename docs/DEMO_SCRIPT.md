@@ -136,7 +136,7 @@
 - **Fast-Forward Rental Demo**: Click **⚡ Demo Scenarios $\to$ "Fast-Forward Rental"** to trigger off-hire return reminder and inspection checklist for contract `RC-2026-0005`.
 
 ### 2. Construction Labour Supply & Timesheets ([`/admin/manpower`](http://localhost:3000/en/admin/manpower))
-- **30 Deployed Workers**: Electricians, pipefitters, HVAC technicians, and helpers deployed across Emaar Creek Harbour, Sobha Hartland, and Palm Crown sites.
+- **30 Deployed Workers**: Electricians, pipefitters, HVAC technicians, and helpers deployed across Crescent Bay Commercial Complex, Al-Noor Residential Compound, and Palm Crest sites.
 - **Daily Timesheet Rollup**: Digital supervisor signature, regular 8h + 2h overtime logging, one-click conversion to monthly client consolidated tax invoices.
 
 ### 3. Inventory & Van Replenishment ([`/admin/inventory`](http://localhost:3000/en/admin/inventory))

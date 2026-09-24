@@ -150,7 +150,7 @@ describe('Seed Script Deterministic Validation & Financial Invariant Tests', () 
     const actors = [
       { name: 'Rashid Al-Nuaimi', lat: 25.1860, lng: 55.2715, loc: 'Business Bay' },
       { name: 'Vikram Patel', lat: 25.1972, lng: 55.2744, loc: 'Downtown' },
-      { name: 'Hasan Al-Banna', lat: 25.0805, lng: 55.1403, loc: 'Dubai Marina' },
+      { name: 'Tariq Al-Mansoor', lat: 25.0805, lng: 55.1403, loc: 'Al Barsha' },
       { name: 'Farhan Siddiqui', lat: 25.1320, lng: 55.2280, loc: 'Al Quoz' },
       { name: 'Ahmed Mustafa', lat: 25.1600, lng: 55.2450, loc: 'SZR' },
     ];

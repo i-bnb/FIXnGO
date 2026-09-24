@@ -52,18 +52,18 @@ interface RentalContract {
 }
 
 const SAMPLE_EQUIPMENT: EquipmentUnit[] = [
-  { id: '1', code: 'EQ-GEN-100', name: 'Caterpillar 100 kVA Soundproof Diesel Generator', category: 'Generators', serialNumber: 'CAT-GEN-2024-998', status: 'RENTED', dailyRateAed: 450, weeklyRateAed: 2600, monthlyRateAed: 9500, currentLocation: 'Aldar Yas Island Site', meterHours: 1420, utilizationRate: 85, activeClient: 'Arabtec Contracting', returnDate: '2026-10-15' },
+  { id: '1', code: 'EQ-GEN-100', name: 'Caterpillar 100 kVA Soundproof Diesel Generator', category: 'Generators', serialNumber: 'CAT-GEN-2024-998', status: 'RENTED', dailyRateAed: 450, weeklyRateAed: 2600, monthlyRateAed: 9500, currentLocation: 'Palm Crest Yas Site', meterHours: 1420, utilizationRate: 85, activeClient: 'Palm Crest Properties LLC', returnDate: '2026-10-15' },
   { id: '2', code: 'EQ-SCAF-06', name: 'Aluminium Mobile Scaffolding Tower (6 Metres)', category: 'Access Equipment', serialNumber: 'ALU-SCAF-2025-104', status: 'AVAILABLE', dailyRateAed: 120, weeklyRateAed: 650, monthlyRateAed: 2200, currentLocation: 'Al Quoz Central Yard', meterHours: 0, utilizationRate: 60 },
-  { id: '3', code: 'EQ-LIFT-12', name: 'Haulotte 12m Electric Scissor Lift', category: 'Access Equipment', serialNumber: 'HAU-LIFT-2023-441', status: 'RENTED', dailyRateAed: 380, weeklyRateAed: 2100, monthlyRateAed: 7200, currentLocation: 'Emaar Creek Harbour Phase 2', meterHours: 890, utilizationRate: 78, activeClient: 'Al Naboodah Group', returnDate: '2026-10-02' },
+  { id: '3', code: 'EQ-LIFT-12', name: 'Haulotte 12m Electric Scissor Lift', category: 'Access Equipment', serialNumber: 'HAU-LIFT-2023-441', status: 'RENTED', dailyRateAed: 380, weeklyRateAed: 2100, monthlyRateAed: 7200, currentLocation: 'Crescent Bay Tower Phase 2', meterHours: 890, utilizationRate: 78, activeClient: 'Desert Rose Logistics LLC', returnDate: '2026-10-02' },
   { id: '4', code: 'EQ-BRK-01', name: 'Hilti TE 1000-AVR Heavy Demolition Breaker', category: 'Power Tools', serialNumber: 'HLT-BRK-2025-331', status: 'AVAILABLE', dailyRateAed: 150, weeklyRateAed: 800, monthlyRateAed: 2600, currentLocation: 'Al Quoz Central Yard', meterHours: 340, utilizationRate: 52 },
-  { id: '5', code: 'EQ-MIX-350', name: 'Belle Site Concrete Mixer 350L (Diesel)', category: 'Concrete Equipment', serialNumber: 'BEL-MIX-2024-009', status: 'RENTED', dailyRateAed: 220, weeklyRateAed: 1200, monthlyRateAed: 4200, currentLocation: 'Sharjah Aljada Phase 2', meterHours: 620, utilizationRate: 70, activeClient: 'Al-Marwan Contracting', returnDate: '2026-09-30' },
+  { id: '5', code: 'EQ-MIX-350', name: 'Belle Site Concrete Mixer 350L (Diesel)', category: 'Concrete Equipment', serialNumber: 'BEL-MIX-2024-009', status: 'RENTED', dailyRateAed: 220, weeklyRateAed: 1200, monthlyRateAed: 4200, currentLocation: 'Sharjah Aljada Phase 2', meterHours: 620, utilizationRate: 70, activeClient: 'Al-Noor Residential Compound', returnDate: '2026-09-30' },
   { id: '6', code: 'EQ-WELD-400', name: 'Miller Big Blue 400A Diesel Welder Generator', category: 'Welding & Fab', serialNumber: 'MIL-WLD-2023-772', status: 'AVAILABLE', dailyRateAed: 320, weeklyRateAed: 1800, monthlyRateAed: 6400, currentLocation: 'Musaffah Abu Dhabi Yard', meterHours: 1100, utilizationRate: 64 },
 ];
 
 const SAMPLE_CONTRACTS: RentalContract[] = [
-  { id: 'r-1', contractNumber: 'RNT-2026-0101', equipmentCode: 'EQ-GEN-100', equipmentName: 'Caterpillar 100 kVA Generator', clientName: 'Arabtec Contracting LLC', projectName: 'Aldar Yas Island Luxury Villas', startDate: '2026-08-15', endDate: '2026-10-15', depositAed: 5000, totalAmountAed: 19950, status: 'ACTIVE' },
-  { id: 'r-2', contractNumber: 'RNT-2026-0102', equipmentCode: 'EQ-LIFT-12', equipmentName: 'Haulotte 12m Scissor Lift', clientName: 'Al Naboodah Construction', projectName: 'Emaar Creek Harbour Phase 2', startDate: '2026-09-01', endDate: '2026-10-02', depositAed: 3000, totalAmountAed: 7560, status: 'ACTIVE' },
-  { id: 'r-3', contractNumber: 'RNT-2026-0103', equipmentCode: 'EQ-MIX-350', equipmentName: 'Belle Concrete Mixer 350L', clientName: 'Al-Marwan Contracting', projectName: 'Sharjah Aljada Phase 2', startDate: '2026-09-10', endDate: '2026-09-30', depositAed: 2000, totalAmountAed: 4410, status: 'ACTIVE' },
+  { id: 'r-1', contractNumber: 'RNT-2026-0101', equipmentCode: 'EQ-GEN-100', equipmentName: 'Caterpillar 100 kVA Generator', clientName: 'Palm Crest Properties LLC', projectName: 'Palm Crest Yas Luxury Villas', startDate: '2026-08-15', endDate: '2026-10-15', depositAed: 5000, totalAmountAed: 19950, status: 'ACTIVE' },
+  { id: 'r-2', contractNumber: 'RNT-2026-0102', equipmentCode: 'EQ-LIFT-12', equipmentName: 'Haulotte 12m Scissor Lift', clientName: 'Desert Rose Logistics LLC', projectName: 'Crescent Bay Tower Phase 2', startDate: '2026-09-01', endDate: '2026-10-02', depositAed: 3000, totalAmountAed: 7560, status: 'ACTIVE' },
+  { id: 'r-3', contractNumber: 'RNT-2026-0103', equipmentCode: 'EQ-MIX-350', equipmentName: 'Belle Concrete Mixer 350L', clientName: 'Al-Noor Residential Compound', projectName: 'Sharjah Aljada Phase 2', startDate: '2026-09-10', endDate: '2026-09-30', depositAed: 2000, totalAmountAed: 4410, status: 'ACTIVE' },
 ];
 
 export default function EquipmentAdminPage({
@@ -79,8 +79,8 @@ export default function EquipmentAdminPage({
   const [selectedEq, setSelectedEq] = useState<EquipmentUnit | null>(null);
 
   // New rental form
-  const [clientName, setClientName] = useState('Al Naboodah MEP Contracting');
-  const [projectName, setProjectName] = useState('Dubai Creek Tower Substation');
+  const [clientName, setClientName] = useState('Desert Rose Logistics LLC');
+  const [projectName, setProjectName] = useState('Crescent Bay Tower Substation');
   const [hireDuration, setHireDuration] = useState('1 Month (30 Days)');
 
   const handleCreateRental = () => {

@@ -97,9 +97,9 @@ export default function CustomerMobileAppPage({
 
   // Authentication State
   const [user, setUser] = useState<CustomerUser | null>({
-    fullName: 'Eng. Khalid Al-Futtaim',
-    phone: '+971 50 123 4567',
-    email: 'khalid@alfuttaim.ae',
+    fullName: 'Eng. Tariq Al-Hashimi',
+    phone: '+971 50 000 0101',
+    email: 'facilities@palmcrest.example',
   });
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [otpPhone, setOtpPhone] = useState('+971 50 123 4567');
@@ -1728,9 +1728,9 @@ export default function CustomerMobileAppPage({
                   <button
                     onClick={() => {
                       setUser({
-                        fullName: 'Eng. Khalid Al-Futtaim',
+                        fullName: 'Eng. Tariq Al-Hashimi',
                         phone: otpPhone,
-                        email: 'khalid@alfuttaim.ae',
+                        email: 'facilities@palmcrest.example',
                       });
                       setShowAuthModal(false);
                       setIsOtpSent(false);

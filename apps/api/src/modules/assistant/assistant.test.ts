@@ -32,7 +32,7 @@ describe('Phase 7B: Ask FIXnGO AI Operations Assistant', () => {
         {
           order_number: 'WO-2025-0089',
           title: 'HVAC Dual Compressor Burnout (Loss Maker)',
-          customer_name: 'Al Futtaim Properties LLC',
+          customer_name: 'Desert Rose Logistics LLC',
           service_type: 'HVAC',
           billed_revenue: 450.0,
           parts_cost: 680.0,
@@ -191,7 +191,7 @@ describe('Phase 7B: Ask FIXnGO AI Operations Assistant', () => {
       const slaResult = await toolsService.executeTool('getSlaBreaches', {}, dispatcherUser);
       assert.notStrictEqual(slaResult.status, 'FORBIDDEN');
       assert.strictEqual(slaResult.breachCount, 1);
-      assert.strictEqual(slaResult.criticalAlerts[0].orderNumber, 'WO-24825');
+      assert.strictEqual(slaResult.criticalAlerts[0].orderNumber, 'WO-2026-00025');
     });
   });
 

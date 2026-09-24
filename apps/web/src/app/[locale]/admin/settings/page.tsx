@@ -26,10 +26,10 @@ export default function SettingsAdminPage({
   const [saveToast, setSaveToast] = useState(false);
 
   // Form states
-  const [companyNameEn, setCompanyNameEn] = useState('FIXnGO Technical Services LLC');
-  const [companyNameAr, setCompanyNameAr] = useState('شركة فيكس آند جو للخدمات الفنية ذ.م.م');
-  const [trnNumber, setTrnNumber] = useState('100482910300003');
-  const [dedLicense, setDedLicense] = useState('CN-8891024 (Dubai DED)');
+  const [companyNameEn, setCompanyNameEn] = useState('FIXnGO Technical Services LLC — demo');
+  const [companyNameAr, setCompanyNameAr] = useState('فيكس إن جو للخدمات الفنية ذ.م.م (عرض تجريبي)');
+  const [trnNumber, setTrnNumber] = useState('100000000000003 (demo)');
+  const [dedLicense, setDedLicense] = useState('CN-8891024 (Dubai DED demo)');
   const [vatRate, setVatRate] = useState(5.0);
   const [corpTaxRate, setCorpTaxRate] = useState(9.0);
   const [stripeLiveMode, setStripeLiveMode] = useState(false);
@@ -237,19 +237,19 @@ export default function SettingsAdminPage({
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-slate-50 rounded-xl border">
               <span className="font-bold text-slate-700 block">Work Orders</span>
-              <span className="font-mono text-signal-orange font-black text-sm">WO-2026-XXXX</span>
+              <span className="font-mono text-signal-orange font-black text-sm">WO-2026-00001</span>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border">
               <span className="font-bold text-slate-700 block">Tax Invoices</span>
-              <span className="font-mono text-signal-orange font-black text-sm">INV-2026-XXXX</span>
+              <span className="font-mono text-signal-orange font-black text-sm">INV-2026-00001</span>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border">
               <span className="font-bold text-slate-700 block">Quotations</span>
-              <span className="font-mono text-signal-orange font-black text-sm">QT-2026-XXXX</span>
+              <span className="font-mono text-signal-orange font-black text-sm">QT-2026-00001</span>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border">
               <span className="font-bold text-slate-700 block">Purchase Orders</span>
-              <span className="font-mono text-signal-orange font-black text-sm">PO-2026-XXXX</span>
+              <span className="font-mono text-signal-orange font-black text-sm">PO-2026-00001</span>
             </div>
           </div>
         </div>

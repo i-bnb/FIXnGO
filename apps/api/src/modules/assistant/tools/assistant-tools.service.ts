@@ -225,10 +225,10 @@ export class AssistantToolsService {
 
     // Hero demo fallback data
     return [
-      { orderNumber: 'WO-24817', title: 'Chiller Compressor Trip', status: 'IN_PROGRESS', priority: 'HIGH', customer: 'Fatima Al Mansoori', assignedTech: 'Rashid Khan', subtotalAed: 464.0 },
-      { orderNumber: 'WO-24825', title: 'MDB Hotspot & Breaker Arcing', status: 'NEW', priority: 'EMERGENCY', customer: 'Emaar Properties PJSC', assignedTech: 'Unassigned (Action Required)', subtotalAed: 850.0 },
-      { orderNumber: 'WO-24818', title: 'Main Distribution Busbar Inspection', status: 'EN_ROUTE', priority: 'HIGH', customer: 'Downtown Tower Management', assignedTech: 'Vikram Patel', subtotalAed: 620.0 },
-      { orderNumber: 'WO-24805', title: 'Booster Pump Overhaul', status: 'ON_SITE', priority: 'MEDIUM', customer: 'Dubai Marina Walk Retail', assignedTech: 'Hasan Al-Banna', subtotalAed: 1250.0 },
+      { orderNumber: 'WO-2026-00001', title: 'Chiller Compressor Trip', status: 'IN_PROGRESS', priority: 'HIGH', customer: 'Palm Crest Properties LLC', assignedTech: 'Rashid Al-Nuaimi', subtotalAed: 464.0 },
+      { orderNumber: 'WO-2026-00025', title: 'MDB Hotspot & Breaker Arcing', status: 'NEW', priority: 'EMERGENCY', customer: 'Crescent Bay Commercial Complex', assignedTech: 'Unassigned (Action Required)', subtotalAed: 850.0 },
+      { orderNumber: 'WO-2026-00003', title: 'Main Distribution Busbar Inspection', status: 'EN_ROUTE', priority: 'HIGH', customer: 'Downtown Tower Management', assignedTech: 'Vikram Patel', subtotalAed: 620.0 },
+      { orderNumber: 'WO-2026-00002', title: 'Booster Pump Overhaul', status: 'ON_SITE', priority: 'MEDIUM', customer: 'Al-Noor Residential Compound', assignedTech: 'Tariq Al-Mansoor', subtotalAed: 1250.0 },
     ].filter((j) => !statusUpper || j.status === statusUpper);
   }
 
@@ -240,22 +240,22 @@ export class AssistantToolsService {
       breachCount: 1,
       criticalAlerts: [
         {
-          orderNumber: 'WO-24825',
+          orderNumber: 'WO-2026-00025',
           title: 'Main Distribution Board Thermography Hotspot & Breaker Arcing',
           priority: 'EMERGENCY',
-          customer: 'Emaar Properties PJSC (Downtown Project Site)',
-          location: 'Downtown Boulevard, Dubai',
+          customer: 'Crescent Bay Commercial Complex (Business Bay Site)',
+          location: 'Business Bay, Dubai',
           overdueTime: '2 hours 10 minutes overdue (Response SLA: 2h)',
           status: 'UNASSIGNED',
-          actionRecommended: 'Immediate dispatch recommended. Qualified match: Joseph Mathew (TECH-PLU-03, 3.4 km away) or Vikram Patel (TECH-ELE-04).',
+          actionRecommended: 'Immediate dispatch recommended. Qualified match: Tariq Al-Mansoor (TECH-PLU-01, 3.4 km away) or Vikram Patel (TECH-ELE-02).',
         },
       ],
       warningOrders: [
         {
-          orderNumber: 'WO-24819',
+          orderNumber: 'WO-2026-00019',
           title: 'Secondary Chilled Water Leakage',
           priority: 'HIGH',
-          customer: 'Sobha Constructions LLC',
+          customer: 'Palm Crest Properties LLC',
           slaTimeRemaining: '38 minutes remaining',
         },
       ],
@@ -330,20 +330,20 @@ export class AssistantToolsService {
         status: 'NEW (UNASSIGNED)',
         priority: 'EMERGENCY',
         serviceType: 'ELECTRICAL',
-        customer: 'Emaar Properties PJSC',
-        address: 'Boulevard Commercial Tower 2, Downtown Dubai',
+        customer: 'Crescent Bay Commercial Complex',
+        address: 'Boulevard Commercial Tower 2, Business Bay, Dubai',
         slaStatus: 'OVERDUE BY 2h 10m',
         estimatedCostAed: 850.0,
       };
     }
 
-    if (query.includes('0089')) {
+    if (query.includes('0089') || query.includes('00089') || query.includes('00004')) {
       return {
-        orderNumber: 'WO-2025-0089',
+        orderNumber: 'WO-2026-00004',
         title: 'HVAC Dual Compressor Burnout (Loss Maker)',
         status: 'COMPLETED',
         serviceType: 'HVAC',
-        customer: 'Al Futtaim Properties',
+        customer: 'Desert Rose Logistics LLC',
         billedRevenueAed: 450.0,
         partsCostAed: 680.0,
         labourCostAed: 360.0,
@@ -390,9 +390,9 @@ export class AssistantToolsService {
       // Deterministic loss-making jobs matching seed.test.ts and reports
       const lossMakers = [
         {
-          orderNumber: 'WO-2025-0089',
+          orderNumber: 'WO-2026-00004',
           title: 'HVAC Dual Compressor Burnout (Loss Maker)',
-          customer: 'Al Futtaim Properties LLC',
+          customer: 'Desert Rose Logistics LLC',
           serviceType: 'HVAC',
           billedRevenueAed: 450.0,
           totalCostAed: 1040.0,
@@ -478,16 +478,16 @@ export class AssistantToolsService {
         rating: 4.92,
       },
       {
-        code: 'TECH-PLU-02',
-        name: 'Hasan Al-Banna',
+        code: 'TECH-PLU-01',
+        name: 'Tariq Al-Mansoor',
         trade: 'PLUMBING',
         vanCode: 'Van DXB-02',
         status: 'ON_JOB',
-        currentJob: 'WO-24805 (Dubai Marina)',
-        location: 'Dubai Marina Walk (Lat: 25.0805, Lng: 55.1403)',
+        currentJob: 'WO-2026-00002 (Al Barsha)',
+        location: 'Al Barsha Community (Lat: 25.1132, Lng: 55.2012)',
         speedKmh: 0,
         etaMinutes: 0,
-        rating: 4.85,
+        rating: 4.88,
       },
       {
         code: 'TECH-HVAC-07',
@@ -529,10 +529,10 @@ export class AssistantToolsService {
       }));
     } catch {
       return [
-        { technicianName: 'Rashid Khan', code: 'TECH-HVAC-12', trade: 'HVAC', completedJobs: 480, hoursWorked: 920, labourRevenueBilledAed: 96600.0, rating: 4.96 },
-        { technicianName: 'Vikram Patel', code: 'TECH-ELE-04', trade: 'ELECTRICAL', completedJobs: 412, hoursWorked: 810, labourRevenueBilledAed: 76950.0, rating: 4.92 },
+        { technicianName: 'Rashid Al-Nuaimi', code: 'TECH-HVAC-01', trade: 'HVAC', completedJobs: 480, hoursWorked: 920, labourRevenueBilledAed: 96600.0, rating: 4.96 },
+        { technicianName: 'Vikram Patel', code: 'TECH-ELE-02', trade: 'ELECTRICAL', completedJobs: 412, hoursWorked: 810, labourRevenueBilledAed: 76950.0, rating: 4.92 },
         { technicianName: 'Joseph Mathew', code: 'TECH-PLU-03', trade: 'PLUMBING', completedJobs: 395, hoursWorked: 760, labourRevenueBilledAed: 68400.0, rating: 4.89 },
-        { technicianName: 'Hasan Al-Banna', code: 'TECH-PLU-02', trade: 'PLUMBING', completedJobs: 390, hoursWorked: 740, labourRevenueBilledAed: 74000.0, rating: 4.85 },
+        { technicianName: 'Tariq Al-Mansoor', code: 'TECH-PLU-01', trade: 'PLUMBING', completedJobs: 390, hoursWorked: 740, labourRevenueBilledAed: 74000.0, rating: 4.88 },
       ];
     }
   }
@@ -596,9 +596,9 @@ export class AssistantToolsService {
       availableUnits: 5,
       monthlyRentalRevenueAed: 84200.0,
       equipmentHighlights: [
-        { code: 'EQ-001', name: 'Caterpillar 320D Hydraulic Excavator', status: 'ON_HIRE', customer: 'Sobha Constructions', dailyRateAed: 850.0, totalRevenueAed: 25500.0 },
-        { code: 'EQ-005', name: 'Cummins 100kVA Soundproof Mobile Generator', status: 'ON_HIRE', customer: 'Emaar Hospitality', dailyRateAed: 420.0, totalRevenueAed: 12600.0 },
-        { code: 'EQ-015', name: 'Genie GS-1930 Scissor Lift 7.8m', status: 'ON_HIRE', customer: 'Dubai Hills Mall', dailyRateAed: 220.0, totalRevenueAed: 6600.0 },
+        { code: 'EQ-001', name: 'Caterpillar 320D Hydraulic Excavator', status: 'ON_HIRE', customer: 'Palm Crest Properties', dailyRateAed: 850.0, totalRevenueAed: 25500.0 },
+        { code: 'EQ-005', name: 'Cummins 100kVA Soundproof Mobile Generator', status: 'ON_HIRE', customer: 'Crescent Bay Commercial', dailyRateAed: 420.0, totalRevenueAed: 12600.0 },
+        { code: 'EQ-015', name: 'Genie GS-1930 Scissor Lift 7.8m', status: 'ON_HIRE', customer: 'Desert Rose Facilities', dailyRateAed: 220.0, totalRevenueAed: 6600.0 },
         { code: 'EQ-008', name: 'JCB 3DX Backhoe Loader', status: 'AVAILABLE', location: 'Al Quoz Yard', dailyRateAed: 600.0 },
       ],
     };
@@ -620,9 +620,9 @@ export class AssistantToolsService {
       },
       topDebtors: [
         { customer: 'Address Downtown Hotel LLC', trn: '100234567800003', balanceDueAed: 18450.0, oldestInvoiceDays: 42 },
-        { customer: 'Sobha Constructions LLC', trn: '100482910300003', balanceDueAed: 12800.0, oldestInvoiceDays: 28 },
-        { customer: 'Nakheel Retail Properties', trn: '100554433200003', balanceDueAed: 9600.0, oldestInvoiceDays: 14 },
-        { customer: 'Emaar Properties PJSC', trn: '100112233400003', balanceDueAed: 8900.0, oldestInvoiceDays: 7 },
+        { customer: 'Palm Crest Properties LLC', trn: '100000000000001 (demo)', balanceDueAed: 12800.0, oldestInvoiceDays: 28 },
+        { customer: 'Al-Noor Residential Compound', trn: '100000000000003 (demo)', balanceDueAed: 9600.0, oldestInvoiceDays: 14 },
+        { customer: 'Crescent Bay Commercial Complex', trn: '100000000000002 (demo)', balanceDueAed: 8900.0, oldestInvoiceDays: 7 },
       ],
     };
   }
@@ -660,8 +660,8 @@ export class AssistantToolsService {
       },
       {
         invoiceNumber: 'INV-2026-0027',
-        customer: 'Al Futtaim Engineering',
-        trn: '100332211400003',
+        customer: 'Desert Rose Logistics LLC',
+        trn: '100000000000004 (demo)',
         issueDate: '2026-08-22',
         dueDate: '2026-09-21',
         daysOverdue: 2,
@@ -744,26 +744,26 @@ export class AssistantToolsService {
       };
     }
 
-    if (query.includes('emaar')) {
+    if (query.includes('crescent')) {
       return {
-        customerName: 'Emaar Properties PJSC',
-        trn: '100112233400003',
-        siteAddress: 'Downtown Dubai Project Master Community',
+        customerName: 'Crescent Bay Commercial Complex',
+        trn: '100000000000002 (demo)',
+        siteAddress: 'Business Bay Master Commercial Development, Dubai',
         amcContract: 'Corporate Facilities Framework Agreement',
         totalJobsLogged: 84,
         activeOrders: [
-          { orderNumber: 'WO-24825', title: 'MDB Hotspot & Breaker Arcing', status: 'NEW (EMERGENCY)', priority: 'EMERGENCY' },
+          { orderNumber: 'WO-2026-00025', title: 'MDB Hotspot & Breaker Arcing', status: 'NEW (EMERGENCY)', priority: 'EMERGENCY' },
         ],
         lifetimeSpendAed: 248600.0,
         outstandingBalanceAed: 8900.0,
       };
     }
 
-    if (query.includes('sobha')) {
+    if (query.includes('palm')) {
       return {
-        customerName: 'Sobha Constructions LLC',
-        trn: '100482910300003',
-        siteAddress: 'Sobha Hartland Site 4, Meydan, Dubai',
+        customerName: 'Palm Crest Properties LLC',
+        trn: '100000000000001 (demo)',
+        siteAddress: 'Palm Crest Downtown Boulevard, Dubai',
         totalJobsLogged: 42,
         activeEquipmentRentals: ['EQ-001 (CAT 320D Excavator - AED 850/day)'],
         lifetimeSpendAed: 184500.0,

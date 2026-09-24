@@ -86,7 +86,7 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
           latitude: 25.1972,
           longitude: 55.2744,
           totalAmount: 231.0,
-          customer: { companyName: 'Al Futtaim Properties LLC' },
+          customer: { companyName: 'Palm Crest Properties LLC' },
         },
       ],
       activeOrders: [
@@ -178,7 +178,7 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
           subtotal: 220.0,
           vatAmount: 11.0,
           totalAmount: 231.0,
-          customer: { companyName: 'Al Futtaim Properties LLC' },
+          customer: { companyName: 'Palm Crest Properties LLC' },
         },
       ],
       total: 3,
@@ -187,18 +187,18 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
 
   if (endpoint.includes('/api/manpower/workers')) {
     return [
-      { id: '1', workerCode: 'MP-E01', fullName: 'Sajid Ali', trade: 'ELECTRICIAN', yearsOfExperience: 5, status: 'DEPLOYED', hourlyBillingRate: 55, currentSiteName: 'Emaar Creek Harbour' },
+      { id: '1', workerCode: 'MP-E01', fullName: 'Sajid Ali', trade: 'ELECTRICIAN', yearsOfExperience: 5, status: 'DEPLOYED', hourlyBillingRate: 55, currentSiteName: 'Crescent Bay Commercial Tower' },
       { id: '2', workerCode: 'MP-E02', fullName: 'Naveed Akhtar', trade: 'ELECTRICIAN', yearsOfExperience: 4, status: 'AVAILABLE', hourlyBillingRate: 55, currentSiteName: null },
-      { id: '3', workerCode: 'MP-P01', fullName: 'Manoj Kumar', trade: 'PLUMBER', yearsOfExperience: 6, status: 'DEPLOYED', hourlyBillingRate: 50, currentSiteName: 'Aldar Yas Island' },
+      { id: '3', workerCode: 'MP-P01', fullName: 'Manoj Kumar', trade: 'PLUMBER', yearsOfExperience: 6, status: 'DEPLOYED', hourlyBillingRate: 50, currentSiteName: 'Al-Noor Community' },
       { id: '4', workerCode: 'MP-H01', fullName: 'Anwar Hossain', trade: 'HVAC_TECHNICIAN', yearsOfExperience: 7, status: 'AVAILABLE', hourlyBillingRate: 65, currentSiteName: null },
-      { id: '5', workerCode: 'MP-G01', fullName: 'Gurpreet Singh', trade: 'GENERAL_HELPER', yearsOfExperience: 3, status: 'DEPLOYED', hourlyBillingRate: 38, currentSiteName: 'Sharjah Aljada' },
+      { id: '5', workerCode: 'MP-G01', fullName: 'Gurpreet Singh', trade: 'GENERAL_HELPER', yearsOfExperience: 3, status: 'DEPLOYED', hourlyBillingRate: 38, currentSiteName: 'Palm Crest Downtown' },
     ] as unknown as T;
   }
 
   if (endpoint.includes('/api/manpower/requisitions')) {
     return [
-      { id: '1', requisitionNumber: 'REQ-2026-081', clientName: 'Al Naboodah Construction Group', projectName: 'Emaar Creek Harbour Phase 2', tradeRequired: 'ELECTRICIAN', quantityRequired: 6, dailyRatePerWorker: 440, totalEstimatedValue: 118800, status: 'ACTIVE' },
-      { id: '2', requisitionNumber: 'REQ-2026-082', clientName: 'Arabtec Contracting', projectName: 'Aldar Yas Island Villas', tradeRequired: 'PLUMBER', quantityRequired: 4, dailyRatePerWorker: 400, totalEstimatedValue: 48000, status: 'ACTIVE' },
+      { id: '1', requisitionNumber: 'REQ-2026-081', clientName: 'Al-Noor General Contracting', projectName: 'Crescent Bay Phase 2', tradeRequired: 'ELECTRICIAN', quantityRequired: 6, dailyRatePerWorker: 440, totalEstimatedValue: 118800, status: 'ACTIVE' },
+      { id: '2', requisitionNumber: 'REQ-2026-082', clientName: 'Al-Noor Contracting LLC', projectName: 'Al-Noor Community Villas', tradeRequired: 'PLUMBER', quantityRequired: 4, dailyRatePerWorker: 400, totalEstimatedValue: 48000, status: 'ACTIVE' },
     ] as unknown as T;
   }
 
@@ -224,10 +224,10 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
     return [
       {
         id: 'inv-10482',
-        invoiceNumber: 'INV-10482',
-        customerName: 'Fatima Al Mansoori',
-        customerTrn: '100482910300003',
-        companyTrn: '100482910300003',
+        invoiceNumber: 'INV-2026-00001',
+        customerName: 'Palm Crest Properties LLC',
+        customerTrn: '100000000000001 (demo)',
+        companyTrn: '100000000000003 (demo)',
         issueDate: '2026-09-23',
         dueDate: '2026-09-23',
         subtotal: 464.0,
@@ -245,10 +245,10 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
       },
       {
         id: '1',
-        invoiceNumber: 'INV-2026-0001',
-        customerName: 'Al Futtaim Properties LLC',
-        customerTrn: '100342918800003',
-        companyTrn: '100482910300003',
+        invoiceNumber: 'INV-2026-00002',
+        customerName: 'Al-Noor Residential Compound',
+        customerTrn: '100000000000003 (demo)',
+        companyTrn: '100000000000003 (demo)',
         issueDate: '2026-09-23',
         dueDate: '2026-10-07',
         subtotal: 365.0,

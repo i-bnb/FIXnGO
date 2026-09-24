@@ -2,14 +2,14 @@ export const UAE_CONSTANTS = {
   CURRENCY: 'AED',
   VAT_RATE: 0.05,
   VAT_PERCENTAGE: 5,
-  COMPANY_NAME: 'FieldOps MEP & Contracting LLC',
-  COMPANY_NAME_AR: 'فيلد أوبس للأعمال الكهروميكانيكية والمقاولات ذ.م.م',
-  COMPANY_TRN: '100482910300003',
+  COMPANY_NAME: 'FIXnGO Technical Services LLC — demo',
+  COMPANY_NAME_AR: 'فيكس إن جو للخدمات الفنية ذ.م.م (عرض تجريبي)',
+  COMPANY_TRN: '100000000000003 (demo)',
   DEFAULT_TIMEZONE: 'Asia/Dubai',
   PHONE_PREFIX: '+971',
   HEAD_OFFICE_ADDRESS: 'Al Quoz Industrial Area 3, Street 8, Warehouse 14, Dubai, UAE',
-  SUPPORT_PHONE: '+971 4 800 3493',
-  SUPPORT_EMAIL: 'support@fieldops.ae',
+  SUPPORT_PHONE: '+971 50 000 0100',
+  SUPPORT_EMAIL: 'support@fieldops.demo',
 } as const;
 
 export interface UaeLocationArea {

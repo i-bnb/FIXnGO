@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { DataTable, Column } from '../../../../components/ui/DataTable';
 import {
   Receipt,
@@ -26,6 +27,7 @@ import {
   FileText,
   Check,
   Percent,
+  ExternalLink,
 } from 'lucide-react';
 import { calculateUaeVat } from '@fieldops/shared';
 import { fetchApi } from '../../../../lib/api-client';
@@ -69,9 +71,9 @@ interface QuotationRecord {
 const INITIAL_INVOICES: InvoiceRecord[] = [
   {
     id: '1',
-    invoiceNumber: 'INV-2026-0001',
-    customerName: 'Al Futtaim Properties LLC',
-    customerTrn: '100342918800003',
+    invoiceNumber: 'INV-2026-00001',
+    customerName: 'Palm Crest Properties LLC',
+    customerTrn: '100000000000001 (demo)',
     issueDate: '2026-09-23',
     dueDate: '2026-10-07',
     subtotal: 365.0,
@@ -90,8 +92,9 @@ const INITIAL_INVOICES: InvoiceRecord[] = [
   },
   {
     id: '2',
-    invoiceNumber: 'INV-2026-0002',
-    customerName: 'Al-Harbi Villa Residence',
+    invoiceNumber: 'INV-2026-00002',
+    customerName: 'Al-Noor Residential Compound',
+    customerTrn: '100000000000003 (demo)',
     issueDate: '2026-09-23',
     dueDate: '2026-09-30',
     subtotal: 265.0,
@@ -108,9 +111,9 @@ const INITIAL_INVOICES: InvoiceRecord[] = [
   },
   {
     id: '3',
-    invoiceNumber: 'INV-2026-0003',
-    customerName: 'Emaar Hospitality - Address Downtown',
-    customerTrn: '100299881100003',
+    invoiceNumber: 'INV-2026-00003',
+    customerName: 'Crescent Bay Commercial Complex',
+    customerTrn: '100000000000002 (demo)',
     issueDate: '2026-09-10',
     dueDate: '2026-09-20',
     subtotal: 4200.0,
@@ -125,9 +128,9 @@ const INITIAL_INVOICES: InvoiceRecord[] = [
   },
   {
     id: '4',
-    invoiceNumber: 'INV-2026-0004',
-    customerName: 'Sobha Hartland Maintenance',
-    customerTrn: '100488219900003',
+    invoiceNumber: 'INV-2026-00004',
+    customerName: 'Desert Rose Logistics LLC',
+    customerTrn: '100000000000004 (demo)',
     issueDate: '2026-09-18',
     dueDate: '2026-10-02',
     subtotal: 1200.0,
@@ -145,8 +148,8 @@ const INITIAL_INVOICES: InvoiceRecord[] = [
 ];
 
 const SAMPLE_QUOTES: QuotationRecord[] = [
-  { id: 'q-1', quoteNumber: 'QT-2026-0081', customerName: 'Sobha Hartland Maintenance', title: 'Rooftop Chiller Overhaul & Coil Replacement', date: '2026-09-22', validUntil: '2026-10-22', amountAed: 18450, status: 'ACCEPTED' },
-  { id: 'q-2', quoteNumber: 'QT-2026-0082', customerName: 'Arabtec Construction', title: 'Temporary Substation Power DB Installation', date: '2026-09-23', validUntil: '2026-10-07', amountAed: 12600, status: 'PENDING' },
+  { id: 'q-1', quoteNumber: 'QT-2026-0081', customerName: 'Palm Crest Properties LLC', title: 'Rooftop Chiller Overhaul & Coil Replacement', date: '2026-09-22', validUntil: '2026-10-22', amountAed: 18450, status: 'ACCEPTED' },
+  { id: 'q-2', quoteNumber: 'QT-2026-0082', customerName: 'Al-Noor Contracting LLC', title: 'Temporary Substation Power DB Installation', date: '2026-09-23', validUntil: '2026-10-07', amountAed: 12600, status: 'PENDING' },
 ];
 
 export default function BillingAdminPage({
@@ -349,9 +352,13 @@ export default function BillingAdminPage({
       key: 'invoiceNumber',
       header: 'Tax Invoice #',
       render: (r) => (
-        <span className="font-extrabold text-teal-900 bg-teal-50 px-2 py-0.5 rounded font-mono text-xs border border-teal-200">
+        <Link
+          href={`/${locale}/admin/invoices/${r.invoiceNumber}`}
+          className="font-extrabold text-teal-900 bg-teal-50 hover:bg-teal-100 hover:text-teal-950 px-2 py-0.5 rounded font-mono text-xs border border-teal-200 transition"
+          title="Open Full Tax Invoice Page"
+        >
           {r.invoiceNumber}
-        </span>
+        </Link>
       ),
     },
     {
@@ -436,6 +443,14 @@ export default function BillingAdminPage({
           >
             <Receipt className="w-4 h-4" />
           </button>
+
+          <Link
+            href={`/${locale}/admin/invoices/${r.invoiceNumber}`}
+            className="p-1.5 text-slate-500 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition"
+            title="Open Full Tax Invoice Page"
+          >
+            <ExternalLink className="w-4 h-4" />
+          </Link>
         </div>
       ),
     },
@@ -473,7 +488,7 @@ export default function BillingAdminPage({
             onClick={() => {
               const newInv: InvoiceRecord = {
                 id: String(Date.now()),
-                invoiceNumber: `INV-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+                invoiceNumber: `INV-2026-${String(Math.floor(1 + Math.random() * 9999)).padStart(5, '0')}`,
                 customerName: 'Al-Harbi Villa Residence',
                 issueDate: '2026-09-23',
                 dueDate: '2026-10-07',
@@ -586,7 +601,7 @@ export default function BillingAdminPage({
             <div className="p-3 bg-blue-50 rounded-xl border border-blue-200">
               <span className="text-[10px] uppercase font-bold text-blue-800">16 - 30 Days</span>
               <div className="text-lg font-black text-blue-950 mt-1">660.00 AED</div>
-              <div className="text-[10px] text-blue-700">1 Invoice (Sobha Hartland)</div>
+              <div className="text-[10px] text-blue-700">1 Invoice (Desert Rose Logistics)</div>
             </div>
 
             <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
@@ -943,17 +958,26 @@ export default function BillingAdminPage({
                 <QrCode className="w-12 h-12 text-slate-900" />
                 <div className="text-[10px] text-slate-500">
                   <div className="font-bold text-slate-900">Cryptographically Signed via UAE FTA Standard</div>
-                  <div>Base64 TLV Encoding • Seller: 100482910300003</div>
+                  <div>Base64 TLV Encoding • Seller: 100000000000003 (demo)</div>
                 </div>
               </div>
             </div>
 
-            <button
-              onClick={() => setShowReceiptModal(false)}
-              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition"
-            >
-              Close Receipt
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowReceiptModal(false)}
+                className="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition"
+              >
+                Close Receipt
+              </button>
+              <Link
+                href={`/${locale}/admin/invoices/${selectedInvoice.invoiceNumber}`}
+                className="w-1/2 py-2.5 bg-teal-800 hover:bg-teal-900 text-white font-bold text-xs rounded-xl transition text-center flex items-center justify-center gap-1.5"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Full Tax Invoice</span>
+              </Link>
+            </div>
           </div>
         </div>
       )}

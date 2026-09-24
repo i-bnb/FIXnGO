@@ -35,9 +35,9 @@ export class ManpowerController {
     schema: {
       type: 'object',
       properties: {
-        clientName: { type: 'string', example: 'Sobha Constructions LLC' },
-        projectName: { type: 'string', example: 'Sobha Hartland Phase 3' },
-        siteLocation: { type: 'string', example: 'Nad Al Sheba 1, Dubai' },
+        clientName: { type: 'string', example: 'Palm Crest Properties LLC' },
+        projectName: { type: 'string', example: 'Palm Crest Tower Phase 3' },
+        siteLocation: { type: 'string', example: 'Downtown Dubai, UAE' },
         startDate: { type: 'string', example: '2026-03-01' },
         endDate: { type: 'string', example: '2026-08-31' },
         billingType: { type: 'string', example: 'DAILY' },

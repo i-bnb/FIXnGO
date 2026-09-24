@@ -57,9 +57,9 @@ const SAMPLE_RULES: AutomationRule[] = [
 
 const INITIAL_OUTBOX: OutboxMessage[] = [
   { id: 'msg-1', timestamp: 'Today, 11:05 AM', recipient: '+971 50 882 1290 (Al-Harbi Villa)', channel: 'WHATSAPP', subjectOrPreview: 'Your lead technician Rashid Al-Nuaimi is en route in Van-01. ETA: 18 mins. Track live: https://fieldops.ae/track/wo-002', status: 'READ' },
-  { id: 'msg-2', timestamp: 'Today, 09:15 AM', recipient: 'facilities@alfuttaim.ae', channel: 'EMAIL', subjectOrPreview: 'Tax Invoice INV-2026-0001 (AED 383.25) issued for Chiller maintenance at Business Bay Tower B', status: 'DELIVERED' },
-  { id: 'msg-3', timestamp: 'Today, 08:35 AM', recipient: '+971 52 110 0001 (Rashid Al-Nuaimi)', channel: 'SMS', subjectOrPreview: 'Dispatch Alert: New Priority High Job assigned: WO-2026-001 at Business Bay Level 14', status: 'DELIVERED' },
-  { id: 'msg-4', timestamp: 'Yesterday, 04:30 PM', recipient: '+971 50 294 8888 (Sobha Site Engineer)', channel: 'SMS', subjectOrPreview: 'Off-Hire Alert: 100kVA Generator on contract RC-2026-0005 is due for return tomorrow at 5PM.', status: 'READ' },
+  { id: 'msg-2', timestamp: 'Today, 09:15 AM', recipient: 'facilities@palmcrest.example', channel: 'EMAIL', subjectOrPreview: 'Tax Invoice INV-2026-00001 (AED 383.25) issued for Chiller maintenance at Palm Crest Tower B', status: 'DELIVERED' },
+  { id: 'msg-3', timestamp: 'Today, 08:35 AM', recipient: '+971 52 110 0001 (Rashid Al-Nuaimi)', channel: 'SMS', subjectOrPreview: 'Dispatch Alert: New Priority High Job assigned: WO-2026-00001 at Palm Crest Tower Level 14', status: 'DELIVERED' },
+  { id: 'msg-4', timestamp: 'Yesterday, 04:30 PM', recipient: '+971 50 000 0104 (Palm Crest Site Engineer)', channel: 'SMS', subjectOrPreview: 'Off-Hire Alert: 100kVA Generator on contract RC-2026-0005 is due for return tomorrow at 5PM.', status: 'READ' },
 ];
 
 export default function AutomationAdminPage({

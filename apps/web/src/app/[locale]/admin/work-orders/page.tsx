@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { DataTable, Column } from '../../../../components/ui/DataTable';
 import { fetchApi } from '../../../../lib/api-client';
-import { JobStatus, ServiceType, Priority } from '@fieldops/shared';
+import { JobStatus, ServiceType, Priority, maskPhone, maskEmail, UAE_CONSTANTS } from '@fieldops/shared';
 import {
   ClipboardList,
   Plus,
@@ -20,6 +21,7 @@ import {
   Wrench,
   Receipt,
   FileCheck,
+  FileText,
   Star,
   DollarSign,
   TrendingUp,
@@ -108,23 +110,23 @@ interface WorkOrderDetail {
 
 const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
   {
-    id: 'wo-24817',
-    orderNumber: 'WO-24817',
+    id: 'wo-001',
+    orderNumber: 'WO-2026-00001',
     title: 'AC Not Cooling - Master Bedroom & Living Hall (Daikin VRV)',
     serviceType: 'HVAC',
     status: 'COMPLETED',
     priority: 'HIGH',
     scheduledDate: '2026-09-23T09:00:00.000Z',
-    address: 'Villa 42, Al Wasl Road, Jumeirah 1, Dubai',
-    area: 'Jumeirah 1',
-    customer: { companyName: 'Fatima Al Mansoori', phone: '+971 50 123 4567' },
+    address: 'Building 12, Downtown Boulevard, Dubai',
+    area: 'Downtown Dubai',
+    customer: { companyName: 'Palm Crest Properties LLC', phone: '+971 50 000 0101' },
     inChargeTech: {
-      name: 'Rashid Khan',
+      name: 'Rashid Al-Nuaimi',
       trade: 'Senior HVAC Lead',
-      phone: '+971 52 101 0001',
+      phone: '+971 50 000 0112',
       vanCode: 'Van DXB-12 (Toyota HiAce)',
     },
-    helpers: [{ name: 'Imran S.', trade: 'HVAC Assistant' }],
+    helpers: [{ name: 'Farhan S.', trade: 'HVAC Assistant' }],
     tasks: [
       { id: 't1', title: 'Electrical Lockout/Tagout & safety verification on rooftop unit', completed: true, completedAt: '09:42 AM' },
       { id: 't2', title: 'Connect digital manifold gauges; read suction (45 PSI - low) & discharge pressures', completed: true, completedAt: '09:55 AM' },
@@ -148,46 +150,46 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
       labourBilledAed: 180.0,
     },
     expenses: [
-      { category: 'Parking', description: 'Jumeirah 1 Residential RTA Permit Zone 332B', amountAed: 25.0 },
+      { category: 'Parking', description: 'Downtown Boulevard Residential RTA Zone', amountAed: 25.0 },
     ],
     timeline: [
-      { status: 'PENDING', timestamp: '08:45 AM', actor: 'Fatima Al Mansoori (Customer App)', notes: 'Reported warm airflow from ceiling ducts' },
-      { status: 'ASSIGNED', timestamp: '09:00 AM', actor: 'Sara Al Hashimi (Operations Manager)', notes: 'Assigned Senior Lead Rashid Khan + Helper Imran S.' },
-      { status: 'EN_ROUTE', timestamp: '09:15 AM', actor: 'Rashid Khan', notes: 'Departed Al Quoz Central Depot via Al Wasl Rd' },
-      { status: 'ON_SITE', timestamp: '09:35 AM', actor: 'Rashid Khan', notes: 'Arrived at Villa 42, geofence verified' },
-      { status: 'IN_PROGRESS', timestamp: '09:40 AM', actor: 'Rashid Khan', notes: 'Rooftop Daikin VRV condenser evaluated; capacitor swollen' },
-      { status: 'COMPLETED', timestamp: '11:20 AM', actor: 'Rashid Khan', notes: 'Capacitor fitted, 1.5kg R410A charged, 13.2°C Delta-T verified, signed off by Fatima' },
+      { status: 'PENDING', timestamp: '08:45 AM', actor: 'Palm Crest Facilities Portal', notes: 'Reported warm airflow from ceiling ducts' },
+      { status: 'ASSIGNED', timestamp: '09:00 AM', actor: 'Sara Al Hashimi (Operations Manager)', notes: 'Assigned Senior Lead Rashid Al-Nuaimi + Helper Farhan S.' },
+      { status: 'EN_ROUTE', timestamp: '09:15 AM', actor: 'Rashid Al-Nuaimi', notes: 'Departed Al Quoz Central Depot via Al Khail Rd' },
+      { status: 'ON_SITE', timestamp: '09:35 AM', actor: 'Rashid Al-Nuaimi', notes: 'Arrived at Building 12, geofence verified' },
+      { status: 'IN_PROGRESS', timestamp: '09:40 AM', actor: 'Rashid Al-Nuaimi', notes: 'Rooftop Daikin VRV condenser evaluated; capacitor swollen' },
+      { status: 'COMPLETED', timestamp: '11:20 AM', actor: 'Rashid Al-Nuaimi', notes: 'Capacitor fitted, 1.5kg R410A charged, 13.2°C Delta-T verified, signed off by client' },
     ],
     beforePhotoUrl: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=400&q=80',
     afterPhotoUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=400&q=80',
     customerSignature: {
-      signedBy: 'Fatima Al Mansoori',
+      signedBy: 'Tariq Al-Hashimi',
       signedAt: 'Today, 11:22 AM',
       signatureSvg: true,
     },
     csatRating: 5,
-    csatReview: 'Super quick turnaround! Rashid and Imran diagnosed the capacitor fault within 15 minutes and the living room is ice cold again. Very professional!',
+    csatReview: 'Super quick turnaround! Rashid and team diagnosed the capacitor fault within 15 minutes and the zone is ice cold again. Very professional!',
     revenueAed: 464.0,
     costAed: 251.0,
   },
   {
-    id: 'wo-2',
-    orderNumber: 'WO-2026-002',
+    id: 'wo-002',
+    orderNumber: 'WO-2026-00002',
     title: 'Kitchen Main Supply Pipe Severe Leak',
     serviceType: 'PLUMBING',
     status: 'EN_ROUTE',
     priority: 'EMERGENCY',
     scheduledDate: '2026-09-23T11:30:00.000Z',
-    address: 'Villa 24, Street 14B, Jumeirah 2, Dubai',
-    area: 'Jumeirah 2',
-    customer: { companyName: 'Al-Harbi Villa Residence', phone: '+971 50 882 1290' },
+    address: 'Villa 24, Community 3, Al Barsha 1, Dubai',
+    area: 'Al Barsha 1',
+    customer: { companyName: 'Al-Noor Residential Compound', phone: '+971 50 000 0102' },
     inChargeTech: {
-      name: 'Vikram Sharma',
+      name: 'Tariq Al-Mansoor',
       trade: 'Lead Plumber',
-      phone: '+971 52 110 0002',
-      vanCode: 'Van-02 (Ford Transit)',
+      phone: '+971 50 000 0111',
+      vanCode: 'Van DXB-02 (Toyota HiAce)',
     },
-    helpers: [{ name: 'Manoj Kumar', trade: 'Pipe Fitter Helper' }],
+    helpers: [{ name: 'Yousef K.', trade: 'Pipe Fitter Helper' }],
     tasks: [
       { id: 't1', title: 'Shut off DEWA main water meter valve at street', completed: true, completedAt: '11:15 AM' },
       { id: 't2', title: 'Cut cracked PPR 32mm joint behind kitchen cabinetry', completed: false },
@@ -210,8 +212,8 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
     expenses: [],
     timeline: [
       { status: 'PENDING', timestamp: '10:45 AM', actor: 'WhatsApp Customer Bot', notes: 'Emergency leak report' },
-      { status: 'ASSIGNED', timestamp: '10:50 AM', actor: 'Sarah Jenkins', notes: 'Auto-routed to nearest plumbing crew' },
-      { status: 'EN_ROUTE', timestamp: '11:05 AM', actor: 'Vikram Sharma', notes: 'En route, ETA 15 mins via Jumeirah Beach Rd' },
+      { status: 'ASSIGNED', timestamp: '10:50 AM', actor: 'Sara Al Hashimi', notes: 'Auto-routed to nearest plumbing crew' },
+      { status: 'EN_ROUTE', timestamp: '11:05 AM', actor: 'Tariq Al-Mansoor', notes: 'En route, ETA 15 mins via Sheikh Zayed Rd' },
     ],
     beforePhotoUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80',
     afterPhotoUrl: 'https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=400&q=80',
@@ -226,21 +228,21 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
     costAed: 95.0,
   },
   {
-    id: 'wo-3',
-    orderNumber: 'WO-2026-003',
+    id: 'wo-003',
+    orderNumber: 'WO-2026-00003',
     title: 'Short Circuit Tripping Main Substation Breaker',
     serviceType: 'ELECTRICAL',
     status: 'IN_PROGRESS',
     priority: 'HIGH',
     scheduledDate: '2026-09-23T14:00:00.000Z',
-    address: 'Burj Crown Residences, Downtown Dubai',
-    area: 'Downtown Dubai',
-    customer: { companyName: 'Burj Crown Owners Association', phone: '+971 4 330 9010' },
+    address: 'Tower B, Crescent Complex, Business Bay, Dubai',
+    area: 'Business Bay',
+    customer: { companyName: 'Crescent Bay Commercial Complex', phone: '+971 50 000 0103' },
     inChargeTech: {
-      name: 'Mohammad Rizwan',
+      name: 'Vikram Patel',
       trade: 'Master Electrician',
-      phone: '+971 52 110 0003',
-      vanCode: 'Van-03 (Nissan Urvan)',
+      phone: '+971 50 000 0113',
+      vanCode: 'Van DXB-04 (Nissan Urvan)',
     },
     helpers: [{ name: 'Sajid Ali', trade: 'Electrical Helper' }],
     tasks: [
@@ -252,7 +254,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
       { sku: 'MAT-ELEC-MCB20', name: 'Schneider Electric MCB 20A 1-Pole', qty: 2, costAed: 36.0, sellAed: 90.0 },
     ],
     partsRemoved: [
-      { name: 'Burnt 20A MCB with carbon deposits', condition: 'Arc damage on load terminal', action: 'Bagged for insurance claim' },
+      { name: 'Burnt 20A MCB with carbon deposits', condition: 'Arc damage on load terminal', action: 'Bagged for inspection' },
     ],
     labourHours: {
       regularHours: 2.0,
@@ -261,12 +263,12 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
       labourBilledAed: 180.0,
     },
     expenses: [
-      { category: 'Gate Pass', description: 'Downtown Emaar Security Clearance', amountAed: 50.0 },
+      { category: 'Gate Pass', description: 'Business Bay Community Security Clearance', amountAed: 50.0 },
     ],
     timeline: [
       { status: 'PENDING', timestamp: '11:30 AM', actor: 'Facility Portal', notes: 'Main DB trip reported' },
-      { status: 'ASSIGNED', timestamp: '11:45 AM', actor: 'Sarah Jenkins', notes: 'Assigned to Rizwan' },
-      { status: 'IN_PROGRESS', timestamp: '12:45 PM', actor: 'Mohammad Rizwan', notes: 'Isolation in progress' },
+      { status: 'ASSIGNED', timestamp: '11:45 AM', actor: 'Sara Al Hashimi', notes: 'Assigned to Vikram Patel' },
+      { status: 'IN_PROGRESS', timestamp: '12:45 PM', actor: 'Vikram Patel', notes: 'Isolation in progress' },
     ],
     beforePhotoUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=400&q=80',
     afterPhotoUrl: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80',
@@ -281,21 +283,21 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
     costAed: 146.0,
   },
   {
-    id: 'wo-4',
-    orderNumber: 'WO-2026-004',
-    title: 'Emergency Generator Interlock Relay Failure (Loss Maker)',
+    id: 'wo-004',
+    orderNumber: 'WO-2026-00004',
+    title: 'Emergency Generator Interlock Relay Failure',
     serviceType: 'ELECTRICAL',
     status: 'COMPLETED',
     priority: 'EMERGENCY',
     scheduledDate: '2026-09-22T21:00:00.000Z',
-    address: 'Cold Storage Facility #8, Dubai Industrial City',
+    address: 'Warehouse #8, Dubai Industrial City',
     area: 'Dubai Industrial City',
-    customer: { companyName: 'Gulf Cold Logistics LLC', phone: '+971 4 888 1200' },
+    customer: { companyName: 'Desert Rose Logistics LLC', phone: '+971 50 000 0104' },
     inChargeTech: {
-      name: 'Mohammad Rizwan',
+      name: 'Vikram Patel',
       trade: 'Master Electrician',
-      phone: '+971 52 110 0003',
-      vanCode: 'Van-03 (Nissan Urvan)',
+      phone: '+971 50 000 0113',
+      vanCode: 'Van DXB-04 (Nissan Urvan)',
     },
     helpers: [
       { name: 'Sajid Ali', trade: 'Electrical Helper' },
@@ -304,25 +306,25 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
     tasks: [
       { id: 't1', title: 'Night emergency callout to industrial cold storage', completed: true },
       { id: 't2', title: 'Rewire burnt ATS controller control harness', completed: true },
-      { id: 't3', title: 'Replace 63A ABB Contactor after 4 emergency supplier runs', completed: true },
+      { id: 't3', title: 'Replace 63A ABB Contactor after emergency supplier runs', completed: true },
     ],
     partsFitted: [
-      { sku: 'MAT-ELEC-ABB63', name: 'ABB 63A 4-Pole Contactor 220V Coil', qty: 2, costAed: 620.0, sellAed: 480.0 }, // Under-priced parts
+      { sku: 'MAT-ELEC-ABB63', name: 'ABB 63A 4-Pole Contactor 220V Coil', qty: 2, costAed: 620.0, sellAed: 480.0 },
     ],
     partsRemoved: [
       { name: 'Fused contactor coils', condition: 'Overheated during power surge', action: 'Scrapped' },
     ],
     labourHours: {
       regularHours: 2.0,
-      overtimeHours: 6.0, // High night overtime cost
+      overtimeHours: 6.0,
       labourCostAed: 420.0,
       labourBilledAed: 300.0,
     },
     expenses: [
-      { category: 'Night Emergency Supplier Courier', description: 'Emergency taxi from Sharjah to DIC for contactor', amountAed: 160.0 },
+      { category: 'Night Emergency Supplier Courier', description: 'Emergency courier for contactor', amountAed: 160.0 },
     ],
     timeline: [
-      { status: 'COMPLETED', timestamp: '23:45 PM', actor: 'Mohammad Rizwan', notes: 'Cold room back on generator power' },
+      { status: 'COMPLETED', timestamp: '23:45 PM', actor: 'Vikram Patel', notes: 'Facility back on generator power' },
     ],
     beforePhotoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80',
     afterPhotoUrl: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80',
@@ -332,9 +334,59 @@ const SAMPLE_WORK_ORDERS: WorkOrderDetail[] = [
       signatureSvg: true,
     },
     csatRating: 5,
-    csatReview: 'Saved AED 250,000 worth of frozen seafood from spoiling! Top speed response.',
+    csatReview: 'Saved AED 250,000 worth of temperature-controlled inventory! Top speed response.',
     revenueAed: 940.0,
-    costAed: 1200.0, // Loss of AED 260!
+    costAed: 1200.0,
+  },
+  {
+    id: 'wo-012',
+    orderNumber: 'WO-2026-00012',
+    title: 'Underground Chilled Water Line Flange Replacement',
+    serviceType: 'PLUMBING',
+    status: 'COMPLETED',
+    priority: 'HIGH',
+    scheduledDate: '2026-09-21T08:00:00.000Z',
+    address: 'Commercial Tower 4, Business Bay, Dubai',
+    area: 'Business Bay',
+    customer: { companyName: 'Blue Sky Towers Owners Association', phone: '+971 50 000 0105' },
+    inChargeTech: {
+      name: 'Tariq Al-Mansoor',
+      trade: 'Lead Plumber',
+      phone: '+971 50 000 0111',
+      vanCode: 'Van DXB-02 (Toyota HiAce)',
+    },
+    helpers: [{ name: 'Yousef K.', trade: 'Pipe Fitter Helper' }],
+    tasks: [
+      { id: 't1', title: 'Excavate valve pit and isolate water line', completed: true },
+      { id: 't2', title: 'Fit replacement stainless flange assembly', completed: true },
+    ],
+    partsFitted: [
+      { sku: 'MAT-PLM-FLANGE', name: 'High-Pressure 4-Inch Flange Joint', qty: 2, costAed: 380.0, sellAed: 180.0 },
+    ],
+    partsRemoved: [
+      { name: 'Corroded flange assembly', condition: 'Severe pitting and blow-by', action: 'Scrapped' },
+    ],
+    labourHours: {
+      regularHours: 4.0,
+      overtimeHours: 2.0,
+      labourCostAed: 280.0,
+      labourBilledAed: 140.0,
+    },
+    expenses: [],
+    timeline: [
+      { status: 'COMPLETED', timestamp: '17:00 PM', actor: 'Tariq Al-Mansoor', notes: 'Repaired and pressure tested at 12 bar' },
+    ],
+    beforePhotoUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80',
+    afterPhotoUrl: 'https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=400&q=80',
+    customerSignature: {
+      signedBy: 'Blue Sky Property Manager',
+      signedAt: 'Sep 21, 17:15 PM',
+      signatureSvg: true,
+    },
+    csatRating: 5,
+    csatReview: 'Fast response to prevent building flooding.',
+    revenueAed: 320.0,
+    costAed: 660.0,
   },
 ];
 
@@ -367,23 +419,42 @@ export default function WorkOrdersAdminPage({
       key: 'orderNumber',
       header: 'Order #',
       render: (row) => (
-        <span className="font-extrabold text-teal-900 bg-teal-50 px-2 py-0.5 rounded font-mono text-xs">
+        <Link
+          href={`/${locale}/admin/work-orders/${row.orderNumber}`}
+          className="font-extrabold text-signal-orange hover:underline bg-orange-50 px-2 py-0.5 rounded font-mono text-xs inline-block"
+        >
           {row.orderNumber}
-        </span>
+        </Link>
       ),
     },
     {
       key: 'title',
       header: 'Work Description & Location',
-      render: (row) => (
-        <div>
-          <div className="font-bold text-slate-900 text-xs">{row.title}</div>
-          <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
-            <MapPin className="w-3 h-3 text-teal-600 shrink-0" />
-            <span>{row.area} • {row.customer.companyName}</span>
+      render: (row) => {
+        const isLoss = row.revenueAed - row.costAed < 0 || row.title.includes('Loss Maker');
+        const cleanTitle = row.title.replace(/\s*\(Loss Maker\)/gi, '');
+        return (
+          <div>
+            <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5 flex-wrap">
+              <span>{cleanTitle}</span>
+              {isLoss && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200">
+                  Loss Maker
+                </span>
+              )}
+            </div>
+            <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+              <MapPin className="w-3 h-3 text-signal-orange shrink-0" />
+              <span>
+                {row.area} • {row.customer.companyName}
+              </span>
+              {row.customer.phone && (
+                <span className="font-mono text-slate-400">({maskPhone(row.customer.phone)})</span>
+              )}
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: 'serviceType',
@@ -457,13 +528,22 @@ export default function WorkOrdersAdminPage({
       key: 'actions',
       header: 'Actions',
       render: (row) => (
-        <button
-          onClick={() => setSelectedOrder(row)}
-          className="p-1.5 text-teal-700 hover:bg-teal-50 rounded-lg transition"
-          title="Inspect Work Order"
-        >
-          <Eye className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            href={`/${locale}/admin/work-orders/${row.orderNumber}`}
+            className="p-1.5 text-slate-500 hover:text-signal-orange hover:bg-orange-50 rounded-lg transition"
+            title="Open Full Page View"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+          <button
+            onClick={() => setSelectedOrder(row)}
+            className="p-1.5 text-teal-700 hover:bg-teal-50 rounded-lg transition"
+            title="Inspect Work Order"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+        </div>
       ),
     },
   ];
@@ -1031,16 +1111,25 @@ export default function WorkOrdersAdminPage({
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 bg-slate-50 border-t flex items-center justify-between">
+            <div className="p-4 bg-slate-50 border-t flex flex-col sm:flex-row items-center justify-between gap-3">
               <span className="text-xs text-slate-500 font-semibold">
-                FieldOps ERP v2.4 • TRN 100482910300003
+                {UAE_CONSTANTS.COMPANY_NAME} • TRN {UAE_CONSTANTS.COMPANY_TRN}
               </span>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="px-5 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-slate-800 transition"
-              >
-                Close Inspector
-              </button>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/${locale}/admin/work-orders/${selectedOrder.orderNumber}`}
+                  className="px-4 py-2 bg-signal-orange text-white text-xs font-bold rounded-xl hover:bg-orange-600 transition flex items-center gap-1.5"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>{isArabic ? 'فتح صفحة أمر العمل بالكامل' : 'Open Full Work Order Page'}</span>
+                </Link>
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="px-5 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-slate-800 transition"
+                >
+                  Close Inspector
+                </button>
+              </div>
             </div>
           </div>
         </div>

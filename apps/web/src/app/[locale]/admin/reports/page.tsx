@@ -49,11 +49,11 @@ export default function ReportsAdminPage({
   const handleExport = () => {
     if (selectedReport === 'JOB_PROFITABILITY') {
       exportToCsv('view_job_profitability', [
-        { orderNumber: 'WO-24817', customer: 'Fatima Al Mansoori (Jumeirah 1)', trade: 'HVAC', billed: 487.20, cost: 251.00, profit: 236.20, margin: '48.5%' },
-        { orderNumber: 'WO-24818', customer: 'Palm Jumeirah Residence', trade: 'ELECTRICAL', billed: 3200.00, cost: 1350.00, profit: 1850.00, margin: '57.8%' },
-        { orderNumber: 'WO-24805', customer: 'Al-Harbi Villa (Jumeirah 2)', trade: 'PLUMBING', billed: 420.00, cost: 210.00, profit: 210.00, margin: '50.0%' },
-        { orderNumber: 'WO-24812', customer: 'Sobha Constructions LLC', trade: 'HVAC', billed: 320.00, cost: 660.00, profit: -340.00, margin: '-106.3%' },
-        { orderNumber: 'WO-24801', customer: 'Al Futtaim Properties (Business Bay)', trade: 'HVAC', billed: 450.00, cost: 1040.00, profit: -590.00, margin: '-131.1%' },
+        { orderNumber: 'WO-2026-00017', customer: 'Fatima Al Mansoori (Jumeirah 1)', trade: 'HVAC', billed: 487.20, cost: 251.00, profit: 236.20, margin: '48.5%' },
+        { orderNumber: 'WO-2026-00018', customer: 'Palm Crest Residence', trade: 'ELECTRICAL', billed: 3200.00, cost: 1350.00, profit: 1850.00, margin: '57.8%' },
+        { orderNumber: 'WO-2026-00005', customer: 'Al-Harbi Villa (Jumeirah 2)', trade: 'PLUMBING', billed: 420.00, cost: 210.00, profit: 210.00, margin: '50.0%' },
+        { orderNumber: 'WO-2026-00012', customer: 'Palm Crest Properties LLC', trade: 'HVAC', billed: 320.00, cost: 660.00, profit: -340.00, margin: '-106.3%' },
+        { orderNumber: 'WO-2026-00010', customer: 'Crescent Bay Commercial Complex', trade: 'HVAC', billed: 450.00, cost: 1040.00, profit: -590.00, margin: '-131.1%' },
       ], [
         { key: 'orderNumber', label: 'Order #' },
         { key: 'customer', label: 'Customer & Site' },
@@ -68,7 +68,7 @@ export default function ReportsAdminPage({
         { name: 'Rashid Khan', trade: 'HVAC Lead', jobs: 48, ftf: '98%', csat: '4.96 / 5.0', billed: 44200 },
         { name: 'Vikram Patel', trade: 'Electrical Lead', jobs: 42, ftf: '97%', csat: '4.92 / 5.0', billed: 38900 },
         { name: 'Farhan Siddiqui', trade: 'HVAC Tech', jobs: 39, ftf: '95%', csat: '4.88 / 5.0', billed: 35100 },
-        { name: 'Hasan Al-Banna', trade: 'Plumbing Lead', jobs: 36, ftf: '94%', csat: '4.85 / 5.0', billed: 32600 },
+        { name: 'Tariq Al-Mansoor', trade: 'Plumbing Lead', jobs: 36, ftf: '94%', csat: '4.85 / 5.0', billed: 32600 },
         { name: 'Joseph Mathew', trade: 'Plumbing Specialist', jobs: 35, ftf: '96%', csat: '4.89 / 5.0', billed: 31400 },
       ], [
         { key: 'name', label: 'Technician' },
@@ -193,8 +193,8 @@ export default function ReportsAdminPage({
               </thead>
               <tbody className="divide-y divide-slate-100">
                 <tr>
-                  <td className="p-2.5 font-mono font-bold text-teal-900">WO-2026-001</td>
-                  <td className="p-2.5 font-bold text-slate-900">Al Futtaim Properties (Business Bay)</td>
+                  <td className="p-2.5 font-mono font-bold text-teal-900">WO-2026-00001</td>
+                  <td className="p-2.5 font-bold text-slate-900">Palm Crest Properties LLC</td>
                   <td className="p-2.5"><span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded">HVAC</span></td>
                   <td className="p-2.5 text-end font-bold">390.00</td>
                   <td className="p-2.5 text-end text-slate-600">155.00</td>
@@ -202,7 +202,7 @@ export default function ReportsAdminPage({
                   <td className="p-2.5 text-end font-black text-emerald-700">60.2%</td>
                 </tr>
                 <tr>
-                  <td className="p-2.5 font-mono font-bold text-teal-900">WO-2026-002</td>
+                  <td className="p-2.5 font-mono font-bold text-teal-900">WO-2026-00002</td>
                   <td className="p-2.5 font-bold text-slate-900">Al-Harbi Villa (Jumeirah 2)</td>
                   <td className="p-2.5"><span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">PLUMBING</span></td>
                   <td className="p-2.5 text-end font-bold">265.00</td>
@@ -344,14 +344,14 @@ export default function ReportsAdminPage({
               </thead>
               <tbody className="divide-y divide-slate-100">
                 <tr>
-                  <td className="p-2.5 font-bold text-slate-900">Al Futtaim Properties LLC</td>
+                  <td className="p-2.5 font-bold text-slate-900">Palm Crest Properties LLC</td>
                   <td className="p-2.5 text-end">14,850.00</td>
                   <td className="p-2.5 text-end text-slate-400">0.00</td>
                   <td className="p-2.5 text-end text-slate-400">0.00</td>
                   <td className="p-2.5 text-end font-black text-slate-900">14,850.00 AED</td>
                 </tr>
                 <tr>
-                  <td className="p-2.5 font-bold text-slate-900">Emaar Hospitality Group</td>
+                  <td className="p-2.5 font-bold text-slate-900">Crescent Bay Commercial Complex</td>
                   <td className="p-2.5 text-end text-slate-400">0.00</td>
                   <td className="p-2.5 text-end text-amber-800 font-bold">8,900.00</td>
                   <td className="p-2.5 text-end text-slate-400">0.00</td>

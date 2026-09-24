@@ -531,10 +531,10 @@ export default function FinanceAdminPage({
               </thead>
               <tbody className="divide-y divide-line dark:divide-slate-800">
                 {[
-                  { client: 'Al Futtaim Properties LLC', inv: 'INV-10398', days: 92, balance: 3200.00, status: 'OVERDUE' },
-                  { client: 'Sobha Constructions LLC', inv: 'INV-10412', days: 68, balance: 4800.00, status: 'WARNING' },
-                  { client: 'DIFC Financial Tower B', inv: 'INV-10440', days: 42, balance: 12400.00, status: 'FOLLOWUP' },
-                  { client: 'Emaar Properties Malls', inv: 'INV-10475', days: 14, balance: 28600.00, status: 'CURRENT' },
+                  { client: 'Palm Crest Properties LLC', inv: 'INV-2026-00398', days: 92, balance: 3200.00, status: 'OVERDUE' },
+                  { client: 'Desert Rose Logistics LLC', inv: 'INV-2026-00412', days: 68, balance: 4800.00, status: 'WARNING' },
+                  { client: 'Blue Sky Towers Owners Association', inv: 'INV-2026-00440', days: 42, balance: 12400.00, status: 'FOLLOWUP' },
+                  { client: 'Crescent Bay Commercial Complex', inv: 'INV-2026-00475', days: 14, balance: 28600.00, status: 'CURRENT' },
                 ].map((row, i) => (
                   <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 font-medium">
                     <td className="p-2.5 font-bold text-navy dark:text-white">{row.client}</td>

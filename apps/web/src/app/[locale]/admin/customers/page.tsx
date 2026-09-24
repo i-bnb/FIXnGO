@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { maskPhone, maskEmail } from '@fieldops/shared';
 import { DataTable, Column } from '../../../../components/ui/DataTable';
 import {
   Users,
@@ -70,20 +72,20 @@ interface CustomerRecord {
 const SAMPLE_CUSTOMERS: CustomerRecord[] = [
   {
     id: 'cust-1',
-    name: 'Al Futtaim Properties LLC',
+    name: 'Palm Crest Properties LLC',
     type: 'CORPORATE',
-    trn: '100342918800003',
-    contactPerson: 'Eng. Khalid Al-Futtaim',
-    phone: '+971 4 208 5555',
-    email: 'facilities@alfuttaim.ae',
+    trn: '100000000000003 (demo)',
+    contactPerson: 'Eng. Tariq Al-Hashimi',
+    phone: '+971 4 000 0101',
+    email: 'facilities@palmcrest.example',
     sitesCount: 8,
     assetsCount: 34,
     activeAmcCount: 3,
     outstandingBalanceAed: 14850.0,
     sites: [
-      { name: 'Festival City Commercial Tower A', address: 'Dubai Festival City, Dubai', coordinates: '25.2215° N, 55.3524° E', siteContact: 'Imran Bashir (+971 50 112 3344)' },
-      { name: 'Business Bay Executive Offices', address: 'Tower B, Level 14, Business Bay, Dubai', coordinates: '25.1857° N, 55.2678° E', siteContact: 'Tariq Nabil (+971 55 998 8112)' },
-      { name: 'Deira Mixed-Use Retail Center', address: 'Al Rigga Rd, Deira, Dubai', coordinates: '25.2632° N, 55.3218° E', siteContact: 'George Verghese (+971 52 445 6677)' },
+      { name: 'Palm Crest Commercial Tower A', address: 'Palm Crest Commercial Zone, Dubai', coordinates: '25.2215° N, 55.3524° E', siteContact: 'Imran Bashir (+971 50 000 0112)' },
+      { name: 'Palm Crest Executive Offices', address: 'Tower B, Level 14, Business Bay, Dubai', coordinates: '25.1857° N, 55.2678° E', siteContact: 'Tariq Nabil (+971 55 000 0113)' },
+      { name: 'Palm Crest Mixed-Use Retail Center', address: 'Al Rigga Rd, Deira, Dubai', coordinates: '25.2632° N, 55.3218° E', siteContact: 'George Verghese (+971 52 000 0114)' },
     ],
     assets: [
       { assetTag: 'AST-DXB-001', name: 'Daikin Water-Cooled Chiller 120-Ton', type: 'HVAC Chiller', serialNumber: 'DKN-CH-2023-8891', location: 'Rooftop Plant Room', warrantyStatus: 'Active AMC Covered' },
@@ -94,26 +96,26 @@ const SAMPLE_CUSTOMERS: CustomerRecord[] = [
       { contractNumber: 'AMC-2026-001', tier: 'PLATINUM 24/7', startDate: '2026-01-01', endDate: '2026-12-31', valueAed: 48000, visitsPerYear: 12, status: 'ACTIVE' },
     ],
     soa: [
-      { date: '2026-08-01', type: 'INVOICE', ref: 'INV-2026-0312', debitAed: 12500.0, creditAed: 0, balanceAed: 12500.0 },
-      { date: '2026-08-15', type: 'PAYMENT', ref: 'REC-2026-0290', debitAed: 0, creditAed: 12500.0, balanceAed: 0.0 },
-      { date: '2026-09-01', type: 'INVOICE', ref: 'INV-2026-0388', debitAed: 14850.0, creditAed: 0, balanceAed: 14850.0 },
+      { date: '2026-08-01', type: 'INVOICE', ref: 'INV-2026-00312', debitAed: 12500.0, creditAed: 0, balanceAed: 12500.0 },
+      { date: '2026-08-15', type: 'PAYMENT', ref: 'REC-2026-00290', debitAed: 0, creditAed: 12500.0, balanceAed: 0.0 },
+      { date: '2026-09-01', type: 'INVOICE', ref: 'INV-2026-00388', debitAed: 14850.0, creditAed: 0, balanceAed: 14850.0 },
     ],
   },
   {
     id: 'cust-2',
-    name: 'Emaar Hospitality Group',
+    name: 'Crescent Bay Commercial Complex',
     type: 'COMMERCIAL',
-    trn: '100299881100003',
+    trn: '100000000000004 (demo)',
     contactPerson: 'Sophie Delacroix (Facilities Dir.)',
-    phone: '+971 4 436 8888',
-    email: 'engineering@emaar.com',
+    phone: '+971 4 000 0102',
+    email: 'engineering@crescentbay.example',
     sitesCount: 4,
     assetsCount: 22,
     activeAmcCount: 2,
     outstandingBalanceAed: 8900.0,
     sites: [
-      { name: 'Address Downtown Hotel & Residences', address: 'Downtown Dubai', coordinates: '25.1950° N, 55.2796° E', siteContact: 'Ziad Mansour (+971 52 778 1234)' },
-      { name: 'Vida Emirates Hills', address: 'Emirates Hills, Dubai', coordinates: '25.0740° N, 55.1610° E', siteContact: 'Praveen Roy (+971 50 334 9911)' },
+      { name: 'Crescent Bay Hotel & Residences', address: 'Downtown Dubai', coordinates: '25.1950° N, 55.2796° E', siteContact: 'Ziad Mansour (+971 52 000 0115)' },
+      { name: 'Crescent Bay Hills', address: 'Emirates Hills, Dubai', coordinates: '25.0740° N, 55.1610° E', siteContact: 'Praveen Roy (+971 50 000 0116)' },
     ],
     assets: [
       { assetTag: 'AST-EMR-011', name: 'Carrier 30XA AquaForce Air-Cooled Chiller', type: 'HVAC Chiller', serialNumber: 'CAR-AF-2022-9901', location: 'Roof Deck Level 64', warrantyStatus: 'Active AMC Covered' },
@@ -123,23 +125,23 @@ const SAMPLE_CUSTOMERS: CustomerRecord[] = [
       { contractNumber: 'AMC-2026-004', tier: 'GOLD PREVENTIVE', startDate: '2026-03-01', endDate: '2027-02-28', valueAed: 36000, visitsPerYear: 6, status: 'ACTIVE' },
     ],
     soa: [
-      { date: '2026-08-10', type: 'INVOICE', ref: 'INV-2026-0340', debitAed: 8900.0, creditAed: 0, balanceAed: 8900.0 },
+      { date: '2026-08-10', type: 'INVOICE', ref: 'INV-2026-00340', debitAed: 8900.0, creditAed: 0, balanceAed: 8900.0 },
     ],
   },
   {
     id: 'cust-3',
-    name: 'Al Naboodah Construction Group',
+    name: 'Desert Rose Logistics LLC',
     type: 'CONTRACTOR',
-    trn: '100411223300003',
+    trn: '100000000000005 (demo)',
     contactPerson: 'Eng. Basel Al-Khatib',
-    phone: '+971 4 294 8888',
-    email: 'subcontracts@alnaboodah.com',
+    phone: '+971 4 000 0103',
+    email: 'subcontracts@desertrose.example',
     sitesCount: 3,
     assetsCount: 12,
     activeAmcCount: 1,
     outstandingBalanceAed: 42500.0,
     sites: [
-      { name: 'Emaar Creek Harbour Phase 2 Plot 14', address: 'Dubai Creek Harbour', coordinates: '25.2010° N, 55.3512° E', siteContact: 'Site Foreman Tariq (+971 50 998 7711)' },
+      { name: 'Desert Rose Logistics Hub Phase 2 Plot 14', address: 'Dubai Logistics City, Dubai', coordinates: '25.2010° N, 55.3512° E', siteContact: 'Site Foreman Tariq (+971 50 000 0117)' },
     ],
     assets: [
       { assetTag: 'AST-NAB-001', name: 'Caterpillar 150 kVA Standby Generator', type: 'Rental Unit', serialNumber: 'CAT-150-8812', location: 'Laydown Yard 2', warrantyStatus: 'Rental Maintenance' },
@@ -148,7 +150,7 @@ const SAMPLE_CUSTOMERS: CustomerRecord[] = [
       { contractNumber: 'LBR-2026-018', tier: 'MANPOWER MASTER AGREEMENT', startDate: '2026-01-15', endDate: '2026-12-31', valueAed: 142000, visitsPerYear: 52, status: 'ACTIVE' },
     ],
     soa: [
-      { date: '2026-08-31', type: 'INVOICE', ref: 'INV-2026-0370', debitAed: 42500.0, creditAed: 0, balanceAed: 42500.0 },
+      { date: '2026-08-31', type: 'INVOICE', ref: 'INV-2026-00370', debitAed: 42500.0, creditAed: 0, balanceAed: 42500.0 },
     ],
   },
   {
@@ -156,8 +158,8 @@ const SAMPLE_CUSTOMERS: CustomerRecord[] = [
     name: 'Dr. Tariq Al-Suwaidi (Villa Owner)',
     type: 'RESIDENTIAL',
     contactPerson: 'Dr. Tariq Al-Suwaidi',
-    phone: '+971 50 771 4455',
-    email: 'dr.suwaidi@gmail.com',
+    phone: '+971 50 000 0105',
+    email: 'tariq.suwaidi@example.com',
     sitesCount: 2,
     assetsCount: 8,
     activeAmcCount: 1,
@@ -174,8 +176,8 @@ const SAMPLE_CUSTOMERS: CustomerRecord[] = [
       { contractNumber: 'AMC-2026-088', tier: 'VILLA GOLD AMC', startDate: '2026-04-01', endDate: '2027-03-31', valueAed: 7500, visitsPerYear: 4, status: 'ACTIVE' },
     ],
     soa: [
-      { date: '2026-04-01', type: 'INVOICE', ref: 'INV-2026-0150', debitAed: 7500.0, creditAed: 0, balanceAed: 7500.0 },
-      { date: '2026-04-02', type: 'PAYMENT', ref: 'REC-2026-0144', debitAed: 0, creditAed: 7500.0, balanceAed: 0.0 },
+      { date: '2026-04-01', type: 'INVOICE', ref: 'INV-2026-00150', debitAed: 7500.0, creditAed: 0, balanceAed: 7500.0 },
+      { date: '2026-04-02', type: 'PAYMENT', ref: 'REC-2026-00144', debitAed: 0, creditAed: 7500.0, balanceAed: 0.0 },
     ],
   },
 ];
@@ -196,7 +198,12 @@ export default function CustomersAdminPage({
       header: 'Customer / Corporate Entity',
       render: (r) => (
         <div>
-          <div className="font-extrabold text-slate-900 text-xs">{r.name}</div>
+          <Link
+            href={`/${locale}/admin/customers/${r.id}`}
+            className="font-extrabold text-teal-800 hover:text-teal-950 hover:underline text-xs"
+          >
+            {r.name}
+          </Link>
           <div className="text-[10px] text-slate-500 font-mono flex items-center gap-1.5 mt-0.5">
             <span className="font-semibold text-teal-800">{r.type}</span>
             {r.trn && <span>• TRN: {r.trn}</span>}
@@ -210,7 +217,7 @@ export default function CustomersAdminPage({
       render: (r) => (
         <div>
           <div className="text-xs font-bold text-slate-800">{r.contactPerson}</div>
-          <div className="text-[11px] text-slate-500">{r.phone}</div>
+          <div className="text-[11px] font-mono text-slate-500">{maskPhone(r.phone)}</div>
         </div>
       ),
     },

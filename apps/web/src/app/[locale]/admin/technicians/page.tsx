@@ -74,13 +74,13 @@ const SAMPLE_TECHNICIANS: TechnicianRecord[] = [
     completedJobsCount: 142,
     monthlyRevenueAed: 24850,
     todayJobs: [
-      { orderNumber: 'WO-2026-001', customer: 'Al Futtaim Properties', area: 'Business Bay', timeSlot: '09:00 AM - 11:30 AM', status: 'COMPLETED' },
-      { orderNumber: 'WO-2026-007', customer: 'Sobha Hartland Villa 124', area: 'Sobha Hartland', timeSlot: '02:00 PM - 04:00 PM', status: 'SCHEDULED' },
+      { orderNumber: 'WO-2026-00001', customer: 'Palm Crest Properties LLC', area: 'Palm Crest Tower', timeSlot: '09:00 AM - 11:30 AM', status: 'COMPLETED' },
+      { orderNumber: 'WO-2026-00007', customer: 'Palm Crest Villa 124', area: 'Palm Crest Residences', timeSlot: '02:00 PM - 04:00 PM', status: 'SCHEDULED' },
     ],
     recentHistory: [
-      { orderNumber: 'WO-2026-001', title: 'AC Chiller Compressor Capacitor & Wash', date: 'Today', rating: 5, amountAed: 390 },
-      { orderNumber: 'WO-2026-089', title: 'VRV PCB Board Replacement & Pressure Balance', date: '21 Sep 2026', rating: 5, amountAed: 1200 },
-      { orderNumber: 'WO-2026-074', title: 'Thermostat Wiring & Duct Air Flow Balancing', date: '19 Sep 2026', rating: 5, amountAed: 450 },
+      { orderNumber: 'WO-2026-00001', title: 'AC Chiller Compressor Capacitor & Wash', date: 'Today', rating: 5, amountAed: 390 },
+      { orderNumber: 'WO-2026-00089', title: 'VRV PCB Board Replacement & Pressure Balance', date: '21 Sep 2026', rating: 5, amountAed: 1200 },
+      { orderNumber: 'WO-2026-00074', title: 'Thermostat Wiring & Duct Air Flow Balancing', date: '19 Sep 2026', rating: 5, amountAed: 450 },
     ],
   },
   {
@@ -100,12 +100,12 @@ const SAMPLE_TECHNICIANS: TechnicianRecord[] = [
     completedJobsCount: 98,
     monthlyRevenueAed: 18400,
     todayJobs: [
-      { orderNumber: 'WO-2026-002', customer: 'Al-Harbi Villa', area: 'Jumeirah 2', timeSlot: '11:30 AM - 01:00 PM', status: 'EN_ROUTE' },
-      { orderNumber: 'WO-2026-009', customer: 'Address Downtown Hotel', area: 'Downtown Dubai', timeSlot: '03:30 PM - 05:00 PM', status: 'SCHEDULED' },
+      { orderNumber: 'WO-2026-00002', customer: 'Al-Harbi Villa', area: 'Jumeirah 2', timeSlot: '11:30 AM - 01:00 PM', status: 'EN_ROUTE' },
+      { orderNumber: 'WO-2026-00009', customer: 'Crescent Bay Commercial Complex', area: 'Downtown Dubai', timeSlot: '03:30 PM - 05:00 PM', status: 'SCHEDULED' },
     ],
     recentHistory: [
-      { orderNumber: 'WO-2026-081', title: 'Booster Pump Multi-Stage Impeller Overhaul', date: '20 Sep 2026', rating: 5, amountAed: 850 },
-      { orderNumber: 'WO-2026-062', title: 'Sewer Line Hydro-Jetting & Blockage Clearance', date: '18 Sep 2026', rating: 4, amountAed: 650 },
+      { orderNumber: 'WO-2026-00081', title: 'Booster Pump Multi-Stage Impeller Overhaul', date: '20 Sep 2026', rating: 5, amountAed: 850 },
+      { orderNumber: 'WO-2026-00062', title: 'Sewer Line Hydro-Jetting & Blockage Clearance', date: '18 Sep 2026', rating: 4, amountAed: 650 },
     ],
   },
   {
@@ -125,11 +125,11 @@ const SAMPLE_TECHNICIANS: TechnicianRecord[] = [
     completedJobsCount: 120,
     monthlyRevenueAed: 22600,
     todayJobs: [
-      { orderNumber: 'WO-2026-003', customer: 'Burj Crown Owners Assoc', area: 'Downtown Dubai', timeSlot: '01:30 PM - 03:30 PM', status: 'ON_SITE' },
+      { orderNumber: 'WO-2026-00003', customer: 'Blue Sky Towers Owners Association', area: 'Downtown Dubai', timeSlot: '01:30 PM - 03:30 PM', status: 'ON_SITE' },
     ],
     recentHistory: [
-      { orderNumber: 'WO-2026-004', title: 'Emergency ATS Panel Generator Relay Rewire', date: '22 Sep 2026', rating: 5, amountAed: 940 },
-      { orderNumber: 'WO-2026-070', title: 'Schneider 160A DB Breaker Upgrade & Load Balance', date: '17 Sep 2026', rating: 5, amountAed: 1100 },
+      { orderNumber: 'WO-2026-00004', title: 'Emergency ATS Panel Generator Relay Rewire', date: '22 Sep 2026', rating: 5, amountAed: 940 },
+      { orderNumber: 'WO-2026-00070', title: 'Schneider 160A DB Breaker Upgrade & Load Balance', date: '17 Sep 2026', rating: 5, amountAed: 1100 },
     ],
   },
   {

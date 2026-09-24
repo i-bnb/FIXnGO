@@ -135,7 +135,7 @@ export const ASSISTANT_TOOL_DEFINITIONS = [
     parameters: {
       type: Type.OBJECT,
       properties: {
-        customerName: { type: Type.STRING, description: 'Customer name or company name (e.g. Fatima, Sobha, Emaar)' },
+        customerName: { type: Type.STRING, description: 'Customer name or company name (e.g. Palm Crest, Crescent Bay, Al-Noor)' },
       },
       required: ['customerName'],
     },

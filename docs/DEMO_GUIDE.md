@@ -38,8 +38,7 @@ A guided walkthrough for sales presentations and executive reviews demonstrating
    - Click **Proceed to Payment & Invoice**.
    - Select **1-Click Mock Checkout (Offline Resilient)** or **Stripe Test Mode**.
    - Click **Pay 157.50 AED Now**. Enjoy the celebration confetti!
-   - Review the official **Tax Invoice / فاتورة ضريبية** featuring company TRN `100482910300003`, line items, and VAT breakdown.
-
+   - Review the official **Tax Invoice / فاتورة ضريبية** featuring company TRN `100000000000003 (demo)`, line items, and VAT breakdown.
 ---
 
 ### 2. Admin Dispatch Center & PostGIS Spatial Matching (Minutes 3 - 6)
@@ -77,7 +76,7 @@ A guided walkthrough for sales presentations and executive reviews demonstrating
 ### 4. Manpower Supply to UAE Construction Sites (Minutes 9 - 11)
 1. Navigate to `http://localhost:3000/en/admin/manpower`.
 2. Review the **Skilled Workers Roster**:
-   - Master Electricians, Plumbers, HVAC Technicians, Pipe Fitters deployed at *Emaar Creek Harbour Tower A* and *Aldar Yas Island*.
+   - Master Electricians, Plumbers, HVAC Technicians, Pipe Fitters deployed at *Crescent Bay Commercial Complex* and *Desert Rose Logistics Hub*.
 3. Switch to **Site Requisitions & Contracts**:
    - See active contractor requisitions with daily rates and total contract values (e.g. 118,800 AED).
 4. Test the **Export CSV** button to download the live labour roster.
@@ -90,7 +89,7 @@ A guided walkthrough for sales presentations and executive reviews demonstrating
 2. Review the fleet:
    - *Caterpillar 100 kVA Diesel Generator*, *6m Aluminium Scaffolding Tower*, *12m Electric Scissor Lift*, *Hilti Heavy Breaker*.
 3. Click **Rent Out** on an available machine (e.g. Scissor Lift):
-   - Select contractor (*Al Naboodah MEP*), project site (*Dubai Creek Tower*), and monthly billing terms.
+   - Select contractor (*Palm Crest MEP Contracting LLC*), project site (*Crescent Bay Tower 1*), and monthly billing terms.
    - Note the automatic 5% VAT calculation and instant contract activation.
 4. Click **Export CSV** to demonstrate equipment audit capabilities.
 

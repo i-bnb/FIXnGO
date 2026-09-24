@@ -169,7 +169,7 @@ Click **Deploy**. Vercel will:
 
 ## 6. Remote Database Seeding
 
-Once migrations are applied to Neon, seed the deterministic 6-month operational dataset (*FIXnGO Technical Services LLC*, TRN: `100482910300003`):
+Once migrations are applied to Neon, seed the deterministic 6-month operational dataset (*FIXnGO Technical Services LLC — demo*, TRN: `100000000000003 (demo)`):
 
 ```bash
 # Run against remote Neon database from your local terminal:

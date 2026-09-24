@@ -12,7 +12,7 @@ Operating in the United Arab Emirates requires strict compliance with:
 
 ## Decision
 1. Standard VAT rate is defined globally as `0.05` in `@fieldops/shared`.
-2. Company TRN is set to `100482910300003`.
+2. Company TRN is set to `100000000000003 (demo)`.
 3. Invoices compute:
    - `subtotal = sum(item.quantity * item.unit_price)`
    - `tax_amount = round(subtotal * 0.05, 2)`

@@ -63,9 +63,9 @@ interface DailyTimesheetItem {
 const SAMPLE_SITES: DeploymentSite[] = [
   {
     id: 'site-1',
-    projectName: 'Emaar Creek Harbour Phase 2 Plot 14',
-    contractor: 'Al Naboodah Construction Group',
-    location: 'Dubai Creek Harbour',
+    projectName: 'Crescent Bay Tower Phase 2 Plot 14',
+    contractor: 'Desert Rose Logistics LLC',
+    location: 'Crescent Bay, Dubai',
     deployedCount: 12,
     electricians: 5,
     plumbers: 3,
@@ -77,8 +77,8 @@ const SAMPLE_SITES: DeploymentSite[] = [
   },
   {
     id: 'site-2',
-    projectName: 'Aldar Yas Island Luxury Villas',
-    contractor: 'Arabtec Contracting LLC',
+    projectName: 'Palm Crest Yas Luxury Villas',
+    contractor: 'Palm Crest Properties LLC',
     location: 'Yas Island, Abu Dhabi',
     deployedCount: 8,
     electricians: 3,
@@ -92,7 +92,7 @@ const SAMPLE_SITES: DeploymentSite[] = [
   {
     id: 'site-3',
     projectName: 'Sharjah Aljada Central Phase 2',
-    contractor: 'Al-Marwan General Contracting',
+    contractor: 'Al-Noor Residential Compound',
     location: 'Muwaileh Commercial, Sharjah',
     deployedCount: 6,
     electricians: 2,
@@ -105,9 +105,9 @@ const SAMPLE_SITES: DeploymentSite[] = [
   },
   {
     id: 'site-4',
-    projectName: 'Sobha Hartland Waves Opus',
-    contractor: 'Sobha Engineering & Construction',
-    location: 'Sobha Hartland, Dubai',
+    projectName: 'Palm Crest Residences Opus',
+    contractor: 'Palm Crest Properties LLC',
+    location: 'Palm Crest Residences, Dubai',
     deployedCount: 4,
     electricians: 2,
     plumbers: 1,
@@ -120,19 +120,19 @@ const SAMPLE_SITES: DeploymentSite[] = [
 ];
 
 const SAMPLE_WORKERS: WorkerRosterItem[] = [
-  { id: '1', workerCode: 'MP-E01', fullName: 'Sajid Ali', trade: 'ELECTRICIAN', yearsOfExperience: 5, status: 'DEPLOYED', hourlyBillingRate: 55, currentSiteName: 'Emaar Creek Harbour Phase 2 Plot 14', visaStatus: 'Employment Visa (Valid 2028)' },
-  { id: '2', workerCode: 'MP-E02', fullName: 'Naveed Akhtar', trade: 'ELECTRICIAN', yearsOfExperience: 4, status: 'DEPLOYED', hourlyBillingRate: 55, currentSiteName: 'Emaar Creek Harbour Phase 2 Plot 14', visaStatus: 'Employment Visa (Valid 2027)' },
-  { id: '3', workerCode: 'MP-P01', fullName: 'Manoj Kumar', trade: 'PLUMBER', yearsOfExperience: 6, status: 'DEPLOYED', hourlyBillingRate: 50, currentSiteName: 'Aldar Yas Island Luxury Villas', visaStatus: 'Employment Visa (Valid 2027)' },
-  { id: '4', workerCode: 'MP-H01', fullName: 'Anwar Hossain', trade: 'HVAC_TECHNICIAN', yearsOfExperience: 7, status: 'DEPLOYED', hourlyBillingRate: 65, currentSiteName: 'Emaar Creek Harbour Phase 2 Plot 14', visaStatus: 'Employment Visa (Valid 2028)' },
+  { id: '1', workerCode: 'MP-E01', fullName: 'Sajid Ali', trade: 'ELECTRICIAN', yearsOfExperience: 5, status: 'DEPLOYED', hourlyBillingRate: 55, currentSiteName: 'Crescent Bay Tower Phase 2 Plot 14', visaStatus: 'Employment Visa (Valid 2028)' },
+  { id: '2', workerCode: 'MP-E02', fullName: 'Naveed Akhtar', trade: 'ELECTRICIAN', yearsOfExperience: 4, status: 'DEPLOYED', hourlyBillingRate: 55, currentSiteName: 'Crescent Bay Tower Phase 2 Plot 14', visaStatus: 'Employment Visa (Valid 2027)' },
+  { id: '3', workerCode: 'MP-P01', fullName: 'Manoj Kumar', trade: 'PLUMBER', yearsOfExperience: 6, status: 'DEPLOYED', hourlyBillingRate: 50, currentSiteName: 'Palm Crest Yas Luxury Villas', visaStatus: 'Employment Visa (Valid 2027)' },
+  { id: '4', workerCode: 'MP-H01', fullName: 'Anwar Hossain', trade: 'HVAC_TECHNICIAN', yearsOfExperience: 7, status: 'DEPLOYED', hourlyBillingRate: 65, currentSiteName: 'Crescent Bay Tower Phase 2 Plot 14', visaStatus: 'Employment Visa (Valid 2028)' },
   { id: '5', workerCode: 'MP-G01', fullName: 'Gurpreet Singh', trade: 'GENERAL_HELPER', yearsOfExperience: 3, status: 'DEPLOYED', hourlyBillingRate: 38, currentSiteName: 'Sharjah Aljada Central Phase 2', visaStatus: 'Employment Visa (Valid 2028)' },
   { id: '6', workerCode: 'MP-E03', fullName: 'Farhan Zaidi', trade: 'ELECTRICIAN', yearsOfExperience: 5, status: 'STANDBY', hourlyBillingRate: 55, currentSiteName: null, visaStatus: 'Employment Visa (Valid 2027)' },
   { id: '7', workerCode: 'MP-P02', fullName: 'Ramesh Patel', trade: 'PLUMBER', yearsOfExperience: 4, status: 'STANDBY', hourlyBillingRate: 50, currentSiteName: null, visaStatus: 'Employment Visa (Valid 2028)' },
 ];
 
 const SAMPLE_TIMESHEETS: DailyTimesheetItem[] = [
-  { id: 'ts-1', date: '2026-09-23', siteName: 'Emaar Creek Harbour Phase 2', workerName: 'Sajid Ali', trade: 'ELECTRICIAN', regularHours: 8, overtimeHours: 2, totalHours: 10, foremanApproved: true },
-  { id: 'ts-2', date: '2026-09-23', siteName: 'Emaar Creek Harbour Phase 2', workerName: 'Naveed Akhtar', trade: 'ELECTRICIAN', regularHours: 8, overtimeHours: 1.5, totalHours: 9.5, foremanApproved: true },
-  { id: 'ts-3', date: '2026-09-23', siteName: 'Aldar Yas Island Luxury Villas', workerName: 'Manoj Kumar', trade: 'PLUMBER', regularHours: 8, overtimeHours: 0, totalHours: 8, foremanApproved: true },
+  { id: 'ts-1', date: '2026-09-23', siteName: 'Crescent Bay Tower Phase 2', workerName: 'Sajid Ali', trade: 'ELECTRICIAN', regularHours: 8, overtimeHours: 2, totalHours: 10, foremanApproved: true },
+  { id: 'ts-2', date: '2026-09-23', siteName: 'Crescent Bay Tower Phase 2', workerName: 'Naveed Akhtar', trade: 'ELECTRICIAN', regularHours: 8, overtimeHours: 1.5, totalHours: 9.5, foremanApproved: true },
+  { id: 'ts-3', date: '2026-09-23', siteName: 'Palm Crest Yas Luxury Villas', workerName: 'Manoj Kumar', trade: 'PLUMBER', regularHours: 8, overtimeHours: 0, totalHours: 8, foremanApproved: true },
   { id: 'ts-4', date: '2026-09-23', siteName: 'Sharjah Aljada Central Phase 2', workerName: 'Gurpreet Singh', trade: 'GENERAL_HELPER', regularHours: 8, overtimeHours: 3, totalHours: 11, foremanApproved: true },
 ];
 

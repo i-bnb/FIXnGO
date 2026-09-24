@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { LeafletMap, MapMarker } from '../../../../components/map/LeafletMap';
 import { fetchApi } from '../../../../lib/api-client';
@@ -29,6 +30,7 @@ import {
   Layers,
   Sparkles,
   AlertCircle,
+  ExternalLink,
 } from 'lucide-react';
 import { calculateDistanceKm, estimateEtaMinutes } from '@fieldops/shared';
 
@@ -114,7 +116,7 @@ export default function AdminDispatchBoardPage({
       lat: 25.1860,
       lng: 55.2715,
       loc: 'Business Bay SZR',
-      currentJob: 'WO-24817',
+      currentJob: 'WO-2026-00017',
       eta: 12,
       rating: 4.96,
       jobsCompleted: 480,
@@ -135,7 +137,7 @@ export default function AdminDispatchBoardPage({
       lat: 25.1972,
       lng: 55.2744,
       loc: 'Downtown Dubai',
-      currentJob: 'WO-24818',
+      currentJob: 'WO-2026-00018',
       eta: 8,
       rating: 4.92,
       jobsCompleted: 412,
@@ -145,9 +147,9 @@ export default function AdminDispatchBoardPage({
       avatar: 'VP',
     },
     {
-      id: 'tech-hasan',
+      id: 'tech-001',
       code: 'TECH-PLU-02',
-      name: 'Hasan Al-Banna',
+      name: 'Tariq Al-Mansoor',
       trade: 'PLUMBING',
       vanCode: 'Van DXB-02',
       status: 'ON_JOB',
@@ -156,14 +158,14 @@ export default function AdminDispatchBoardPage({
       lat: 25.0805,
       lng: 55.1403,
       loc: 'Dubai Marina Walk',
-      currentJob: 'WO-24805',
+      currentJob: 'WO-2026-00005',
       eta: 0,
       rating: 4.85,
       jobsCompleted: 390,
-      phone: '+971 52 201 0001',
+      phone: '+971 50 000 0111',
       skills: ['Booster Pumps', 'Water Tank Sanitization', 'Sewer Rodding', 'High Pressure Jetting'],
       stockHighlights: ['Booster Impellers', 'Check Valves', 'PPR Sleeves'],
-      avatar: 'HB',
+      avatar: 'TM',
     },
     {
       id: 'tech-farhan',
@@ -209,14 +211,14 @@ export default function AdminDispatchBoardPage({
     },
   ];
 
-  // Unassigned Pending Work Orders with WO-24825 as Primary Breached SLA Ticket
+  // Unassigned Pending Work Orders with WO-2026-00025 as Primary Breached SLA Ticket
   const [unassignedJobs, setUnassignedJobs] = useState<UnassignedJob[]>([
     {
-      id: 'wo-24825',
-      orderNumber: 'WO-24825',
+      id: 'wo-2026-00025',
+      orderNumber: 'WO-2026-00025',
       title: 'Emergency Water Pipe Burst & Ceiling Inundation',
-      customer: 'Tariq Mansoor',
-      phone: '+971 50 334 8912',
+      customer: 'Fatima Al Mansoori',
+      phone: '+971 50 000 0119',
       trade: 'PLUMBING',
       priority: 'EMERGENCY',
       address: 'Flat 402, Al Rigga St, Deira, Dubai',
@@ -227,14 +229,14 @@ export default function AdminDispatchBoardPage({
       slaLabel: '⚠️ 2h 10m overdue (SLA Breached)',
     },
     {
-      id: 'wo-24826',
-      orderNumber: 'WO-24826',
+      id: 'wo-2026-00026',
+      orderNumber: 'WO-2026-00026',
       title: 'Carrier 5-Ton Rooftop Chiller High Temp Alarm',
-      customer: 'Sobha Constructions LLC',
-      phone: '+971 4 321 0099',
+      customer: 'Palm Crest Properties LLC',
+      phone: '+971 4 000 0101',
       trade: 'HVAC',
       priority: 'CRITICAL',
-      address: 'Sobha Hartland Phase 3, Dubai',
+      address: 'Palm Crest Residences Phase 3, Dubai',
       lat: 25.1782,
       lng: 55.3210,
       amount: 850.0,
@@ -242,11 +244,11 @@ export default function AdminDispatchBoardPage({
       slaLabel: '⏱️ 22m remaining',
     },
     {
-      id: 'wo-24827',
-      orderNumber: 'WO-24827',
+      id: 'wo-2026-00027',
+      orderNumber: 'WO-2026-00027',
       title: 'Sub-DB Tripping Floor 14 Server Rack UPS',
-      customer: 'DIFC Financial Tower B',
-      phone: '+971 4 400 1200',
+      customer: 'Blue Sky Towers Owners Association',
+      phone: '+971 4 000 0105',
       trade: 'ELECTRICAL',
       priority: 'CRITICAL',
       address: 'DIFC Gate District, Dubai',
@@ -257,11 +259,11 @@ export default function AdminDispatchBoardPage({
       slaLabel: '⏱️ 45m remaining',
     },
     {
-      id: 'wo-24828',
-      orderNumber: 'WO-24828',
+      id: 'wo-2026-00028',
+      orderNumber: 'WO-2026-00028',
       title: 'Preventive HVAC Coil Cleaning & Gas Top-up',
       customer: 'Arabian Ranches Villa 88',
-      phone: '+971 55 918 2341',
+      phone: '+971 55 000 0120',
       trade: 'HVAC',
       priority: 'MEDIUM',
       address: 'Arabian Ranches 2, Dubai',
@@ -281,14 +283,14 @@ export default function AdminDispatchBoardPage({
   const [isSimulatorRunning, setIsSimulatorRunning] = useState(false);
   const [liveTechs, setLiveTechs] = useState<TechnicianLive[]>(initialTechnicians);
 
-  // Auto-select highlighted job or default to WO-24825
+  // Auto-select highlighted job or default to WO-2026-00025
   useEffect(() => {
     if (unassignedJobs.length > 0) {
       if (highlightParam) {
         const found = unassignedJobs.find((j) => j.orderNumber === highlightParam);
         if (found) {
           setSelectedJob(found);
-          // Auto select Joseph Mathew for WO-24825
+          // Auto select Joseph Mathew for WO-2026-00025
           const jm = liveTechs.find((t) => t.id === 'tech-joseph');
           if (jm) setSelectedTech(jm);
           return;
@@ -566,9 +568,19 @@ export default function AdminDispatchBoardPage({
                     >
                       {/* Top Badges */}
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-extrabold font-mono text-navy dark:text-white">
-                          {job.orderNumber}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-extrabold font-mono text-navy dark:text-white">
+                            {job.orderNumber}
+                          </span>
+                          <Link
+                            href={`/${locale}/admin/work-orders/${job.orderNumber}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-slate-400 hover:text-signal-orange p-0.5 rounded transition"
+                            title="Open Work Order Details"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
                         <div className="flex items-center gap-1.5">
                           <span
                             className={`text-[10px] px-2 py-0.5 rounded-full font-black ${

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
   TrendingUp,
@@ -42,6 +42,14 @@ import {
   Cell,
   Legend,
 } from 'recharts';
+import {
+  getCanonicalMetrics,
+  getCanonicalCategoryBreakdown,
+  getCanonicalTechnicianLeaderboard,
+  CANONICAL_INVENTORY,
+  CANONICAL_WORK_ORDERS,
+  CANONICAL_RENTAL_FLEET,
+} from '@fieldops/shared';
 
 export default function AdminDashboardPage({
   params: { locale },
@@ -50,6 +58,13 @@ export default function AdminDashboardPage({
 }) {
   const isArabic = locale === 'ar';
   const [dateRange, setDateRange] = useState<'TODAY' | '7D' | 'SEP' | 'Q3' | 'ALL'>('SEP');
+
+  const period = dateRange === 'ALL' || dateRange === 'Q3' ? '6M' : 'SEP';
+
+  // Derived metrics from single source of truth
+  const metrics = useMemo(() => getCanonicalMetrics(period), [period]);
+  const categoriesRaw = useMemo(() => getCanonicalCategoryBreakdown(period), [period]);
+  const techLeaderboard = useMemo(() => getCanonicalTechnicianLeaderboard(period), [period]);
 
   // Realistic 6-Month P&L Data (AED)
   const monthlyPnLData = [
@@ -61,94 +76,32 @@ export default function AdminDashboardPage({
     { month: 'Sep 2026', revenue: 486240, expenses: 367840, profit: 118400 },
   ];
 
-  // Category Distribution (Jobs by Service)
-  const categoryData = [
-    { name: isArabic ? 'تكييف الهواء (HVAC)' : 'Air Conditioning (HVAC)', value: 184, percent: '46%', color: '#C2410C' }, // signal orange
-    { name: isArabic ? 'الأنظمة الكهربائية' : 'Electrical Systems', value: 96, percent: '24%', color: '#0A7BA8' }, // ocean blue
-    { name: isArabic ? 'السباكة والتصريف' : 'Plumbing & Drainage', value: 72, percent: '18%', color: '#0C2233' }, // navy
-    { name: isArabic ? 'تأجير المعدات الثقيلة' : 'Heavy Equipment Rental', value: 32, percent: '8%', color: '#D97706' }, // amber
-    { name: isArabic ? 'توريد العمالة' : 'Contract Labour Supply', value: 16, percent: '4%', color: '#059669' }, // emerald
-  ];
+  // Category Distribution (Jobs by Service Trade including Labour Supply)
+  const categoryData = useMemo(() => {
+    return categoriesRaw.map((cat) => ({
+      name: isArabic ? cat.nameAr : cat.nameEn,
+      value: cat.count,
+      percent: `${cat.percent}%`,
+      color: cat.color,
+    }));
+  }, [categoriesRaw, isArabic]);
 
-  // Top High-Margin vs Loss-Making Jobs
-  const profitabilityJobs = [
-    {
-      order: 'WO-24817',
-      title: 'Daikin VRV 4-Ton Condenser Overhaul & R410A Recharge',
-      customer: 'Fatima Al Mansoori',
-      area: 'Jumeirah 1',
-      billed: 487.20,
-      cost: 251.00,
-      profit: 236.20,
-      margin: 48.5,
-      status: 'HIGH_MARGIN',
-    },
-    {
-      order: 'WO-24818',
-      title: 'Villa 14 MDB Main Panel Busbar Upgrade',
-      customer: 'Palm Jumeirah Residence',
-      area: 'Palm Jumeirah',
-      billed: 3200.00,
-      cost: 1350.00,
-      profit: 1850.00,
-      margin: 57.8,
-      status: 'HIGH_MARGIN',
-    },
-    {
-      order: 'WO-24805',
-      title: 'Main Kitchen Riser Booster Line Valve Replacement',
-      customer: 'Al-Harbi Villa',
-      area: 'Jumeirah 2',
-      billed: 420.00,
-      cost: 210.00,
-      profit: 210.00,
-      margin: 50.0,
-      status: 'STANDARD',
-    },
-    {
-      order: 'WO-24812',
-      title: 'Underground Chilled Water Line Flange Burst',
-      customer: 'Sobha Constructions LLC',
-      area: 'Sobha Hartland',
-      billed: 320.00,
-      cost: 660.00,
-      profit: -340.00,
-      margin: -106.3,
-      status: 'LOSS_MAKER',
-    },
-    {
-      order: 'WO-24801',
-      title: 'HVAC Dual Compressor Seizure (Underquoted Emergency)',
-      customer: 'Al Futtaim Properties',
-      area: 'Business Bay',
-      billed: 450.00,
-      cost: 1040.00,
-      profit: -590.00,
-      margin: -131.1,
-      status: 'LOSS_MAKER',
-    },
-  ];
-
-  // Technician Leaderboard
-  const techniciansLeaderboard = [
-    { name: 'Rashid Khan', trade: 'HVAC Lead', van: 'Van DXB-12', completed: 48, rating: 4.96, billedAed: 44200, avatar: 'RK' },
-    { name: 'Vikram Patel', trade: 'Electrical Lead', van: 'Van DXB-04', completed: 42, rating: 4.92, billedAed: 38900, avatar: 'VP' },
-    { name: 'Farhan Siddiqui', trade: 'HVAC Tech', van: 'Van DXB-07', completed: 39, rating: 4.88, billedAed: 35100, avatar: 'FS' },
-    { name: 'Hasan Al-Banna', trade: 'Plumbing Lead', van: 'Van DXB-02', completed: 36, rating: 4.85, billedAed: 32600, avatar: 'HB' },
-    { name: 'Ahmed Mustafa', trade: 'Electrician', van: 'Van DXB-09', completed: 34, rating: 4.90, billedAed: 30800, avatar: 'AM' },
-  ];
+  // Selected High-Margin vs Loss-Making Jobs from CANONICAL_WORK_ORDERS
+  const profitabilityJobs = useMemo(() => {
+    // Pick two loss makers and three high margin jobs
+    const lossMakers = CANONICAL_WORK_ORDERS.filter((w) => w.isLossMaker).slice(0, 2);
+    const highMargin = CANONICAL_WORK_ORDERS.filter((w) => !w.isLossMaker && w.marginPercent > 45).slice(0, 3);
+    return [...highMargin, ...lossMakers];
+  }, []);
 
   // Low Stock Items (Below safety reorder level)
-  const lowStockAlerts = [
-    { code: 'ITM-0005', name: 'R410A Refrigerant Gas Cylinder 11.3kg', location: 'Van DXB-12 (Rashid)', available: 2, reorder: 5 },
-    { code: 'ITM-0001', name: 'Dual Run Capacitor 45+5 µF 450VAC', location: 'Al Quoz Central WH', available: 3, reorder: 10 },
-    { code: 'ITM-0012', name: 'Schneider 32A 2-Pole High Breaking MCB', location: 'Musaffah Store', available: 4, reorder: 12 },
-    { code: 'ITM-0024', name: 'PPR PN20 High-Pressure Pipe 32mm 4m', location: 'Van DXB-08 (Joseph)', available: 2, reorder: 8 },
-  ];
+  const lowStockAlerts = useMemo(() => {
+    return CANONICAL_INVENTORY.filter((item) => item.isLowStock).slice(0, 4);
+  }, []);
 
   return (
     <div className="space-y-6">
-      {/* Page 11 Header: Greeting, Subtitle, Date Filter, Export */}
+      {/* Header: Greeting, Subtitle, Date Filter, Export */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-line dark:border-slate-800 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -157,6 +110,9 @@ export default function AdminDashboardPage({
             </span>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-signal-orange dark:text-orange-400 font-bold border border-orange-200 dark:border-orange-800">
               UAE 5% FTA VAT
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold">
+              {metrics.periodLabel}
             </span>
           </div>
           <h1 className="font-display text-2xl lg:text-3xl font-bold text-navy dark:text-white tracking-tight">
@@ -203,7 +159,7 @@ export default function AdminDashboardPage({
         </div>
       </div>
 
-      {/* Page 11 SLA Alert Banner (Critical Warning) */}
+      {/* SLA Alert Banner (Critical Warning with Canonical Entities) */}
       <div className="relative overflow-hidden rounded-2xl border-2 border-rose-400/80 bg-rose-50 dark:bg-rose-950/30 p-4 sm:p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -219,19 +175,19 @@ export default function AdminDashboardPage({
               </div>
               <p className="font-display text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 mt-0.5">
                 {isArabic
-                  ? '3 طلبات تجاوزت مهلة الاستجابة. طلب WO-24825 (تسريب حاد، ديرة) ينتظر منذ 2 ساعة و10 دقائق دون تعيين فني.'
-                  : '3 jobs are past their SLA. WO-24825 (leak, Deira) has waited 2h 10m with no technician assigned.'}
+                  ? '3 طلبات تجاوزت مهلة الاستجابة. طلب WO-2026-00025 (تسريب حاد، ديرة) ينتظر منذ 2 ساعة و10 دقائق دون تعيين فني.'
+                  : '3 jobs are past their SLA. WO-2026-00025 (leak, Deira) has waited 2h 10m with no technician assigned.'}
               </p>
               <p className="text-xs text-rose-700/80 dark:text-rose-300/80 mt-0.5">
                 {isArabic
-                  ? 'العميل: طارق منصور • الرقة، ديرة • الأقرب: الفني جوزيف ماثيو (على بعد 3.4 كم)'
-                  : 'Customer: Tariq Mansoor • Al Rigga, Deira • Nearest available: Joseph Mathew (3.4 km away)'}
+                  ? 'العميل: مجمع كريسنت باي التجاري • الرقة، ديرة • الأقرب: طارق المنصور (على بعد 3.4 كم)'
+                  : 'Customer: Crescent Bay Commercial Complex • Al Rigga, Deira • Nearest available: Tariq Al-Mansoor (3.4 km away)'}
               </p>
             </div>
           </div>
 
           <Link
-            href={`/${locale}/admin/dispatch?highlight=WO-24825`}
+            href={`/${locale}/admin/dispatch?highlight=WO-2026-00025`}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-signal-orange hover:bg-signal-orange-hover text-white font-bold text-xs sm:text-sm min-h-[44px] transition shadow-md whitespace-nowrap"
           >
             <span>{isArabic ? 'تعيين الفني الآن ←' : 'Assign now →'}</span>
@@ -239,7 +195,7 @@ export default function AdminDashboardPage({
         </div>
       </div>
 
-      {/* Page 11: 6 KPI Cards */}
+      {/* 6 Dynamic KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
         {/* KPI 1: Revenue */}
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-line dark:border-slate-800 shadow-xs flex flex-col justify-between">
@@ -250,14 +206,14 @@ export default function AdminDashboardPage({
             <DollarSign className="w-4 h-4 text-signal-orange" />
           </div>
           <div className="mt-2">
-            <div className="text-xl sm:text-2xl font-black font-display text-navy dark:text-white">
-              AED 486.2k
+            <div className="text-xl sm:text-2xl font-black font-display text-navy dark:text-white font-mono">
+              AED {(metrics.revenueBilledAed / 1000).toFixed(1)}k
             </div>
             <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              <span>+14.8% vs Aug</span>
+              <span>+14.8% vs Prev</span>
             </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">Target: AED 423.5k</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">{metrics.periodLabel}</div>
           </div>
         </div>
 
@@ -271,12 +227,12 @@ export default function AdminDashboardPage({
           </div>
           <div className="mt-2">
             <div className="text-xl sm:text-2xl font-black font-display text-amber-600 dark:text-amber-400">
-              38
+              {metrics.activeCount}
             </div>
             <div className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold mt-1">
               8 High Priority
             </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">12 on site · 18 transit</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">Dispatched & In Transit</div>
           </div>
         </div>
 
@@ -290,12 +246,12 @@ export default function AdminDashboardPage({
           </div>
           <div className="mt-2">
             <div className="text-xl sm:text-2xl font-black font-display text-emerald-600 dark:text-emerald-400">
-              412
+              {metrics.completedCount}
             </div>
             <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1 flex items-center gap-1">
               <span>98.4% First-Time Fix</span>
             </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">+42 jobs vs target</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">Total tickets closed</div>
           </div>
         </div>
 
@@ -328,12 +284,12 @@ export default function AdminDashboardPage({
           </div>
           <div className="mt-2">
             <div className="text-xl sm:text-2xl font-black font-display text-ocean-blue">
-              18 / 20 Vans
+              {CANONICAL_RENTAL_FLEET.filter((e) => e.status === 'ON_HIRE').length} / {CANONICAL_RENTAL_FLEET.length}
             </div>
             <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">
-              90% Active Field Duty
+              {metrics.fleetUtilizationPercent}% Utilization
             </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">2 in scheduled service</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">Active duty units</div>
           </div>
         </div>
 
@@ -351,7 +307,7 @@ export default function AdminDashboardPage({
               <span className="text-sm font-normal text-slate-400">/ 5.0</span>
             </div>
             <div className="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-1 flex items-center gap-0.5">
-              <span>★★★★★ 328 reviews</span>
+              <span>★★★★★ {metrics.totalCustomers} Clients</span>
             </div>
             <div className="text-[10px] text-slate-400 mt-0.5">99.1% positive</div>
           </div>
@@ -413,7 +369,7 @@ export default function AdminDashboardPage({
               {isArabic ? 'الخدمات حسب التخصص' : 'Jobs by Service Trade'}
             </h2>
             <p className="text-xs text-slate-400">
-              {isArabic ? 'إجمالي 400 أمر عمل عبر إمارات الدولة' : 'Total 400 service tickets across UAE'}
+              {isArabic ? `إجمالي ${metrics.totalOrders} أمر عمل عبر إمارات الدولة` : `Total ${metrics.totalOrders} service tickets across UAE`}
             </p>
           </div>
 
@@ -465,7 +421,7 @@ export default function AdminDashboardPage({
                   {isArabic ? 'تحليل ربحية أوامر العمل' : 'Job Profitability Diagnostics'}
                 </h2>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 font-bold border border-rose-200">
-                  {isArabic ? '2 أوامر خاسرة' : '2 Loss-Makers'}
+                  {isArabic ? `${metrics.lossMakerCount} أوامر خاسرة` : `${metrics.lossMakerCount} Loss-Makers`}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -495,50 +451,55 @@ export default function AdminDashboardPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-line dark:divide-slate-800 font-medium">
-                {profitabilityJobs.map((j, i) => (
+                {profitabilityJobs.map((j) => (
                   <tr
-                    key={i}
+                    key={j.id}
                     className={
-                      j.profit < 0
+                      j.isLossMaker
                         ? 'bg-rose-50/50 dark:bg-rose-950/20'
                         : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'
                     }
                   >
                     <td className="py-3 px-3">
                       <Link
-                        href={`/${locale}/admin/work-orders?id=${j.order}`}
+                        href={`/${locale}/admin/work-orders/${j.orderNumber}`}
                         className="font-bold text-navy dark:text-white hover:text-signal-orange flex items-center gap-1.5"
                       >
-                        <span>{j.order}</span>
-                        {j.order === 'WO-24817' && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-orange-100 text-signal-orange font-bold">
-                            Demo Hero
+                        <span className="font-mono">{j.orderNumber}</span>
+                        {j.isLossMaker && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200">
+                            Loss Maker
                           </span>
                         )}
                       </Link>
                       <div className="text-[11px] text-slate-500 truncate max-w-xs">{j.title}</div>
                     </td>
                     <td className="py-3 px-3">
-                      <div className="text-slate-900 dark:text-slate-100 font-semibold">{j.customer}</div>
+                      <Link
+                        href={`/${locale}/admin/customers/${j.customerId}`}
+                        className="text-slate-900 dark:text-slate-100 font-semibold hover:text-signal-orange transition"
+                      >
+                        {j.customerName}
+                      </Link>
                       <div className="text-[10px] text-slate-400">{j.area}</div>
                     </td>
                     <td className="py-3 px-3 text-right font-bold text-navy dark:text-white font-mono">
-                      AED {j.billed.toFixed(2)}
+                      AED {j.subtotalAed.toFixed(2)}
                     </td>
                     <td className="py-3 px-3 text-right text-slate-500 font-mono">
-                      AED {j.cost.toFixed(2)}
+                      AED {j.costAed.toFixed(2)}
                     </td>
                     <td className="py-3 px-3 text-right">
                       <span
                         className={`inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded-lg text-xs ${
-                          j.profit < 0
+                          j.isLossMaker
                             ? 'bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-400'
                             : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
                         }`}
                       >
-                        {j.profit < 0 ? <TrendingDown className="w-3 h-3" /> : <TrendingUp className="w-3 h-3" />}
+                        {j.isLossMaker ? <TrendingDown className="w-3 h-3" /> : <TrendingUp className="w-3 h-3" />}
                         <span>
-                          {j.profit > 0 ? `+${j.margin}%` : `${j.margin}%`}
+                          {j.marginPercent > 0 ? `+${j.marginPercent}%` : `${j.marginPercent}%`}
                         </span>
                       </span>
                     </td>
@@ -549,7 +510,7 @@ export default function AdminDashboardPage({
           </div>
         </div>
 
-        {/* Technician Leaderboard */}
+        {/* Technician Leaderboard (Deterministic Canonical Data) */}
         <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-line dark:border-slate-800 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -560,7 +521,7 @@ export default function AdminDashboardPage({
                 href={`/${locale}/admin/technicians`}
                 className="text-xs font-bold text-signal-orange hover:text-signal-orange-hover"
               >
-                {isArabic ? 'عرض الـ 18 فني' : 'All 18 Techs'}
+                {isArabic ? `عرض الـ ${techLeaderboard.length} فنيين` : `All ${techLeaderboard.length} Techs`}
               </Link>
             </div>
             <p className="text-xs text-slate-400 mb-3">
@@ -568,14 +529,14 @@ export default function AdminDashboardPage({
             </p>
 
             <div className="space-y-2.5">
-              {techniciansLeaderboard.map((t, idx) => (
+              {techLeaderboard.map((t, idx) => (
                 <div
-                  key={idx}
+                  key={t.id}
                   className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-ground dark:bg-slate-800/60 border border-line/60 dark:border-slate-800"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-full bg-navy text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
-                      {t.avatar}
+                      {t.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                     </div>
                     <div>
                       <div className="font-bold text-navy dark:text-white flex items-center gap-1.5">
@@ -587,7 +548,7 @@ export default function AdminDashboardPage({
                         )}
                       </div>
                       <div className="text-[10px] text-slate-500">
-                        {t.trade} · {t.van} · {t.completed} jobs
+                        {t.trade} · {t.completedJobs} jobs
                       </div>
                     </div>
                   </div>
@@ -617,14 +578,14 @@ export default function AdminDashboardPage({
                 {isArabic ? 'الفريق الميداني' : 'Field Team Status'}
               </span>
               <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> 18 Active
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> {techLeaderboard.length} Active
               </span>
             </div>
             <div className="text-xl font-bold font-display text-navy dark:text-white">
-              18 Technicians
+              {techLeaderboard.length} Certified Technicians
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              12 on site with customers · 4 en route · 2 available at Al Quoz depot
+              Active across Dubai & Northern Emirates depots · Ready for on-call dispatch
             </p>
           </div>
 
@@ -645,14 +606,14 @@ export default function AdminDashboardPage({
                 {isArabic ? 'تأجير المعدات' : 'Equipment Utilization'}
               </span>
               <span className="text-[10px] px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-full">
-                68% Active
+                {metrics.fleetUtilizationPercent}% Active
               </span>
             </div>
             <div className="text-xl font-bold font-display text-navy dark:text-white">
-              27 / 40 On Hire
+              {CANONICAL_RENTAL_FLEET.filter((e) => e.status === 'ON_HIRE').length} / {CANONICAL_RENTAL_FLEET.length} On Hire
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              Gensets, Boom lifts & Excavators · 13 ready for dispatch in Al Quoz yard
+              Gensets, Boom lifts & Excavators · Available for dispatch in Al Quoz yard
             </p>
           </div>
 
@@ -673,14 +634,14 @@ export default function AdminDashboardPage({
                 {isArabic ? 'تنبيهات المخزون' : 'Low Stock Alert'}
               </span>
               <span className="text-[10px] px-2 py-0.5 bg-amber-100 text-amber-800 font-bold rounded-full">
-                4 Items Low
+                {lowStockAlerts.length} Items Low
               </span>
             </div>
             <div className="text-xl font-bold font-display text-navy dark:text-white">
               Safety Reorder
             </div>
-            <p className="text-xs text-slate-500 mt-1">
-              R410A gas, 45µF capacitors, 32A MCB breakers, and PPR pipes below min threshold
+            <p className="text-xs text-slate-500 mt-1 truncate">
+              {lowStockAlerts.map((i) => i.name.split(' (')[0]).join(', ')}
             </p>
           </div>
 
@@ -701,14 +662,14 @@ export default function AdminDashboardPage({
                 {isArabic ? 'تعمير الذمم المدينة' : 'Receivables Aging'}
               </span>
               <span className="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded-full">
-                AED 94.3k Due
+                AED {(metrics.outstandingReceivablesAed / 1000).toFixed(1)}k Due
               </span>
             </div>
-            <div className="text-xl font-bold font-display text-navy dark:text-white">
-              A/R Outstanding
+            <div className="text-xl font-bold font-display text-navy dark:text-white font-mono">
+              AED {metrics.outstandingReceivablesAed.toLocaleString()}
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              0-30d: 62.4k · 31-60d: 21.2k · 61-90d: 7.5k · 90d+: 3.2k
+              Outstanding receivables reconciled across all active and completed customer accounts
             </p>
           </div>
 

@@ -57,7 +57,7 @@ const POS_CATALOG: PosItem[] = [
 const PAST_ORDERS: SalesOrder[] = [
   { id: 'so-1', receiptNumber: 'POS-2026-0812', customerName: 'Walk-in Contractor (Cash)', timestamp: 'Today, 10:14 AM', itemsCount: 4, totalAed: 556.5, paymentMethod: 'CASH' },
   { id: 'so-2', receiptNumber: 'POS-2026-0811', customerName: 'Al-Mansoor MEP Maintenance', timestamp: 'Today, 09:30 AM', itemsCount: 12, totalAed: 1848.0, paymentMethod: 'CARD' },
-  { id: 'so-3', receiptNumber: 'POS-2026-0810', customerName: 'Sobha Hartland Site Ops', timestamp: 'Yesterday, 04:45 PM', itemsCount: 6, totalAed: 980.0, paymentMethod: 'ACCOUNT_CREDIT' },
+  { id: 'so-3', receiptNumber: 'POS-2026-0810', customerName: 'Palm Crest Site Ops', timestamp: 'Yesterday, 04:45 PM', itemsCount: 6, totalAed: 980.0, paymentMethod: 'ACCOUNT_CREDIT' },
 ];
 
 export default function MaterialSalesAdminPage({
@@ -274,9 +274,9 @@ export default function MaterialSalesAdminPage({
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <option value="Walk-in Cash Customer">Walk-in Cash Customer (Retail)</option>
-                  <option value="Al Futtaim Properties LLC">Al Futtaim Properties LLC (TRN: 100342918800003)</option>
-                  <option value="Emaar Hospitality Group">Emaar Hospitality Group (TRN: 100299881100003)</option>
-                  <option value="Al Naboodah Construction">Al Naboodah Construction (TRN: 100411223300003)</option>
+                  <option value="Palm Crest Properties LLC">Palm Crest Properties LLC (TRN: 100000000000003 demo)</option>
+                  <option value="Crescent Bay Commercial Complex">Crescent Bay Commercial Complex (TRN: 100000000000004 demo)</option>
+                  <option value="Desert Rose Logistics LLC">Desert Rose Logistics LLC (TRN: 100000000000005 demo)</option>
                 </select>
               </div>
 

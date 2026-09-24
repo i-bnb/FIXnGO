@@ -33,17 +33,17 @@ const rng = new SeededRandom(20260324);
 // 2. MASTER CONSTANTS & UAE CONFIGURATION
 // =========================================================================
 const COMPANY = {
-  name: 'FieldOps Technical Services LLC',
-  nameAr: 'فيلد أوبس للخدمات الفنية ذ.م.م',
-  trn: '100482910300003',
+  name: 'FIXnGO Technical Services LLC — demo',
+  nameAr: 'فيكس آن جو للخدمات الفنية ذ.م.م (تجريبي)',
+  trn: '100000000000003 (demo)',
   address: 'Warehouse 12, Al Quoz Industrial Area 3, Dubai, UAE',
   logoUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200',
   vatRate: 0.05,
 };
 
-// Date reference: 6-month simulation ending late March 2026
-const NOW = new Date('2026-03-24T12:00:00Z');
-const SIX_MONTHS_AGO = new Date('2025-09-24T08:00:00Z');
+// Date reference: 6-month simulation ending late September 2026
+const NOW = new Date('2026-09-24T12:00:00Z');
+const SIX_MONTHS_AGO = new Date('2026-04-01T08:00:00Z');
 
 function addDays(d: Date, days: number): Date {
   const result = new Date(d);
@@ -246,7 +246,7 @@ async function main() {
     { code: 'TECH-ELE-03', first: 'Rajesh', last: 'Kumar', email: 'tech.rajesh@fieldops.ae', phone: '+971 52 101 0003', trade: 'ELECTRICIAN', rate: 90.0, cost: 38.0 },
     { code: 'TECH-ELE-04', first: 'Ahmed', last: 'Mustafa', email: 'tech.ahmed@fieldops.ae', phone: '+971 52 101 0004', trade: 'ELECTRICIAN', rate: 90.0, cost: 38.0 },
     // Plumbing
-    { code: 'TECH-PLU-01', first: 'Hasan', last: 'Al-Banna', email: 'tech.hasan@fieldops.ae', phone: '+971 52 201 0001', trade: 'PLUMBER', rate: 100.0, cost: 42.0 },
+    { code: 'TECH-PLU-01', first: 'Tariq', last: 'Al-Mansoor', email: 'tech.tariq@fieldops.demo', phone: '+971 50 000 0111', trade: 'PLUMBER', rate: 100.0, cost: 42.0 },
     { code: 'TECH-PLU-02', first: 'Suresh', last: 'Nair', email: 'tech.suresh@fieldops.ae', phone: '+971 52 201 0002', trade: 'PLUMBER', rate: 90.0, cost: 38.0 },
     { code: 'TECH-PLU-03', first: 'Mahmoud', last: 'Khalil', email: 'tech.mahmoud@fieldops.ae', phone: '+971 52 201 0003', trade: 'PLUMBER', rate: 90.0, cost: 38.0 },
     { code: 'TECH-PLU-04', first: 'Zaid', last: 'Farhan', email: 'tech.zaid@fieldops.ae', phone: '+971 52 201 0004', trade: 'PLUMBER', rate: 85.0, cost: 36.0 },
@@ -493,13 +493,13 @@ async function main() {
   // -----------------------------------------------------------------------
   console.log('Step 4: Seeding 60 Customers, Sites across DXB/SHJ/AUH, and 150 Assets...');
 
-  // 5 Major Construction Companies
+  // 5 Major Commercial / Corporate Clients
   const constructionCompanies = [
-    { name: 'Sobha Constructions LLC', nameAr: 'شوبا للمقاولات ذ.م.م', trn: '100234567800003', emirate: 'Dubai', area: 'Nad Al Sheba 1', lat: 25.1782, lng: 55.3210 },
-    { name: 'Emaar Contracting LLC', nameAr: 'إعمار للمقاولات ذ.م.م', trn: '100345678900003', emirate: 'Dubai', area: 'Downtown Dubai', lat: 25.1972, lng: 55.2744 },
-    { name: 'Arabtec Construction PJSC', nameAr: 'أرابتك للإنشاءات ش.م.ع', trn: '100456789000003', emirate: 'Dubai', area: 'Business Bay', lat: 25.1856, lng: 55.2708 },
-    { name: 'Trojan General Contracting LLC', nameAr: 'طروادة للمقاولات العامة ذ.م.م', trn: '100567890100003', emirate: 'Abu Dhabi', area: 'Al Reem Island', lat: 24.4988, lng: 54.4072 },
-    { name: 'Shapoorji Pallonji Mideast LLC', nameAr: 'شابورجي بالونجي الشرق الأوسط', trn: '100678901200003', emirate: 'Sharjah', area: 'Al Majaz 3', lat: 25.3255, lng: 55.3820 },
+    { name: 'Palm Crest Properties LLC', nameAr: 'بالم كرست العقارية ش.ذ.م.م', trn: '100000000000001 (demo)', emirate: 'Dubai', area: 'Downtown Dubai', lat: 25.1972, lng: 55.2744 },
+    { name: 'Crescent Bay Commercial Complex', nameAr: 'مجمع كريسنت باي التجاري', trn: '100000000000002 (demo)', emirate: 'Dubai', area: 'Business Bay', lat: 25.1856, lng: 55.2708 },
+    { name: 'Al-Noor Residential Compound', nameAr: 'مجمع النور السكني', trn: '100000000000003 (demo)', emirate: 'Dubai', area: 'Al Barsha 1', lat: 25.1132, lng: 55.2012 },
+    { name: 'Desert Rose Logistics LLC', nameAr: 'ديزرت روز للخدمات اللوجستية ش.ذ.م.م', trn: '100000000000004 (demo)', emirate: 'Dubai', area: 'Dubai Industrial City', lat: 24.8722, lng: 55.0833 },
+    { name: 'Blue Sky Towers Owners Association', nameAr: 'جمعية ملاك أبراج بلو سكاي', trn: '100000000000005 (demo)', emirate: 'Dubai', area: 'Business Bay', lat: 25.1895, lng: 55.2654 },
   ];
 
   const allCustomers: any[] = [];
@@ -829,10 +829,10 @@ async function main() {
   // -----------------------------------------------------------------------
   console.log('Step 6: Seeding 4 Construction Site Manpower Deployments & 6 Months of Daily Timesheets...');
   const manpowerSites = [
-    { client: 'Sobha Constructions LLC', project: 'Sobha Hartland Phase 3 High-Rise MEP Package', loc: 'Sobha Hartland, Nad Al Sheba 1, Dubai' },
-    { client: 'Emaar Contracting LLC', project: 'Emaar Creek Harbour Tower A Package', loc: 'Dubai Creek Harbour, Dubai' },
-    { client: 'Trojan General Contracting LLC', project: 'Trojan Reem Hills Residential Phase 1', loc: 'Al Reem Island, Abu Dhabi' },
-    { client: 'Shapoorji Pallonji Mideast LLC', project: 'Al Jada Commercial Complex Package', loc: 'Al Jada, Muwailih, Sharjah' },
+    { client: 'Palm Crest Properties LLC', project: 'Palm Crest Tower Phase 3 High-Rise MEP Package', loc: 'Downtown Dubai, Dubai' },
+    { client: 'Crescent Bay Commercial Complex', project: 'Crescent Bay Tower A Package', loc: 'Business Bay, Dubai' },
+    { client: 'Al-Noor Residential Compound', project: 'Al-Noor Residential Community Phase 1', loc: 'Al Barsha, Dubai' },
+    { client: 'Desert Rose Logistics LLC', project: 'Desert Rose Cold Storage Package', loc: 'Dubai Industrial City, Dubai' },
   ];
 
   const deployments: any[] = [];
@@ -945,7 +945,7 @@ async function main() {
 
     const wo = await prisma.workOrder.create({
       data: {
-        orderNumber: `WO-2025-${i.toString().padStart(4, '0')}`,
+        orderNumber: `WO-2026-${i.toString().padStart(5, '0')}`,
         customerId: customer.id,
         siteId: site.id,
         assetId: asset.id,
@@ -1261,7 +1261,7 @@ async function main() {
 
     const inv = await prisma.invoice.create({
       data: {
-        invoiceNumber: `INV-2025-${(i + 1).toString().padStart(4, '0')}`,
+        invoiceNumber: `INV-2026-${(i + 1).toString().padStart(5, '0')}`,
         invoiceType: 'STANDARD_TAX_INVOICE',
         workOrderId: wo.id,
         customerId: customer.id,
@@ -1301,7 +1301,7 @@ async function main() {
     // Cr VAT Output 5% (2050): vatAmount
     const jeInvoice = await prisma.journalEntry.create({
       data: {
-        entryNumber: `JE-INV-${(i + 1).toString().padStart(4, '0')}`,
+        entryNumber: `JE-INV-${(i + 1).toString().padStart(5, '0')}`,
         entryDate: issueDate,
         referenceType: 'INVOICE',
         referenceId: inv.id,

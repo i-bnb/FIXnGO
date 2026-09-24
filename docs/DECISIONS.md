@@ -20,7 +20,7 @@ This document records pragmatic decisions made during the design and implementat
 
 ## 3. UAE VAT 5% Compliance and TRN Invoicing
 - **Context**: UAE Federal Tax Authority (FTA) requires 5% standard VAT on taxable supplies, compliant Tax Invoice layouts, and registration numbers (TRN).
-- **Decision**: Monetary amounts are stored in PostgreSQL as `numeric(14, 2)`. Calculations use strict cent-accurate decimal arithmetic (`vatAmount = round(subtotal * 0.05, 2)`). The platform generates bilingual tax invoices featuring company TRN `100482910300003`.
+- **Decision**: Monetary amounts are stored in PostgreSQL as `numeric(14, 2)`. Calculations use strict cent-accurate decimal arithmetic (`vatAmount = round(subtotal * 0.05, 2)`). The platform generates bilingual tax invoices featuring company TRN `100000000000003 (demo)`.
 - **Trade-off**: Avoids JavaScript floating-point rounding errors and ensures FTA compliance.
 
 ---

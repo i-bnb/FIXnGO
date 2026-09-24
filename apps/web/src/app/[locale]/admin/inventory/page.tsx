@@ -59,7 +59,7 @@ const SAMPLE_ITEMS: InventoryItem[] = [
 
 const SAMPLE_MOVEMENTS: StockMovement[] = [
   { id: 'm-1', timestamp: 'Today, 08:30 AM', itemCode: 'MAT-HVAC-CAP45', itemName: 'Dual Run Capacitor 45/5 uF', type: 'VAN_TRANSFER', fromLocation: 'Al Quoz Central Warehouse', toLocation: 'Van-01 (Rashid Al-Nuaimi)', quantity: 5, referenceDoc: 'TR-2026-089', performedBy: 'Bilal (Storekeeper)' },
-  { id: 'm-2', timestamp: 'Today, 09:45 AM', itemCode: 'MAT-HVAC-CAP45', itemName: 'Dual Run Capacitor 45/5 uF', type: 'WO_ISSUANCE', fromLocation: 'Van-01 (Rashid Al-Nuaimi)', toLocation: 'Work Order WO-2026-001', quantity: 1, referenceDoc: 'WO-2026-001', performedBy: 'Rashid Al-Nuaimi' },
+  { id: 'm-2', timestamp: 'Today, 09:45 AM', itemCode: 'MAT-HVAC-CAP45', itemName: 'Dual Run Capacitor 45/5 uF', type: 'WO_ISSUANCE', fromLocation: 'Van-01 (Rashid Al-Nuaimi)', toLocation: 'Work Order WO-2026-00001', quantity: 1, referenceDoc: 'WO-2026-00001', performedBy: 'Rashid Al-Nuaimi' },
   { id: 'm-3', timestamp: 'Yesterday, 03:15 PM', itemCode: 'MAT-HVAC-GAS410', itemName: 'R410A Refrigerant 11.3 kg', type: 'RECEIPT_PO', fromLocation: 'Danfoss Middle East FZE', toLocation: 'Al Quoz Central Warehouse', quantity: 20, referenceDoc: 'PO-2026-0044', performedBy: 'Bilal (Storekeeper)' },
   { id: 'm-4', timestamp: '21 Sep 2026', itemCode: 'MAT-PLM-VALVE12', itemName: 'Grohe Angle Valve 1/2"', type: 'VAN_TRANSFER', fromLocation: 'Al Quoz Central Warehouse', toLocation: 'Van-02 (Vikram Sharma)', quantity: 8, referenceDoc: 'TR-2026-085', performedBy: 'Bilal (Storekeeper)' },
 ];

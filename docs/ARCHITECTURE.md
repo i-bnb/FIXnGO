@@ -166,14 +166,14 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Client as 🏗️ Contractor (Arabtec)
+    actor Client as 🏗️ Contractor (Palm Crest Contracting LLC)
     actor Ops as 👔 Operations Manager
     participant API as ⚙️ NestJS API
     participant Yard as 🚜 Equipment Yard / Storekeeper
     participant Storage as ☁️ Appwrite Storage
     participant Ledger as 📚 General Ledger
 
-    Client->>Ops: Request 100 kVA Diesel Generator for 30 days (Yas Island Site)
+    Client->>Ops: Request 100 kVA Diesel Generator for 30 days (Desert Rose Site)
     Ops->>API: POST /api/equipment/rentals
     Note over API: Applied Rate: 7,500 AED/mo<br/>Deposit: 2,000 AED<br/>VAT 5%: 375 AED
     API-->>Ops: Rental Contract RNT-2026-042 Created (Status: DRAFT)
@@ -181,7 +181,7 @@ sequenceDiagram
 
     Yard->>Storage: Upload Pre-Dispatch Inspection Photos & Fuel Log
     Yard->>API: POST /api/equipment/rentals/042/dispatch (Condition: Good, Meter: 1,420 hrs)
-    API->>API: Update Equipment Status -> "RENTED" (Location: Yas Island)
+    API->>API: Update Equipment Status -> "RENTED" (Location: Desert Rose Site)
     API->>Ledger: Auto-post Deposit Journal (DR Bank 2000, CR Customer Deposit Liability 2000)
 
     Note over Client, Yard: Generator operates on site for 30 days...
@@ -199,24 +199,24 @@ sequenceDiagram
 ---
 
 ### (c) Construction Site Labour Supply & Monthly Timesheet Billing
-*Contractor requisitions 10 Electricians for 30 days -> Workers deployed to Emaar Creek Harbour -> Daily timesheets logged by site supervisor -> Monthly consolidated tax invoice generated & posted to ledger.*
+*Contractor requisitions 10 Electricians for 30 days -> Workers deployed to Crescent Bay Commercial Complex -> Daily timesheets logged by site supervisor -> Monthly consolidated tax invoice generated & posted to ledger.*
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Contractor as 🏗️ Emaar Project Manager
+    actor Contractor as 🏗️ Palm Crest Project Manager
     actor Ops as 👔 Operations Manager
     participant API as ⚙️ NestJS API
     actor Supervisor as 👷 Site Lead / Supervisor
     participant Accountant as 💼 Accountant
     participant Ledger as 📚 General Ledger
 
-    Contractor->>Ops: Submit Labour Requisition (10 Electricians, 30 Days, Emaar Creek)
+    Contractor->>Ops: Submit Labour Requisition (10 Electricians, 30 Days, Crescent Bay)
     Ops->>API: POST /api/manpower/requisitions (Rate: 55 AED/hr or 440 AED/day)
     API-->>Ops: Requisition REQ-2026-081 Created
 
     Ops->>API: POST /api/manpower/deployments/allocate (Assign 10 Certified Electricians)
-    API->>API: Update Worker Status -> "DEPLOYED" (Site: Emaar Creek)
+    API->>API: Update Worker Status -> "DEPLOYED" (Site: Crescent Bay)
 
     loop Daily Timesheet Logging (Day 1 to 30)
         Supervisor->>API: POST /api/manpower/timesheets/daily
@@ -232,7 +232,7 @@ sequenceDiagram
     API-->>Accountant: Generated Tax Invoice INV-2026-0095
 
     API->>Ledger: Auto-post Monthly Labour Revenue:
-    Note over API, Ledger: DR Accounts Receivable (Emaar): 138,600 AED<br/>CR Labour Supply Revenue: 132,000 AED<br/>CR Output VAT Payable (5%): 6,600 AED
+    Note over API, Ledger: DR Accounts Receivable (Palm Crest Properties LLC): 138,600 AED<br/>CR Labour Supply Revenue: 132,000 AED<br/>CR Output VAT Payable (5%): 6,600 AED
     API->>Ledger: Auto-post Payroll Direct Labour Cost:
     Note over API, Ledger: DR Direct Labour Cost: 60,000 AED<br/>CR Accrued Wages Payable: 60,000 AED
 ```

@@ -5,7 +5,7 @@ import { UAE_CONSTANTS, CreateServiceBookingSchema, ServiceType } from './index'
 describe('Shared Package Validation & UAE Rules', () => {
   it('should have standard UAE VAT 5% and valid TRN', () => {
     assert.strictEqual(UAE_CONSTANTS.VAT_RATE, 0.05);
-    assert.strictEqual(UAE_CONSTANTS.COMPANY_TRN, '100482910300003');
+    assert.strictEqual(UAE_CONSTANTS.COMPANY_TRN, '100000000000003 (demo)');
     assert.strictEqual(UAE_CONSTANTS.CURRENCY, 'AED');
   });
 

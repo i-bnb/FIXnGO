@@ -277,12 +277,12 @@ PROMPT INJECTION DEFENSE & SAFETY INVARIANTS:
       toolsUsed.push('getSlaBreaches');
       cannedAnswer = isArabic
         ? `### ⚠️ المهام الحرجة التي تتطلب تدخلاً فورياً اليوم:
-* **WO-24825 (طوارئ)**: سخونة شديدة في لوحة التوزيع الرئيسية (MDB) وقوس تفريغ كهربائي لدى **Emaar Properties PJSC** (موقع بوليفارد دبي). متأخرة عن وقت الاستجابة المعتمد بـ **ساعتين و10 دقائق**.
-  * **الإجراء الموصى به**: تعيين فني على الفور. الفني المتاح حالياً والقريب هو **Joseph Mathew** (يبعد 3.4 كم) أو **Vikram Patel**.
+* **WO-2026-00025 (طوارئ)**: سخونة شديدة في لوحة التوزيع الرئيسية (MDB) وقوس تفريغ كهربائي لدى **Crescent Bay Commercial Complex** (موقع الخليج التجاري). متأخرة عن وقت الاستجابة المعتمد بـ **ساعتين و10 دقائق**.
+  * **الإجراء الموصى به**: تعيين فني على الفور. الفني المتاح حالياً والقريب هو **Tariq Al-Mansoor** (يبعد 3.4 كم) أو **Vikram Patel**.
 * **مخزون حرج**: أسطوانات غاز التبريد R410A انخفضت إلى **أسطوانتين** في مستودع القوز (الحد الأدنى: 5). مسودة أمر الشراء **PO-2026-0048** جاهزة للاعتماد.`
         : `### ⚠️ Immediate Operations Needing Attention Today:
-* **WO-24825 (EMERGENCY)**: Main Distribution Board (MDB) Hotspot & Breaker Arcing at **Emaar Properties PJSC** (Downtown Boulevard Site). Currently **2 hours 10 minutes overdue** against SLA threshold.
-  * **Recommended Action**: Immediate dispatch required. Best spatial match is **Joseph Mathew** (TECH-PLU-03, 3.4 km away) or **Vikram Patel** (TECH-ELE-04).
+* **WO-2026-00025 (EMERGENCY)**: Main Distribution Board (MDB) Hotspot & Breaker Arcing at **Crescent Bay Commercial Complex** (Business Bay Site). Currently **2 hours 10 minutes overdue** against SLA threshold.
+  * **Recommended Action**: Immediate dispatch required. Best spatial match is **Tariq Al-Mansoor** (TECH-PLU-01, 3.4 km away) or **Vikram Patel** (TECH-ELE-02).
 * **Critical Stock Alert**: R410A Refrigerant Cylinders down to **2 units** at Al Quoz Central Warehouse (safety threshold: 5). Draft purchase order **PO-2026-0048** awaiting approval.`;
     }
     // Question 2: Loss-making jobs / Profitability (Requires finance.view check!)
@@ -299,26 +299,26 @@ Your current role (**${user.role || 'DISPATCHER'}**) does not possess the requir
       } else {
         cannedAnswer = isArabic
           ? `### 📉 تقرير المهام ذات الخسائر التشغيلية (3 مهام محددة):
-* **WO-2025-0089**: احتراق ضاغط التكييف المزدوج لدى **Al Futtaim Properties LLC**
+* **WO-2026-00004**: احتراق ضاغط التكييف المزدوج لدى **Desert Rose Logistics LLC**
   * الإيراد المحتسب: **450.00 د.إ** | إجمالي التكلفة: **1,040.00 د.إ** (قطع: 680 + أجور: 360)
   * صافي الخسارة: **-590.00 د.إ** (هامش إجمالي: **-131.11%**)
   * *السبب*: استبدال طارئ أثناء الضمان وساعات عمل إضافية غير متوقعة.
-* **WO-2025-0142**: كسر أنبوب PPR رئيسي مدفون لدى **Damac Hills Community**
+* **WO-2026-00012**: كسر أنبوب PPR رئيسي مدفون لدى **Blue Sky Towers Owners Association**
   * الإيراد المحتسب: **320.00 د.إ** | إجمالي التكلفة: **660.00 د.إ**
   * صافي الخسارة: **-340.00 د.إ** (هامش إجمالي: **-106.25%**)
-* **WO-2025-0218**: صيانة شرارة القوس الكهربائي لقضبان MDB لدى **Nakheel Retail**
+* **WO-2026-00018**: صيانة شرارة القوس الكهربائي لقضبان MDB لدى **Palm Crest Properties LLC**
   * الإيراد المحتسب: **380.00 د.إ** | إجمالي التكلفة: **670.00 د.إ**
   * صافي الخسارة: **-290.00 د.إ** (هامش إجمالي: **-76.32%**)`
           : `### 📉 Loss-Making Jobs This Month (Matching Profitability Report):
-* **WO-2025-0089**: HVAC Dual Compressor Burnout for **Al Futtaim Properties LLC**
+* **WO-2026-00004**: HVAC Dual Compressor Burnout for **Desert Rose Logistics LLC**
   * Billed Revenue: **AED 450.00** | Total Cost: **AED 1,040.00** (Parts: AED 680 + Labour: AED 360)
   * Gross Loss: **-AED 590.00** (Gross Margin: **-131.11%**)
   * *Root Cause*: Warranty emergency replacement with unforeseen overtime labour.
-* **WO-2025-0142**: Underground Main PPR Fusion Joint Rupture for **Damac Hills Community**
+* **WO-2026-00012**: Underground Main PPR Fusion Joint Rupture for **Blue Sky Towers Owners Association**
   * Billed Revenue: **AED 320.00** | Total Cost: **AED 660.00**
   * Gross Loss: **-AED 340.00** (Gross Margin: **-106.25%**)
   * *Root Cause*: Emergency excavation rig hire and overtime hydro-testing.
-* **WO-2025-0218**: MDB Busbar Surge Arcing Overhaul for **Nakheel Retail**
+* **WO-2026-00018**: MDB Busbar Surge Arcing Overhaul for **Palm Crest Properties LLC**
   * Billed Revenue: **AED 380.00** | Total Cost: **AED 670.00**
   * Gross Loss: **-AED 290.00** (Gross Margin: **-76.32%**)
   * *Root Cause*: Thermal recalibration and replacement busbar assemblies.`;
@@ -343,17 +343,17 @@ You lack the required \`finance.view\` permission to inspect accounts receivable
   * المبلغ المستحق: **4,410.00 د.إ** (متأخرة بـ **14 يوماً**). تم إرسال إشعار المطالبة الأول.
 * **INV-2026-0019**: لصالح **Damac Hills Residential Association**
   * المبلغ المستحق: **3,360.00 د.إ** (متأخرة بـ **6 أيام**).
-* **INV-2026-0027**: لصالح **Al Futtaim Engineering**
+* **INV-2026-0027**: لصالح **Desert Rose Logistics LLC**
   * المبلغ المستحق: **2,572.50 د.إ** (متأخرة بـ **يومين**).
-* **أكبر المدينين**: فندق العنوان وسط دبي (**18,450 د.إ**) وشركة شوبا للإنشاءات (**12,800 د.إ**).`
+* **أكبر المدينين**: فندق العنوان وسط دبي (**18,450 د.إ**) وشركة بالم كرست العقارية (**12,800 د.إ**).`
           : `### 💰 Outstanding Receivables & Overdue Invoices (Total A/R: AED 94,300.00):
 * **INV-2026-0003**: **Address Downtown Hotel LLC**
   * Balance Due: **AED 4,410.00** (**14 days overdue**). Dunning notice #1 dispatched.
 * **INV-2026-0019**: **Damac Hills Residential Association**
   * Balance Due: **AED 3,360.00** (**6 days overdue**).
-* **INV-2026-0027**: **Al Futtaim Engineering**
+* **INV-2026-0027**: **Desert Rose Logistics LLC**
   * Balance Due: **AED 2,572.50** (**2 days overdue**).
-* **Top Debtors by Balance**: Address Downtown Hotel (AED 18,450.00) and Sobha Constructions LLC (AED 12,800.00).`;
+* **Top Debtors by Balance**: Address Downtown Hotel (AED 18,450.00) and Palm Crest Properties LLC (AED 12,800.00).`;
       }
     }
     // Question 4: Where is each technician? / GPS Telematics
@@ -361,27 +361,27 @@ You lack the required \`finance.view\` permission to inspect accounts receivable
       toolsUsed.push('getTechnicianStatus');
       cannedAnswer = isArabic
         ? `### 📍 الموقع الحالي للأسطول الميداني (تتبع GPS مباشر):
-* **Rashid Khan (TECH-HVAC-12)**: مركبة **Van DXB-12**
+* **Rashid Al-Nuaimi (TECH-HVAC-01)**: مركبة **Van DXB-12**
   * الحالة: **في الطريق (EN_ROUTE)** بسرعة 48 كم/س على شارع الشيخ زايد (الخليج التجاري).
-  * المهمة الحالية: **WO-24817** لدى فاطمة المنصوري (وقت الوصول المتوقع: 12 دقيقة).
-* **Vikram Patel (TECH-ELE-04)**: مركبة **Van DXB-04**
-  * الحالة: **في الطريق (EN_ROUTE)** بسرعة 52 كم/س في وسط مدينة دبي متوجهاً إلى **WO-24818**.
-* **Hasan Al-Banna (TECH-PLU-02)**: مركبة **Van DXB-02**
-  * الحالة: **في موقع العمل (ON_JOB)** في ممشى دبي مارينا ينفذ **WO-24805**.
+  * المهمة الحالية: **WO-2026-00001** لدى بالم كرست العقارية (وقت الوصول المتوقع: 12 دقيقة).
+* **Vikram Patel (TECH-ELE-02)**: مركبة **Van DXB-04**
+  * الحالة: **في الطريق (EN_ROUTE)** بسرعة 52 كم/س في وسط مدينة دبي متوجهاً إلى **WO-2026-00003**.
+* **Tariq Al-Mansoor (TECH-PLU-01)**: مركبة **Van DXB-02**
+  * الحالة: **في موقع العمل (ON_JOB)** في البرشاء ينفذ **WO-2026-00002**.
 * **Joseph Mathew (TECH-PLU-03)**: مركبة **Van DXB-08**
-  * الحالة: **متاح وجاهز للتكليف (AVAILABLE)** في مستودع القوز الصناعية 3 (مرشح مثالي لـ **WO-24825**).
+  * الحالة: **متاح وجاهز للتكليف (AVAILABLE)** في مستودع القوز الصناعية 3 (مرشح مثالي لـ **WO-2026-00025**).
 * **Farhan Siddiqui (TECH-HVAC-07)**: مركبة **Van DXB-07**
   * الحالة: **متاح وجاهز للتكليف (AVAILABLE)** في مستودع القوز.`
         : `### 📍 Live Fleet Telematics & Technician Positions:
-* **Rashid Khan (TECH-HVAC-12)**: **Van DXB-12**
+* **Rashid Al-Nuaimi (TECH-HVAC-01)**: **Van DXB-12**
   * Status: **EN_ROUTE** (48 km/h) on Sheikh Zayed Rd, Business Bay.
-  * Active Assignment: **WO-24817** for Fatima Al Mansoori (ETA: 12 min).
-* **Vikram Patel (TECH-ELE-04)**: **Van DXB-04**
-  * Status: **EN_ROUTE** (52 km/h) in Downtown Dubai heading to **WO-24818**.
-* **Hasan Al-Banna (TECH-PLU-02)**: **Van DXB-02**
-  * Status: **ON_JOB** at Dubai Marina Walk completing **WO-24805**.
+  * Active Assignment: **WO-2026-00001** for Palm Crest Properties LLC (ETA: 12 min).
+* **Vikram Patel (TECH-ELE-02)**: **Van DXB-04**
+  * Status: **EN_ROUTE** (52 km/h) in Downtown Dubai heading to **WO-2026-00003**.
+* **Tariq Al-Mansoor (TECH-PLU-01)**: **Van DXB-02**
+  * Status: **ON_JOB** at Al Barsha completing **WO-2026-00002**.
 * **Joseph Mathew (TECH-PLU-03)**: **Van DXB-08**
-  * Status: **AVAILABLE** at Al Quoz Industrial 3 (Prime candidate for emergency **WO-24825**).
+  * Status: **AVAILABLE** at Al Quoz Industrial 3 (Prime candidate for emergency **WO-2026-00025**).
 * **Farhan Siddiqui (TECH-HVAC-07)**: **Van DXB-07**
   * Status: **AVAILABLE** at Al Quoz Depot (Ready for dispatch).`;
     } else {

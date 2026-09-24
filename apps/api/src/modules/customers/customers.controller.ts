@@ -41,10 +41,10 @@ export class CustomersController {
     schema: {
       type: 'object',
       properties: {
-        name: { type: 'string', example: 'Emaar Properties PJSC' },
+        name: { type: 'string', example: 'Crescent Bay Commercial Complex' },
         customerType: { type: 'string', example: 'COMPANY' },
-        trn: { type: 'string', example: '100445566700003' },
-        email: { type: 'string', example: 'facilities@emaar.ae' },
+        trn: { type: 'string', example: '100000000000002 (demo)' },
+        email: { type: 'string', example: 'facilities@crescentbay.example' },
         phone: { type: 'string', example: '+97143673333' },
         siteName: { type: 'string', example: 'Burj Khalifa Commercial' },
         address: { type: 'string', example: 'Downtown Dubai, UAE' },

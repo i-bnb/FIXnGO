@@ -364,23 +364,23 @@ export class AutomationService implements OnModuleInit, OnModuleDestroy {
         recipientRole = 'OPS_MANAGER';
         recipientName = 'Tariq Mansoor';
         channel = 'EMAIL';
-        title = 'Preventive AMC Visit Due in 7 Days (Emaar)';
+        title = 'Preventive AMC Visit Due in 7 Days (Crescent Bay)';
         titleAr = 'موعد زيارة الصيانة الوقائية السنوية خلال 7 أيام';
-        messageEn = 'Notice: Quarterly HVAC Preventive Maintenance under contract AMC-2026-0012 (Emaar Properties) is due on Sept 30, 2026. PM Work order #WO-2026-0091 auto-drafted.';
-        messageAr = 'إشعار: موعد الصيانة الدورية الفصلية للتكييف بموجب العقد AMC-2026-0012 (إعمار العقارية) مستحق بتاريخ 30 سبتمبر 2026.';
-        metadata = { contractNumber: 'AMC-2026-0012', client: 'Emaar Properties', scheduledDate: '2026-09-30' };
+        messageEn = 'Notice: Quarterly HVAC Preventive Maintenance under contract AMC-2026-0012 (Crescent Bay Commercial) is due on Sept 30, 2026. PM Work order #WO-2026-0091 auto-drafted.';
+        messageAr = 'إشعار: موعد الصيانة الدورية الفصلية للتكييف بموجب العقد AMC-2026-0012 (كريسنت باي العقارية) مستحق بتاريخ 30 سبتمبر 2026.';
+        metadata = { contractNumber: 'AMC-2026-0012', client: 'Crescent Bay Commercial', scheduledDate: '2026-09-30' };
         break;
       }
 
       case 'rental-return-due': {
         recipientRole = 'CUSTOMER';
-        recipientName = 'Sobha Construction Site Office';
+        recipientName = 'Palm Crest Construction Site Office';
         channel = 'SMS_SIMULATED';
         title = 'Equipment Rental Off-Hire Notice: 100kVA Generator';
         titleAr = 'إشعار انتهاء فترة تأجير المعدة: مولد 100 كيلو فولت أمبير';
         messageEn = 'Off-Hire Alert: 100kVA Cummins Diesel Generator on contract RC-2026-0005 is due for return tomorrow at 05:00 PM. Reply EXTEND to prolong equipment rental.';
         messageAr = 'تنبيه انتهاء التأجير: مولد الديزل كامنز 100 ك.ف.أ بموجب العقد RC-2026-0005 مستحق الإرجاع غداً الساعة 5:00 مساءً. أرسل EXTEND للتمديد.';
-        metadata = { contractNumber: 'RC-2026-0005', equipment: 'Cummins 100kVA Generator', site: 'Sobha Hartland Phase 2' };
+        metadata = { contractNumber: 'RC-2026-0005', equipment: 'Cummins 100kVA Generator', site: 'Palm Crest Downtown Phase 2' };
         break;
       }
 

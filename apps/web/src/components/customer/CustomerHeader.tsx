@@ -43,7 +43,7 @@ export function CustomerHeader({
     { name: 'Business Bay, Executive Towers', lat: 25.1856, lng: 55.2708 },
     { name: 'Jumeirah 2, Street 14B Villa', lat: 25.2048, lng: 55.2435 },
     { name: 'Dubai Marina, Silverene Tower', lat: 25.0762, lng: 55.1403 },
-    { name: 'Sobha Hartland, Villa 124', lat: 25.1764, lng: 55.3092 },
+    { name: 'Palm Crest Residences, Villa 124', lat: 25.1764, lng: 55.3092 },
     { name: 'Palm Jumeirah, Frond M Villa', lat: 25.1215, lng: 55.1324 },
   ];
 

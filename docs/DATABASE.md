@@ -151,7 +151,7 @@ erDiagram
 - **`employee_skills`**: Trade certifications and skill ratings.
 - **`employee_attendance`**: Clock-in and clock-out timestamps with PostGIS coordinates and location validation.
 - **`employee_leaves`**: Annual, sick, and emergency leave requests with manager approval.
-- **`labour_supply_deployments`**: Long-term contractor site allocations (e.g. 10 Electricians at Emaar Creek).
+- **`labour_supply_deployments`**: Long-term contractor site allocations (e.g. 10 Electricians at Crescent Bay Commercial Complex).
 - **`labour_daily_timesheets`**: Daily supervisor sign-off on hours worked per worker for monthly consolidated invoicing.
 
 ### 3.6 Tracking & Spatial Telematics
@@ -171,7 +171,7 @@ erDiagram
 
 ### 3.9 Invoicing, Payments & General Ledger
 - **`quotations`** & **`quotation_lines`**: Versioned estimates with discount approval triggers.
-- **`invoices`** & **`invoice_lines`**: UAE FTA Tax Invoices with TRN `100482910300003`, 5% VAT calculations, and QR code data.
+- **`invoices`** & **`invoice_lines`**: UAE FTA Tax Invoices with TRN `100000000000003 (demo)`, 5% VAT calculations, and QR code data.
 - **`credit_notes`**: Formal VAT-compliant returns and adjustments.
 - **`payments`** & **`payment_allocations`**: Dual-mode payment processing (Stripe Test / Mock Card / Cash / Cheque).
 - **`chart_of_accounts`**: UAE double-entry chart of accounts (Assets, Liabilities, Equity, Revenue, Cost of Sales, Opex).
