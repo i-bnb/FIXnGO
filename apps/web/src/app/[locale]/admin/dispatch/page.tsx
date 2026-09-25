@@ -32,7 +32,7 @@ import {
   AlertCircle,
   ExternalLink,
 } from 'lucide-react';
-import { calculateDistanceKm, estimateEtaMinutes } from '@fieldops/shared';
+import { calculateDistanceKm, estimateEtaMinutes, isSkillMatching } from '@fieldops/shared';
 
 interface UnassignedJob {
   id: string;
@@ -283,47 +283,99 @@ export default function AdminDispatchBoardPage({
   const [isSimulatorRunning, setIsSimulatorRunning] = useState(false);
   const [liveTechs, setLiveTechs] = useState<TechnicianLive[]>(initialTechnicians);
 
-  // Auto-select highlighted job or default to WO-2026-00025
+  // Load dynamic service requests created by customers
   useEffect(() => {
-    if (unassignedJobs.length > 0) {
-      if (highlightParam) {
-        const found = unassignedJobs.find((j) => j.orderNumber === highlightParam);
-        if (found) {
-          setSelectedJob(found);
-          // Auto select Joseph Mathew for WO-2026-00025
-          const jm = liveTechs.find((t) => t.id === 'tech-joseph');
-          if (jm) setSelectedTech(jm);
-          return;
+    async function loadRequests() {
+      try {
+        const res = await fetch('/api/service-requests');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.requests && Array.isArray(data.requests)) {
+            const dynamicJobs: UnassignedJob[] = data.requests
+              .filter((r: any) => r.status === 'SUBMITTED' || r.status === 'DRAFT')
+              .map((r: any) => {
+                const cat = (r.category || '').toUpperCase();
+                let trade: 'HVAC' | 'ELECTRICAL' | 'PLUMBING' | 'GENERAL' = 'GENERAL';
+                if (cat.includes('HVAC') || cat.includes('AC')) trade = 'HVAC';
+                else if (cat.includes('PLUMB')) trade = 'PLUMBING';
+                else if (cat.includes('ELECT')) trade = 'ELECTRICAL';
+
+                return {
+                  id: r.id,
+                  orderNumber: r.referenceNumber || `SR-${r.id.slice(-6)}`,
+                  title: r.title,
+                  customer: r.customerName || 'Customer',
+                  phone: r.customerPhone || 'xxxxxxxxx',
+                  trade,
+                  priority: r.priority || 'HIGH',
+                  address: r.address || 'Dubai, UAE',
+                  lat: 25.2048 + (Math.random() - 0.5) * 0.05,
+                  lng: 55.2708 + (Math.random() - 0.5) * 0.05,
+                  amount: r.estimatedTotal || 250.0,
+                  slaStatus: 'HEALTHY' as const,
+                  slaLabel: '⏱️ Just received',
+                };
+              });
+            setUnassignedJobs((prev) => {
+              const existingIds = new Set(prev.map((p) => p.id));
+              const newItems = dynamicJobs.filter((m) => !existingIds.has(m.id));
+              return [...newItems, ...prev];
+            });
+          }
         }
-      }
-      if (!selectedJob) {
-        setSelectedJob(unassignedJobs[0]);
-        const jm = liveTechs.find((t) => t.id === 'tech-joseph');
-        if (jm) setSelectedTech(jm);
+      } catch (err) {
+        // Fallback silently
       }
     }
-  }, [highlightParam, unassignedJobs, liveTechs]);
+    loadRequests();
+  }, []);
 
   // Compute Nearest Available suggestions for the selected job using calculateDistanceKm
+  // PART 4: Nearest technician suggestion on Dispatch lists ONLY matching technicians!
   const nearestTechnicians = useMemo(() => {
     if (!selectedJob) return [];
     return liveTechs
+      .filter((t) => isSkillMatching([t.trade, ...t.skills], selectedJob.trade))
       .map((t) => {
         const dist = calculateDistanceKm(selectedJob.lat, selectedJob.lng, t.lat, t.lng);
         const eta = estimateEtaMinutes(dist);
-        const tradeMatch = t.trade === selectedJob.trade;
-        return { ...t, distanceKm: dist, estimatedEta: eta, tradeMatch };
+        return { ...t, distanceKm: dist, estimatedEta: eta, tradeMatch: true };
       })
-      .sort((a, b) => {
-        // Sort trade matches first, then by distance
-        if (a.tradeMatch && !b.tradeMatch) return -1;
-        if (!a.tradeMatch && b.tradeMatch) return 1;
-        return a.distanceKm - b.distanceKm;
-      });
+      .sort((a, b) => a.distanceKm - b.distanceKm);
   }, [selectedJob, liveTechs]);
+
+  // Auto-select highlighted job or default to WO-2026-00025 with matching tech
+  useEffect(() => {
+    if (unassignedJobs.length > 0) {
+      let targetJob = unassignedJobs[0];
+      if (highlightParam) {
+        const found = unassignedJobs.find((j) => j.orderNumber === highlightParam);
+        if (found) targetJob = found;
+      }
+      setSelectedJob(targetJob);
+
+      // Auto-select the first matching technician for targetJob
+      const matchingTech = liveTechs.find((t) =>
+        isSkillMatching([t.trade, ...t.skills], targetJob.trade)
+      );
+      if (matchingTech) setSelectedTech(matchingTech);
+    }
+  }, [highlightParam, unassignedJobs]);
 
   const handleAssignTechnician = useCallback((tech: TechnicianLive) => {
     if (!selectedJob) return;
+
+    // PART 4 Skill Matching: Plumbing job can only be assigned to technicians with Plumbing skill!
+    const matchesSkill = isSkillMatching([tech.trade, ...tech.skills], selectedJob.trade);
+    if (!matchesSkill) {
+      alert(
+        isArabic
+          ? `لا يمكن تعيين هذا الفني! تتطلب هذه الوظيفة مهارة ${selectedJob.trade} بينما تخصص الفني هو ${tech.trade}.`
+          : `Assignment Blocked: This job requires ${selectedJob.trade} skill, but ${tech.name} specializes in ${tech.trade}.`
+      );
+      return;
+    }
+
     setAssignSuccess(
       isArabic
         ? `تم تعيين الفني ${tech.name} بنجاح للطلب ${selectedJob.orderNumber}! تم إرسال رابط التتبع المباشر إلى العميل ${selectedJob.customer}.`
@@ -347,7 +399,7 @@ export default function AdminDispatchBoardPage({
     setUnassignedJobs((prev) => prev.filter((j) => j.id !== selectedJob.id));
     setSelectedJob(null);
     setTimeout(() => setAssignSuccess(null), 6000);
-  }, [selectedJob, isArabic]);
+  }, [selectedJob, isArabic, liveTechs]);
 
   const toggleSimulator = async () => {
     const nextState = !isSimulatorRunning;
@@ -547,15 +599,17 @@ export default function AdminDispatchBoardPage({
                       key={job.id}
                       onClick={() => {
                         setSelectedJob(job);
-                        if (job.trade === 'PLUMBING') {
-                          const jm = liveTechs.find((t) => t.id === 'tech-joseph');
-                          if (jm) setSelectedTech(jm);
-                        } else if (job.trade === 'HVAC') {
-                          const fs = liveTechs.find((t) => t.id === 'tech-farhan');
-                          if (fs) setSelectedTech(fs);
-                        } else if (job.trade === 'ELECTRICAL') {
-                          const am = liveTechs.find((t) => t.id === 'tech-ahmed');
-                          if (am) setSelectedTech(am);
+                        const matchingTechs = liveTechs
+                          .filter((t) => isSkillMatching([t.trade, ...t.skills], job.trade))
+                          .map((t) => ({
+                            ...t,
+                            dist: calculateDistanceKm(job.lat, job.lng, t.lat, t.lng),
+                          }))
+                          .sort((a, b) => a.dist - b.dist);
+                        if (matchingTechs.length > 0) {
+                          setSelectedTech(matchingTechs[0]);
+                        } else {
+                          setSelectedTech(null);
                         }
                       }}
                       className={`p-3.5 rounded-xl border text-xs cursor-pointer transition relative ${
@@ -796,16 +850,33 @@ export default function AdminDispatchBoardPage({
 
               {/* 1-CLICK ASSIGN BUTTON (Signal Orange, min-h-[44px]) */}
               {selectedJob ? (
-                <button
-                  onClick={() => handleAssignTechnician(selectedTech)}
-                  className="w-full py-3 px-4 rounded-xl bg-signal-orange hover:bg-signal-orange-hover text-white font-bold text-sm min-h-[44px] flex items-center justify-center gap-2 transition shadow-md"
-                >
-                  <span>
-                    {isArabic
-                      ? `تعيين ${selectedTech.name} للطلب ${selectedJob.orderNumber} ←`
-                      : `Assign ${selectedTech.name} to ${selectedJob.orderNumber} →`}
-                  </span>
-                </button>
+                (() => {
+                  const isQualified = isSkillMatching(
+                    [selectedTech.trade, ...selectedTech.skills],
+                    selectedJob.trade
+                  );
+                  return (
+                    <button
+                      onClick={() => isQualified && handleAssignTechnician(selectedTech)}
+                      disabled={!isQualified}
+                      className={`w-full py-3 px-4 rounded-xl font-bold text-sm min-h-[44px] flex items-center justify-center gap-2 transition shadow-md ${
+                        isQualified
+                          ? 'bg-signal-orange hover:bg-signal-orange-hover text-white'
+                          : 'bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed'
+                      }`}
+                    >
+                      <span>
+                        {!isQualified
+                          ? isArabic
+                            ? `مهارة غير متوافقة (${selectedJob.trade} مطلوب)`
+                            : `Skill Mismatch (${selectedJob.trade} required)`
+                          : isArabic
+                          ? `تعيين ${selectedTech.name} للطلب ${selectedJob.orderNumber} ←`
+                          : `Assign ${selectedTech.name} to ${selectedJob.orderNumber} →`}
+                      </span>
+                    </button>
+                  );
+                })()
               ) : (
                 <div className="text-center py-2 text-xs text-slate-400">
                   {isArabic ? 'اختر طلباً من القائمة لتعيين الفني' : 'Select an unassigned ticket to dispatch'}

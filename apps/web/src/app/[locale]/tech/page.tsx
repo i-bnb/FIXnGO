@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Wrench,
   Navigation,
@@ -40,7 +40,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { clearClientSession } from '../../../lib/auth/session';
 import { performLogout } from '../../../lib/auth/logout';
 import { Logo } from '../../../components/common/Logo';
-import { JobStatus, Priority, ServiceType, calculateUaeVat } from '@fieldops/shared';
+import { JobStatus, Priority, ServiceType, calculateUaeVat, isSkillMatching } from '@fieldops/shared';
 import { fetchApi } from '../../../lib/api-client';
 import confetti from 'canvas-confetti';
 
@@ -79,13 +79,33 @@ interface JobItem {
   description: string;
 }
 
-const PERSONAS = {
+const PERSONAS: Record<string, any> = {
   LEAD: {
-    id: 'TECH-AC-01',
+    id: 'TECH-HVAC-12',
     name: 'Rashid Khan',
-    role: 'Lead AC & MEP Specialist',
-    trade: 'Master HVAC & Electrical',
+    role: 'Lead HVAC Specialist',
+    trade: 'HVAC',
     van: 'Van DXB-12 · Al Quoz Hub',
+    phone: 'xxxxxxxxx',
+    avatar: '/placeholders/technician-lead.svg',
+    canComplete: true,
+  },
+  PLUMBER: {
+    id: 'TECH-PLU-02',
+    name: 'Tariq Al-Mansoor',
+    role: 'Senior Plumbing Specialist',
+    trade: 'PLUMBING',
+    van: 'Van DXB-02 · Dubai Marina Hub',
+    phone: 'xxxxxxxxx',
+    avatar: '/placeholders/technician-lead.svg',
+    canComplete: true,
+  },
+  ELECTRICIAN: {
+    id: 'TECH-ELE-04',
+    name: 'Vikram Patel',
+    role: 'DEWA Grade-A Electrician',
+    trade: 'ELECTRICAL',
+    van: 'Van DXB-04 · Downtown Hub',
     phone: 'xxxxxxxxx',
     avatar: '/placeholders/technician-lead.svg',
     canComplete: true,
@@ -94,7 +114,7 @@ const PERSONAS = {
     id: 'HLP-02',
     name: 'Imran S.',
     role: 'Helper Technician',
-    trade: 'General Mechanical & AC Assistant',
+    trade: 'HVAC',
     van: 'Van DXB-12 · Al Quoz Hub',
     phone: 'xxxxxxxxx',
     avatar: '/placeholders/technician-helper.svg',
@@ -119,6 +139,28 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
 
   // Active Persona
   const [activePersona, setActivePersona] = useState(PERSONAS.LEAD);
+
+  // Auto-detect technician trade if logged in
+  useEffect(() => {
+    async function checkAuthMe() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) {
+            const nameLower = (data.user.name || '').toLowerCase();
+            const emailLower = (data.user.email || '').toLowerCase();
+            if (nameLower.includes('tariq') || emailLower.includes('plumb')) {
+              setActivePersona(PERSONAS.PLUMBER);
+            } else if (nameLower.includes('vikram') || emailLower.includes('elec')) {
+              setActivePersona(PERSONAS.ELECTRICIAN);
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    checkAuthMe();
+  }, []);
 
   // Active Tab: JOBS, VAN_STOCK, PERFORMANCE, ME
   const [activeTab, setActiveTab] = useState<'JOBS' | 'VAN_STOCK' | 'PERFORMANCE' | 'ME'>('JOBS');
@@ -149,7 +191,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
     }
   };
 
-  // Work Orders List (Page 8 Schedule)
+  // Work Orders List Across Trades
   const [jobs, setJobs] = useState<JobItem[]>([
     {
       id: 'wo-24810',
@@ -215,9 +257,69 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       lng: 55.21,
       description: 'Outdoor condenser unit hums loudly without starting compressor.',
     },
+    {
+      id: 'wo-24830',
+      orderNumber: 'WO-24830',
+      title: 'Emergency Main Water Pipe Leak Repair',
+      clientName: 'Sara Al Zaabi',
+      clientPhone: 'xxxxxxxxx',
+      address: 'Villa 22, Palm Jumeirah, Dubai',
+      serviceType: 'PLUMBING',
+      status: JobStatus.IN_PROGRESS,
+      priority: Priority.EMERGENCY,
+      scheduledTime: '02:00 PM',
+      baseFee: 175.0,
+      lat: 25.1124,
+      lng: 55.1390,
+      description: 'PPR pipe fracture under kitchen sink causing water damage. Replace valve and repair line.',
+    },
+    {
+      id: 'wo-24831',
+      orderNumber: 'WO-24831',
+      title: 'Water Heater Replacement & Pressure Test',
+      clientName: 'Hassan Mahmoud',
+      clientPhone: 'xxxxxxxxx',
+      address: 'JBR Sadaf 4, Dubai Marina',
+      serviceType: 'PLUMBING',
+      status: JobStatus.ASSIGNED,
+      priority: Priority.HIGH,
+      scheduledTime: '04:30 PM',
+      baseFee: 220.0,
+      lat: 25.0780,
+      lng: 55.1340,
+      description: 'Ariston 50L water heater internal tank rupture. Drain, replace, and pressure test.',
+    },
+    {
+      id: 'wo-24840',
+      orderNumber: 'WO-24840',
+      title: 'Sub-DB Breaker Tripping Diagnostic',
+      clientName: 'Blue Sky Towers OA',
+      clientPhone: 'xxxxxxxxx',
+      address: 'DIFC Gate District, Dubai',
+      serviceType: 'ELECTRICAL',
+      status: JobStatus.IN_PROGRESS,
+      priority: Priority.HIGH,
+      scheduledTime: '03:15 PM',
+      baseFee: 190.0,
+      lat: 25.2120,
+      lng: 55.2810,
+      description: 'Schneider 32A MCB tripping repeatedly under air handler load. Thermal scan and busbar check.',
+    },
   ]);
 
-  const activeJob = jobs.find((j) => j.id === selectedJobId) || jobs[0];
+  // PART 4: Technician app shows ONLY jobs assigned/matching that technician!
+  const displayedJobs = useMemo(() => {
+    return jobs.filter((job) => isSkillMatching(activePersona.trade, job.serviceType));
+  }, [jobs, activePersona.trade]);
+
+  const activeJob = displayedJobs.find((j) => j.id === selectedJobId) || displayedJobs[0] || jobs[0];
+
+  // Auto-switch selected job when persona or displayedJobs changes
+  useEffect(() => {
+    if (displayedJobs.length > 0 && !displayedJobs.some((j) => j.id === selectedJobId)) {
+      setSelectedJobId(displayedJobs[0].id);
+    }
+  }, [displayedJobs, selectedJobId]);
 
   // Checklist items for WO-24817 (Page 9)
   const [checklist, setChecklist] = useState([
@@ -696,13 +798,18 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
         <div className="flex items-center gap-2.5">
           <div className="text-end">
             <div className="text-xs font-bold text-white font-display">
-              {isArabic ? 'مساء الخير، راشد' : 'Good afternoon, Rashid'}
+              {isArabic
+                ? `مساء الخير، ${activePersona.name.split(' ')[0]}`
+                : `Good afternoon, ${activePersona.name.split(' ')[0]}`}
             </div>
             <button
               onClick={() => {
-                const next = activePersona.id === PERSONAS.LEAD.id ? PERSONAS.HELPER : PERSONAS.LEAD;
+                const keys = Object.keys(PERSONAS);
+                const cur = keys.findIndex((k) => PERSONAS[k].id === activePersona.id);
+                const nextKey = keys[(cur + 1) % keys.length];
+                const next = PERSONAS[nextKey];
                 setActivePersona(next);
-                showToast(`Switched active technician persona to: ${next.name}`);
+                showToast(`Switched to: ${next.name} (${next.trade})`);
               }}
               className="text-[9px] text-slate-300 hover:text-white underline font-mono"
             >
@@ -710,7 +817,12 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
             </button>
           </div>
           <div className="w-8 h-8 rounded-full bg-signal-orange text-white font-display font-extrabold text-xs flex items-center justify-center shrink-0 ring-2 ring-white/20">
-            RK
+            {activePersona.name
+              .split(' ')
+              .map((n: string) => n[0])
+              .join('')
+              .slice(0, 2)
+              .toUpperCase()}
           </div>
           <button
             onClick={handleInitiateLogout}
@@ -807,11 +919,13 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       {/* Stat Pills (Page 8) */}
       <div className="grid grid-cols-3 gap-2 mb-4 font-body">
         <div className="bg-white rounded-2xl p-3 border border-line text-center shadow-xs">
-          <div className="text-xl font-extrabold text-navy font-display">4</div>
+          <div className="text-xl font-extrabold text-navy font-display">{displayedJobs.length}</div>
           <div className="text-[11px] text-slate font-medium">{isArabic ? 'مهام اليوم' : 'Jobs today'}</div>
         </div>
         <div className="bg-white rounded-2xl p-3 border border-line text-center shadow-xs">
-          <div className="text-xl font-extrabold text-emerald-600 font-display">2</div>
+          <div className="text-xl font-extrabold text-emerald-600 font-display">
+            {displayedJobs.filter((j) => j.status === JobStatus.COMPLETED).length}
+          </div>
           <div className="text-[11px] text-slate font-medium">{isArabic ? 'مكتملة' : 'Completed'}</div>
         </div>
         <div className="bg-white rounded-2xl p-3 border border-line text-center shadow-xs">
@@ -919,56 +1033,58 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
               {/* Daily Schedule Carousel / Selector (Page 8) */}
               <div>
                 {/* Hero NOW Card (Page 8) */}
-                <div className="p-4 bg-white rounded-2xl border-2 border-signal-orange/60 shadow-sm space-y-3 mb-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold text-signal-orange uppercase tracking-wider font-display flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-signal-orange animate-ping" />
-                        <span>NOW · WO-24817</span>
+                {activeJob && (
+                  <div className="p-4 bg-white rounded-2xl border-2 border-signal-orange/60 shadow-sm space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-signal-orange uppercase tracking-wider font-display flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-signal-orange animate-ping" />
+                          <span>NOW · {activeJob.orderNumber}</span>
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full uppercase">
+                        {activeJob.priority}
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full uppercase">
-                      High priority
-                    </span>
-                  </div>
 
-                  <div>
-                    <h3 className="font-extrabold text-sm text-ink font-display">
-                      {isArabic ? 'المكيف لا يبرد • غرفة النوم ٢' : 'AC not cooling · Bedroom 2'}
-                    </h3>
-                    <p className="text-xs text-slate mt-0.5">
-                      Fatima Al Mansoori · Villa 14, Arabian Ranches
-                    </p>
-                  </div>
+                    <div>
+                      <h3 className="font-extrabold text-sm text-ink font-display">
+                        {activeJob.title}
+                      </h3>
+                      <p className="text-xs text-slate mt-0.5">
+                        {activeJob.clientName} · {activeJob.address}
+                      </p>
+                    </div>
 
-                  <div className="flex items-center gap-2 pt-1">
-                    <button
-                      onClick={() => setSelectedJobId('wo-24817')}
-                      className="flex-1 py-2.5 bg-signal-orange hover:bg-signal-orange-hover text-white font-extrabold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 min-h-[44px]"
-                    >
-                      <Wrench className="w-3.5 h-3.5" />
-                      <span>{isArabic ? 'فتح المهمة' : 'Open job'}</span>
-                    </button>
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => setSelectedJobId(activeJob.id)}
+                        className="flex-1 py-2.5 bg-signal-orange hover:bg-signal-orange-hover text-white font-extrabold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 min-h-[44px]"
+                      >
+                        <Wrench className="w-3.5 h-3.5" />
+                        <span>{isArabic ? 'فتح المهمة' : 'Open job'}</span>
+                      </button>
 
-                    <a
-                      href={`https://www.google.com/maps/dir/?api=1&destination=25.0534,55.2530`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2.5 border border-line text-ink hover:bg-ground font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 min-h-[44px]"
-                    >
-                      <Navigation className="w-3.5 h-3.5 text-ocean-blue" />
-                      <span>{isArabic ? 'ملاحة' : 'Navigate'}</span>
-                    </a>
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${activeJob.lat},${activeJob.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2.5 border border-line text-ink hover:bg-ground font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 min-h-[44px]"
+                      >
+                        <Navigation className="w-3.5 h-3.5 text-ocean-blue" />
+                        <span>{isArabic ? 'ملاحة' : 'Navigate'}</span>
+                      </a>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate mb-2 px-1 flex items-center justify-between font-display">
                   <span>{isArabic ? 'جدول مهام اليوم' : "Today's Schedule"}</span>
-                  <span className="text-slate/70 font-mono">{jobs.length} Jobs Total</span>
+                  <span className="text-slate/70 font-mono">{displayedJobs.length} Jobs Total</span>
                 </div>
 
                 <div className="space-y-2">
-                  {jobs.map((job) => {
+                  {displayedJobs.map((job) => {
                     const isSelected = job.id === selectedJobId;
                     return (
                       <div

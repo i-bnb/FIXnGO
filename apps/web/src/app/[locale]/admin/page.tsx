@@ -557,8 +557,8 @@ export default function AdminDashboardPage({
                       <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                       <span>{t.rating}</span>
                     </div>
-                    <div className="text-[10px] text-slate-500 font-mono">
-                      AED {t.billedAed.toLocaleString()}
+                    <div className="text-[10px] text-slate-500 font-mono" suppressHydrationWarning>
+                      AED {new Intl.NumberFormat('en-US').format(t.billedAed)}
                     </div>
                   </div>
                 </div>
@@ -665,8 +665,8 @@ export default function AdminDashboardPage({
                 AED {(metrics.outstandingReceivablesAed / 1000).toFixed(1)}k Due
               </span>
             </div>
-            <div className="text-xl font-bold font-display text-navy dark:text-white font-mono">
-              AED {metrics.outstandingReceivablesAed.toLocaleString()}
+            <div className="text-xl font-bold font-display text-navy dark:text-white font-mono" suppressHydrationWarning>
+              AED {new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(metrics.outstandingReceivablesAed)}
             </div>
             <p className="text-xs text-slate-500 mt-1">
               Outstanding receivables reconciled across all active and completed customer accounts

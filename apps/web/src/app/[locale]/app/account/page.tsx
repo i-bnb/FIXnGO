@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import {
@@ -29,6 +29,40 @@ export default function CustomerAccountPage({
   const isArabic = locale === 'ar';
   const router = useRouter();
   const pathname = usePathname();
+
+  const [user, setUser] = useState<{ fullName: string; email: string; phone: string } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && data?.user) {
+          setUser({
+            fullName: data.user.fullName || 'Customer Account',
+            email: data.user.email || 'customer@fixngo.ae',
+            phone: data.user.phone || '+971 50 900 3001',
+          });
+        }
+      })
+      .catch(() => {
+        setUser({
+          fullName: 'Customer Account',
+          email: 'customer@fixngo.ae',
+          phone: '+971 50 900 3001',
+        });
+      });
+  }, []);
+
+  const displayName = user?.fullName || 'Customer Account';
+  const displayEmail = user?.email || 'customer@fixngo.ae';
+  const displayPhone = user?.phone || '+971 50 900 3001';
+  const initials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'CU';
 
   const [savedAddresses] = useState([
     {
@@ -75,7 +109,7 @@ export default function CustomerAccountPage({
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <h1 className="font-display font-extrabold text-lg text-navy">
-              {isArabic ? 'الملف الشخصي والحساب' : 'My Account & Settings'}
+              {isArabic ? 'الملف الشخصي والحساب' : 'Customer Account & Settings'}
             </h1>
           </div>
         </header>
@@ -86,17 +120,17 @@ export default function CustomerAccountPage({
           <div className="p-4 bg-ground rounded-2xl border border-line space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 rounded-2xl bg-navy text-white font-display font-extrabold text-lg flex items-center justify-center shadow-xs">
-                KM
+                {initials}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <h2 className="font-extrabold text-navy text-base truncate">Khalid Al-Mansoor</h2>
+                  <h2 className="font-extrabold text-navy text-base truncate">{displayName}</h2>
                   <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-md">
                     Verified
                   </span>
                 </div>
-                <div className="text-xs text-slate-500 font-mono mt-0.5">xxxxxxxxx</div>
-                <div className="text-xs text-slate-400 truncate">test@i-bnb.com</div>
+                <div className="text-xs text-slate-500 font-mono mt-0.5">{displayPhone}</div>
+                <div className="text-xs text-slate-400 truncate">{displayEmail}</div>
               </div>
             </div>
 

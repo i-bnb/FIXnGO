@@ -30,6 +30,7 @@
     "start": "./bin/start.js"
   },
   "devDependencies": {
+    "playwright": "^1.63.0",
     "typescript": "^5.7.3"
   },
   "pnpm": {
@@ -40,7 +41,16 @@
       "cross-spawn": ">=7.0.6",
       "path-to-regexp": ">=0.1.12"
     },
-    "onlyBuiltDependencies": ["@prisma/client", "@prisma/engines", "prisma", "bcrypt", "@nestjs/core", "msgpackr-extract", "protobufjs", "@google/genai"]
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "bcrypt",
+      "@nestjs/core",
+      "msgpackr-extract",
+      "protobufjs",
+      "@google/genai"
+    ]
   },
   "engines": {
     "node": ">=20 <21"

@@ -8,3 +8,4 @@ export * from './data/canonical-demo-data';
 export * from './pricing';
 export * from './state-machine';
 export * from './datetime';
+export * from './catalog';

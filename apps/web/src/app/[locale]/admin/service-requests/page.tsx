@@ -145,6 +145,22 @@ export default function ServiceRequestsAdminPage({
   const [isConvertModalOpen, setIsConvertModalOpen] = useState(false);
   const [convertedToast, setConvertedToast] = useState<string | null>(null);
 
+  useEffect(() => {
+    fetch('/api/service-requests')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && Array.isArray(data.requests) && data.requests.length > 0) {
+          // Merge live requests with INITIAL_REQUESTS without duplicating IDs
+          setRequests((prev) => {
+            const liveIds = new Set(data.requests.map((r: any) => r.id || r.ticketNumber));
+            const existingRemaining = prev.filter((r) => !liveIds.has(r.id) && !liveIds.has(r.ticketNumber));
+            return [...data.requests, ...existingRemaining];
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Conversion form state
   const [convertForm, setConvertForm] = useState({
     assignedTrade: 'HVAC',

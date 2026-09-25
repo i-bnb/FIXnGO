@@ -350,18 +350,47 @@ async function main() {
   const catHvac = await prisma.serviceCategory.create({ data: { code: 'CAT_HVAC', name: 'Air Conditioning & HVAC Services' } });
   const catEle = await prisma.serviceCategory.create({ data: { code: 'CAT_ELE', name: 'Electrical Maintenance & Rewiring' } });
   const catPlu = await prisma.serviceCategory.create({ data: { code: 'CAT_PLU', name: 'Plumbing & Chilled Water Pipelines' } });
+  const catLab = await prisma.serviceCategory.create({ data: { code: 'CAT_LABOUR', name: 'Manpower & Labour Supply' } });
+  const catRen = await prisma.serviceCategory.create({ data: { code: 'CAT_RENTAL', name: 'Equipment & Machinery Rental' } });
 
   const services = [
-    { catId: catHvac.id, code: 'SRV-AC-DIAG', name: 'AC Comprehensive Diagnostics & Inspection', rate: 180.0, duration: 60 },
-    { catId: catHvac.id, code: 'SRV-AC-GAS', name: 'AC Refrigerant R410A Gas Top-up & Leak Check', rate: 260.0, duration: 90 },
-    { catId: catHvac.id, code: 'SRV-AC-CAP', name: 'AC Dual Run Capacitor Replacement', rate: 195.0, duration: 45 },
-    { catId: catHvac.id, code: 'SRV-AC-COIL', name: 'Condenser Coil Chemical Pressure Wash', rate: 320.0, duration: 120 },
-    { catId: catEle.id, code: 'SRV-ELE-TRIP', name: 'Circuit Breaker Tripping Diagnostics & Rectification', rate: 210.0, duration: 60 },
-    { catId: catEle.id, code: 'SRV-ELE-PANEL', name: 'Distribution Board (DB) Panel Wiring Overhaul', rate: 450.0, duration: 180 },
-    { catId: catEle.id, code: 'SRV-ELE-LIGHT', name: 'Emergency LED Lighting Installation', rate: 150.0, duration: 45 },
-    { catId: catPlu.id, code: 'SRV-PLU-LEAK', name: 'Chilled Water & Domestic Pipe Leak Repair', rate: 240.0, duration: 90 },
-    { catId: catPlu.id, code: 'SRV-PLU-PUMP', name: 'Booster Water Pump Pressure Switch Calibration', rate: 280.0, duration: 75 },
-    { catId: catPlu.id, code: 'SRV-PLU-HEATER', name: 'Central Water Heater Element & Thermostat Replacement', rate: 290.0, duration: 90 },
+    // AC
+    { catId: catHvac.id, code: 'SRV-AC-COOL', name: 'AC not cooling', rate: 149.0, duration: 60 },
+    { catId: catHvac.id, code: 'SRV-AC-SVC', name: 'AC service & filter cleaning', rate: 129.0, duration: 45 },
+    { catId: catHvac.id, code: 'SRV-AC-GAS', name: 'Gas top-up', rate: 180.0, duration: 60 },
+    { catId: catHvac.id, code: 'SRV-AC-LEAK', name: 'Water leaking from AC', rate: 149.0, duration: 60 },
+    { catId: catHvac.id, code: 'SRV-AC-NOISE', name: 'Noisy AC', rate: 139.0, duration: 45 },
+    { catId: catHvac.id, code: 'SRV-AC-INSTALL', name: 'New AC installation', rate: 350.0, duration: 120 },
+    { catId: catHvac.id, code: 'SRV-AC-DUCT', name: 'Duct cleaning', rate: 450.0, duration: 120 },
+    // Electrical
+    { catId: catEle.id, code: 'SRV-ELE-TRIP', name: 'Power trip / no power', rate: 129.0, duration: 45 },
+    { catId: catEle.id, code: 'SRV-ELE-SWITCH', name: 'Socket or switch repair', rate: 99.0, duration: 30 },
+    { catId: catEle.id, code: 'SRV-ELE-LIGHT', name: 'Light fitting install', rate: 99.0, duration: 30 },
+    { catId: catEle.id, code: 'SRV-ELE-PANEL', name: 'DB panel issue', rate: 199.0, duration: 60 },
+    { catId: catEle.id, code: 'SRV-ELE-FAN', name: 'Ceiling fan install', rate: 120.0, duration: 45 },
+    { catId: catEle.id, code: 'SRV-ELE-WIRING', name: 'New wiring point', rate: 150.0, duration: 60 },
+    // Plumbing
+    { catId: catPlu.id, code: 'SRV-PLU-LEAK', name: 'Leak repair', rate: 129.0, duration: 45 },
+    { catId: catPlu.id, code: 'SRV-PLU-DRAIN', name: 'Blocked drain', rate: 149.0, duration: 45 },
+    { catId: catPlu.id, code: 'SRV-PLU-HEATER', name: 'Water heater repair/replace', rate: 180.0, duration: 60 },
+    { catId: catPlu.id, code: 'SRV-PLU-MIXER', name: 'Tap or mixer replace', rate: 99.0, duration: 30 },
+    { catId: catPlu.id, code: 'SRV-PLU-TOILET', name: 'Toilet repair', rate: 120.0, duration: 45 },
+    { catId: catPlu.id, code: 'SRV-PLU-BURST', name: 'Pipe burst (emergency)', rate: 199.0, duration: 60 },
+    { catId: catPlu.id, code: 'SRV-PLU-PUMP', name: 'Water pump repair', rate: 199.0, duration: 60 },
+    { catId: catPlu.id, code: 'SRV-PLU-TANK', name: 'Water tank cleaning', rate: 350.0, duration: 90 },
+    // Labour
+    { catId: catLab.id, code: 'SRV-LAB-HELPER', name: 'Labour Supply: Helper', rate: 120.0, duration: 480 },
+    { catId: catLab.id, code: 'SRV-LAB-MASON', name: 'Labour Supply: Mason', rate: 180.0, duration: 480 },
+    { catId: catLab.id, code: 'SRV-LAB-ELE', name: 'Labour Supply: Electrician', rate: 200.0, duration: 480 },
+    { catId: catLab.id, code: 'SRV-LAB-PLU', name: 'Labour Supply: Plumber', rate: 200.0, duration: 480 },
+    { catId: catLab.id, code: 'SRV-LAB-PAINT', name: 'Labour Supply: Painter', rate: 160.0, duration: 480 },
+    { catId: catLab.id, code: 'SRV-LAB-CARP', name: 'Labour Supply: Carpenter', rate: 180.0, duration: 480 },
+    // Equipment
+    { catId: catRen.id, code: 'SRV-REN-SCAFF', name: 'Equipment Rental: Scaffolding', rate: 90.0, duration: 1440 },
+    { catId: catRen.id, code: 'SRV-REN-SCISSOR', name: 'Equipment Rental: Scissor lift', rate: 250.0, duration: 1440 },
+    { catId: catRen.id, code: 'SRV-REN-GEN', name: 'Equipment Rental: Generator', rate: 180.0, duration: 1440 },
+    { catId: catRen.id, code: 'SRV-REN-MIXER', name: 'Equipment Rental: Concrete mixer', rate: 120.0, duration: 1440 },
+    { catId: catRen.id, code: 'SRV-REN-WELD', name: 'Equipment Rental: Welding machine', rate: 110.0, duration: 1440 },
   ];
 
   const serviceRecords: any[] = [];

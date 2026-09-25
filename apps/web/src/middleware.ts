@@ -89,11 +89,12 @@ export default function middleware(request: NextRequest) {
 
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com",
+    "worker-src 'self' blob:",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
     "font-src 'self' https://fonts.gstatic.com data:",
-    "img-src 'self' data: blob: https://images.unsplash.com https://*.onrender.com",
-    "connect-src 'self' http://localhost:4000 ws://localhost:4000 https://*.onrender.com wss://*.onrender.com https://*.vercel.app https://api.stripe.com",
+    "img-src 'self' data: blob: https://images.unsplash.com https://*.onrender.com https://unpkg.com https://*.tile.openstreetmap.org",
+    "connect-src 'self' http://localhost:4000 ws://localhost:4000 http://localhost:3000 http://localhost:3001 https://*.onrender.com wss://*.onrender.com https://*.vercel.app https://api.stripe.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

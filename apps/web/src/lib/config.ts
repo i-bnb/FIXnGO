@@ -9,12 +9,7 @@ export function getApiBaseUrl(): string {
     return envUrl.trim().replace(/\/$/, '');
   }
 
-  // Production builds must never fall back to localhost
-  if (process.env.NODE_ENV === 'production') {
-    return '';
-  }
-
-  return 'http://localhost:4000';
+  return '';
 }
 
 export function getSocketUrl(): string {
@@ -23,12 +18,7 @@ export function getSocketUrl(): string {
     return envSocket.trim().replace(/\/$/, '');
   }
 
-  // Production builds must never fall back to localhost
-  if (process.env.NODE_ENV === 'production') {
-    return '';
-  }
-
-  return 'http://localhost:4000';
+  return '';
 }
 
 export const API_BASE_URL = getApiBaseUrl();

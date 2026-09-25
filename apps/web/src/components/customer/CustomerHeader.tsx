@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -73,6 +73,47 @@ export function CustomerHeader({
     },
   ];
 
+  const [sessionUser, setSessionUser] = useState<{ fullName: string; email: string; phone?: string } | null>(null);
+
+  useEffect(() => {
+    if (user?.fullName) {
+      setSessionUser({
+        fullName: user.fullName,
+        email: (user as any).email || 'customer@fixngo.ae',
+        phone: user.phone,
+      });
+      return;
+    }
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && data?.user) {
+          setSessionUser({
+            fullName: data.user.fullName || 'Customer Account',
+            email: data.user.email || 'customer@fixngo.ae',
+            phone: data.user.phone || '+971 50 900 3001',
+          });
+        }
+      })
+      .catch(() => {
+        setSessionUser({
+          fullName: 'Customer Account',
+          email: 'customer@fixngo.ae',
+          phone: '+971 50 900 3001',
+        });
+      });
+  }, [user]);
+
+  const activeFullName = user?.fullName || sessionUser?.fullName || 'Customer Account';
+  const activeEmail = (user as any)?.email || sessionUser?.email || 'customer@fixngo.ae';
+  const userInitials = activeFullName
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'CU';
+
   // Alternate locale url
   const targetLocale = locale === 'ar' ? 'en' : 'ar';
   const alternateUrl = pathname.replace(`/${locale}`, `/${targetLocale}`);
@@ -132,7 +173,7 @@ export function CustomerHeader({
                 className="w-8 h-8 rounded-xl bg-navy text-white text-xs font-black flex items-center justify-center hover:opacity-90 transition border border-line shadow-xs"
                 title={isArabic ? 'حساب العميل' : 'Customer Account'}
               >
-                KM
+                {userInitials}
               </button>
 
               {showUserMenu && (
@@ -143,8 +184,8 @@ export function CustomerHeader({
                   />
                   <div className="absolute end-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-line p-2 z-50 text-xs animate-in fade-in zoom-in-95">
                     <div className="p-2 border-b border-line mb-1">
-                      <div className="font-bold text-ink">Khalid Al-Mansoor</div>
-                      <div className="text-[10px] text-slate truncate">test@i-bnb.com</div>
+                      <div className="font-bold text-ink truncate">{activeFullName}</div>
+                      <div className="text-[10px] text-slate truncate">{activeEmail}</div>
                       <span className="inline-block mt-1 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                         {isArabic ? 'بوابة العميل' : 'Customer Portal'}
                       </span>
