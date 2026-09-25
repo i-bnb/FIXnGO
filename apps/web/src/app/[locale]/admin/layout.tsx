@@ -50,7 +50,7 @@ export default function AdminLayout({
             <button
               onClick={() => setAssistantOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-navy dark:bg-slate-800 text-white hover:bg-slate-800 dark:hover:bg-slate-700 font-bold text-xs border border-slate-700 shadow-xs transition cursor-pointer"
-              title="Ask FIXnGO AI Operations Assistant"
+              title={locale === 'ar' ? 'اسأل فيكس آند جو' : 'Ask FIXnGO'}
             >
               <Sparkles className="w-3.5 h-3.5 text-signal-orange animate-pulse" />
               <span>{locale === 'ar' ? 'اسأل فيكس آند جو' : 'Ask FIXnGO'}</span>

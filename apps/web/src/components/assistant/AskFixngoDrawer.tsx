@@ -39,8 +39,8 @@ interface Message {
 const ROLES = [
   { key: 'SUPER_ADMIN', name: 'Sultan Al-Falasi', title: 'Super Admin', badge: 'Full Access' },
   { key: 'ACCOUNTANT', name: 'Fatima Al-Zahra', title: 'Accountant', badge: 'Finance Access' },
-  { key: 'DISPATCHER', name: 'Mariam Al-Kaabi', title: 'Dispatcher', badge: 'Ops Only (No Finance)' },
-  { key: 'OPS_MANAGER', name: 'Tariq Mansoor', title: 'Operations Mgr', badge: 'Ops Access' },
+  { key: 'DISPATCHER', name: 'Mariam Al-Kaabi', title: 'Dispatcher', badge: 'Operations Only' },
+  { key: 'OPS_MANAGER', name: 'Tariq Mansoor', title: 'Operations Mgr', badge: 'Operations Access' },
 ];
 
 export function AskFixngoDrawer({ isOpen, onClose, locale }: AskFixngoDrawerProps) {
@@ -51,10 +51,10 @@ export function AskFixngoDrawer({ isOpen, onClose, locale }: AskFixngoDrawerProp
       id: 'welcome',
       role: 'assistant',
       content: isArabic
-        ? `مرحباً بك! أنا **مساعد FIXnGO للعمليات التشغيلية** في دولة الإمارات.
+        ? `مرحباً بك! أنا **مساعد FIXnGO** للعمليات الميدانية في دولة الإمارات.
 * يمكنك سؤالي عن أوامر العمل (\`WO-\`)، فواتير ضريبة القيمة المضافة (\`INV-\`)، تتبع الفنيين المباشر عبر GPS، أو تقارير الأرباح والخسائر.
 * انقر على أحد الأسئلة المقترحة أدناه للبدء فوراً.`
-        : `Hello! I am the **FIXnGO Operations Assistant** powered by live operational telematics.
+        : `Hello! I am your **FIXnGO Assistant** for UAE field operations.
 * Ask me about active work orders (\`WO-\`), FTA tax invoices (\`INV-\`), live GPS fleet positions, SLA breaches, or profitability.
 * Click any suggested chip below to inspect live operations.`,
     },
@@ -186,7 +186,7 @@ export function AskFixngoDrawer({ isOpen, onClose, locale }: AskFixngoDrawerProp
             } catch {
               setActiveToolName(parsedData);
             }
-            setThinkingStatus(isArabic ? 'جاري استرداد البيانات من قاعدة البيانات...' : 'Executing query on database...');
+            setThinkingStatus(isArabic ? 'جاري تحضير المعلومات...' : 'Fetching operational updates...');
           } else if (eventType === 'chunk') {
             setThinkingStatus(null);
             accumulatedText += parsedData;
@@ -264,9 +264,9 @@ export function AskFixngoDrawer({ isOpen, onClose, locale }: AskFixngoDrawerProp
       if (activeRoleKey === 'DISPATCHER') {
         cannedAnswer = isArabic
           ? `⛔ **عذراً، الوصول غير مصرح به**:
-دورك الحالي (**DISPATCHER**) لا يملك صلاحية \`finance.view\` اللازمة للاطلاع على هوامش الربحية وبيانات الخسائر التشغيلية. يرجى مراجعة المدير المالي أو المحاسب الرئيسي (**Fatima Al-Zahra**).`
+بصفتك مسؤول التوزيع، يمكنك الوصول إلى العمليات الميدانية والجدولة. البيانات المالية وهوامش الربحية مخصصة للإدارة المالية. يرجى مراجعة المحاسب المالي (**Fatima Al-Zahra**).`
           : `⛔ **Access Denied**:
-Your current role (**DISPATCHER**) does not possess the required \`finance.view\` permission to inspect job gross margins and financial profitability figures. Please consult your Senior Accountant (**Fatima Al-Zahra**) or Super Administrator.`;
+As a Dispatcher, you have access to field operations and dispatching. Financial figures and job profitability are restricted to the Finance and Management team. Please consult your Senior Accountant (**Fatima Al-Zahra**).`;
       } else {
         cannedAnswer = isArabic
           ? `### 📉 تقرير المهام ذات الخسائر التشغيلية (3 مهام محددة):
@@ -310,9 +310,9 @@ Your current role (**DISPATCHER**) does not possess the required \`finance.view\
       if (activeRoleKey === 'DISPATCHER') {
         cannedAnswer = isArabic
           ? `⛔ **عذراً، الوصول غير مصرح به**:
-لا تملك صلاحية \`finance.view\` لعرض الفواتير المتأخرة والذمم المدينة. يرجى طلب البيانات من المحاسب المالي.`
+بيانات الفواتير المتأخرة والذمم المدينة مخصصة للإدارة المالية. يرجى طلب البيانات من المحاسب المالي.`
           : `⛔ **Access Denied**:
-You lack the required \`finance.view\` permission to inspect accounts receivable aging and overdue debtor balances.`;
+Accounts receivable aging and overdue customer balances are restricted to the Finance team. Please contact your Senior Accountant.`;
       } else {
         cannedAnswer = isArabic
           ? `### 💰 الذمم المدينة والفواتير المتأخرة (إجمالي المستحقات: 94,300 د.إ):
@@ -588,7 +588,7 @@ You can click any suggested question chip below or ask me about specific work or
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                {isArabic ? 'مساعد العمليات الميدانية والبيانات الحية' : 'Live Operations & Financial Intelligence'}
+                {isArabic ? 'مساعد العمليات الميدانية والمعلومات التشغيلية' : 'Live Field & Operational Information'}
               </p>
             </div>
           </div>
@@ -611,11 +611,11 @@ You can click any suggested question chip below or ask me about specific work or
           </div>
         </div>
 
-        {/* Persona / RBAC Role Selector Bar */}
+        {/* Profile Selector Bar */}
         <div className="px-3 py-2 bg-ground dark:bg-slate-950 border-b border-line dark:border-slate-800 flex items-center justify-between text-xs shrink-0 relative">
           <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium">
             <User className="w-3.5 h-3.5 text-signal-orange" />
-            <span>{isArabic ? 'الدور النشط:' : 'Asking as:'}</span>
+            <span>{isArabic ? 'الملف الحالي:' : 'Profile:'}</span>
             <button
               onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
               className="font-bold text-navy dark:text-white flex items-center gap-1 hover:underline cursor-pointer"
@@ -624,7 +624,7 @@ You can click any suggested question chip below or ask me about specific work or
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
           </div>
-          <span className="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-800 border border-line dark:border-slate-700 font-mono text-slate-600 dark:text-slate-300">
+          <span className="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-800 border border-line dark:border-slate-700 font-medium text-slate-600 dark:text-slate-300">
             {activeRole.badge}
           </span>
 
@@ -632,7 +632,7 @@ You can click any suggested question chip below or ask me about specific work or
           {roleDropdownOpen && (
             <div className="absolute top-full start-2 end-2 mt-1 bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-xl shadow-xl z-50 p-1.5 space-y-1">
               <div className="text-[10px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider">
-                {isArabic ? 'اختر الدور لاختبار صلاحيات RBAC' : 'Select Persona to Test RBAC Permissions'}
+                {isArabic ? 'تبديل الملف الشخصي' : 'Switch Profile'}
               </div>
               {ROLES.map((r) => (
                 <button
@@ -684,21 +684,11 @@ You can click any suggested question chip below or ask me about specific work or
                     <div>
                       {renderFormattedContent(m.content)}
 
-                      {/* Tool call citations */}
+                      {/* Operational source indicator without technical terms or code */}
                       {m.toolsCalled && m.toolsCalled.length > 0 && (
-                        <div className="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-700/80 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400">
-                          <span className="font-bold flex items-center gap-1">
-                            <Sparkles className="w-2.5 h-2.5 text-signal-orange" />
-                            {isArabic ? 'المصادر المباشرة:' : 'Live verified tools:'}
-                          </span>
-                          {m.toolsCalled.map((tName, i) => (
-                            <span
-                              key={i}
-                              className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono"
-                            >
-                              {tName}()
-                            </span>
-                          ))}
+                        <div className="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-700/80 flex items-center gap-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          <Check className="w-3 h-3 text-emerald-500" />
+                          <span>{isArabic ? 'تم التحقق من السجلات التشغيلية المباشرة' : 'Verified from live operational records'}</span>
                         </div>
                       )}
                     </div>
@@ -723,16 +713,11 @@ You can click any suggested question chip below or ask me about specific work or
             );
           })}
 
-          {/* Thinking & Live Tool Execution State */}
+          {/* Thinking & Live Status */}
           {thinkingStatus && (
             <div className="flex items-center gap-2 p-3 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-900/60 text-xs text-signal-orange animate-pulse">
               <Sparkles className="w-3.5 h-3.5 animate-spin" />
               <span className="font-medium">{thinkingStatus}</span>
-              {activeToolName && (
-                <span className="font-mono text-[10px] bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-orange-200">
-                  {activeToolName}()
-                </span>
-              )}
             </div>
           )}
 
@@ -795,8 +780,8 @@ You can click any suggested question chip below or ask me about specific work or
           </form>
           <div className="text-[10px] text-slate-400 mt-1.5 text-center">
             {isArabic
-              ? 'يتم التحقق من الصلاحيات وربط البيانات مع النظام في الوقت الفعلي'
-              : 'Strict read-only queries with live RBAC permission enforcement'}
+              ? 'تحديثات فورية للعمليات الميدانية مع الحفاظ على سرية البيانات'
+              : 'Real-time operational updates with role-based data privacy'}
           </div>
         </div>
       </div>

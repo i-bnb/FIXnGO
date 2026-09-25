@@ -97,9 +97,9 @@ export async function POST(req: NextRequest) {
     if (role === 'DISPATCHER') {
       cannedAnswer = isArabic
         ? `⛔ **عذراً، الوصول غير مصرح به**:
-دورك الحالي (**DISPATCHER**) لا يملك صلاحية \`finance.view\` اللازمة للاطلاع على هوامش الربحية وبيانات الخسائر التشغيلية. يرجى مراجعة المدير المالي أو المحاسب الرئيسي (**Fatima Al-Zahra**).`
+بصفتك مسؤول التوزيع، يمكنك الوصول إلى العمليات الميدانية والجدولة. البيانات المالية وهوامش الربحية مخصصة للإدارة المالية. يرجى مراجعة المحاسب المالي (**Fatima Al-Zahra**).`
         : `⛔ **Access Denied**:
-Your current role (**DISPATCHER**) does not possess the required \`finance.view\` permission to inspect job gross margins and financial profitability figures. Please consult your Senior Accountant (**Fatima Al-Zahra**) or Super Administrator.`;
+As a Dispatcher, you have access to field operations and dispatching. Financial figures and job profitability are restricted to the Finance and Management team. Please consult your Senior Accountant (**Fatima Al-Zahra**).`;
     } else {
       cannedAnswer = isArabic
         ? `### 📉 تقرير المهام ذات الخسائر التشغيلية (3 مهام محددة):
@@ -143,9 +143,9 @@ Your current role (**DISPATCHER**) does not possess the required \`finance.view\
     if (role === 'DISPATCHER') {
       cannedAnswer = isArabic
         ? `⛔ **عذراً، الوصول غير مصرح به**:
-لا تملك صلاحية \`finance.view\` لعرض الفواتير المتأخرة والذمم المدينة. يرجى طلب البيانات من المحاسب المالي.`
+بيانات الفواتير المتأخرة والذمم المدينة مخصصة للإدارة المالية. يرجى طلب البيانات من المحاسب المالي.`
         : `⛔ **Access Denied**:
-You lack the required \`finance.view\` permission to inspect accounts receivable aging and overdue debtor balances.`;
+Accounts receivable aging and overdue customer balances are restricted to the Finance team. Please contact your Senior Accountant.`;
     } else {
       cannedAnswer = isArabic
         ? `### 💰 الذمم المدينة والفواتير المتأخرة (إجمالي المستحقات: 94,300 د.إ):
@@ -198,52 +198,56 @@ You lack the required \`finance.view\` permission to inspect accounts receivable
 * **Joseph Mathew (TECH-PLU-03)**: **Van DXB-08**
   * Status: **AVAILABLE** at Al Quoz Industrial 3 (Prime candidate for emergency **WO-2026-00025**).`;
   }
-  // Generic or other query: Query Gemini 3.6 Flash directly with user key
+  // Generic or operational query: Query live Gemini with user API key
   else {
     toolsCalled.push('getKpiSummary');
     const geminiKey = process.env.GEMINI_API_KEY;
     if (geminiKey) {
-      try {
-        const sysInstruction = `You are FIXnGO Operations Assistant for a premier UAE facilities and field service management enterprise based in Dubai.
-Company: FIXnGO Technical Services LLC — demo (TRN: 100000000000003 (demo)).
-CRITICAL RULES:
-1. NEVER disclose what underlying model, agent, AI provider, or technology powers you. Never say you are Gemini, Google AI, or any other agent. You are simply "FIXnGO Operations Assistant".
-2. All monetary amounts must be in United Arab Emirates Dirhams (AED), e.g. "AED 450.00".
-3. Respond in the user's language: Professional Arabic if query is Arabic, English if English.
-4. Format responses cleanly with markdown bullet points and bold headings.
-5. If discussing operational work orders or invoices, use standard formatting (WO-2026-xxxxx, INV-2026-xxxxx).
+      const sysInstruction = `You are the FIXnGO Assistant for FIXnGO Technical Services LLC in Dubai, UAE (TRN: 100000000000003 (demo)).
+CRITICAL COMMUNICATION RULES:
+1. NEVER disclose what underlying model, agent, AI provider, engine, or technology powers you. Never say you are Gemini, Google AI, an LLM, or an AI agent. You are simply "FIXnGO Assistant".
+2. NEVER use technical jargon such as "API", "tool call", "function calling", "database query", "endpoint", "telematics schema", "RBAC", "prompt injection", "system prompt", or internal developer terminology. Speak naturally, warmly, and helpfully as an experienced facilities operations colleague.
+3. All monetary amounts must be in United Arab Emirates Dirhams (AED), e.g. "AED 450.00".
+4. Respond in the user's language: Professional Arabic if query is Arabic, English if English.
+5. Format responses cleanly with readable bullet points and bold headings.
+6. When discussing operational work orders or invoices, use standard formatting (WO-2026-xxxxx, INV-2026-xxxxx).
 `;
-        const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: `${sysInstruction}\n\nUser Question: ${query}` }] }],
-            }),
+      const candidateModels = ['gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'];
+      for (const model of candidateModels) {
+        try {
+          const geminiRes = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: `${sysInstruction}\n\nUser Question: ${query}` }] }],
+              }),
+            }
+          );
+          if (geminiRes.ok) {
+            const geminiData = await geminiRes.json();
+            const generatedText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (generatedText) {
+              cannedAnswer = generatedText.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+              break;
+            }
           }
-        );
-        if (geminiRes.ok) {
-          const geminiData = await geminiRes.json();
-          const generatedText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (generatedText) {
-            cannedAnswer = generatedText.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-          }
+        } catch {
+          // Continue to next model if network or spike occurs
         }
-      } catch (geminiErr) {
-        // Fallback to static summary
       }
     }
 
     if (!cannedAnswer) {
       cannedAnswer = isArabic
-        ? `مرحباً بك! أنا مساعد FIXnGO للعمليات التشغيلية في دولة الإمارات.
+        ? `مرحباً بك! أنا مساعد FIXnGO للعمليات الميدانية في دولة الإمارات.
 * إجمالي الإيرادات لشهر سبتمبر: **486,200.00 د.إ** (شامل 5% ضريبة القيمة المضافة)
 * الطلبات النشطة: **38 طلباً** | المكتملة: **412 طلباً** (نسبة الالتزام بالاتفاقية: **94.2%**)
 * الأسطول الميداني: **18 مركبة نشطة** على الطريق.
 
 يمكنك النقر على الأسئلة المقترحة أو سؤالي عن أي أمر عمل (\`WO-\`)، فاتورة (\`INV-\`)، أو مواقع الفنيين الميدانيين.`
-        : `Hello! I am your FIXnGO Operations Assistant for UAE field facilities.
+        : `Hello! I am your FIXnGO Assistant for UAE field facilities.
 * September Gross Revenue: **AED 486,200.00** (incl. 5% UAE VAT)
 * Active Work Orders: **38** | Completed: **412** (SLA Compliance: **94.2%**)
 * Active Service Fleet: **18 vans** on the road.
