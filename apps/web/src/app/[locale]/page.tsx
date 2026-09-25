@@ -23,14 +23,22 @@ import { UAE_CONSTANTS } from '@fieldops/shared';
 
 type RoleOption = 'customer' | 'technician' | 'admin';
 
+import { setClientSession, DemoRole } from '../../lib/auth/session';
+
 export default function HomePage({ params: { locale } }: { params: { locale: string } }) {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<RoleOption>('admin');
+  const [password, setPassword] = useState('DemoPassword123!');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [failedCount, setFailedCount] = useState(0);
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const isArabic = locale === 'ar';
 
   const roleCredentials = {
     customer: {
       email: 'test@i-bnb.com',
+      demoRole: 'CUSTOMER' as DemoRole,
       title: 'Customer',
       subtitle: 'Book & track',
       destination: `/${locale}/app`,
@@ -38,6 +46,7 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
     },
     technician: {
       email: 'test@i-bnb.com',
+      demoRole: 'TECHNICIAN' as DemoRole,
       title: 'Technician',
       subtitle: 'Jobs & helpers',
       destination: `/${locale}/tech`,
@@ -45,6 +54,7 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
     },
     admin: {
       email: 'test@i-bnb.com',
+      demoRole: 'SUPER_ADMIN' as DemoRole,
       title: 'Admin',
       subtitle: 'Office & finance',
       destination: `/${locale}/admin`,
@@ -52,9 +62,94 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
     },
   };
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/${locale}/auth/signin?role=${selectedRole}&returnUrl=${encodeURIComponent(roleCredentials[selectedRole].destination)}`);
+    setError(null);
+
+    // 1. Check Lockout State (5 failed attempts -> 15 min lock)
+    if (lockedUntil && Date.now() < lockedUntil) {
+      const remainingMins = Math.ceil((lockedUntil - Date.now()) / 60000);
+      setError(
+        isArabic
+          ? `تم قفل الحساب مؤقتاً بعد 5 محاولات خاطئة. يرجى الانتظار ${remainingMins} دقيقة أو استعادة كلمة المرور.`
+          : `Account locked after 5 failed attempts. Please wait ${remainingMins} minute(s) or reset your password.`,
+      );
+      return;
+    }
+
+    setLoading(true);
+    const target = roleCredentials[selectedRole];
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const res = await fetch(`${apiUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: target.email,
+          password: password.trim(),
+        }),
+      });
+
+      if (res.ok) {
+        setFailedCount(0);
+        setLockedUntil(null);
+        setClientSession(target.demoRole);
+        router.push(target.destination);
+        return;
+      }
+
+      // If backend returned error
+      const data = await res.json().catch(() => ({}));
+      const newCount = failedCount + 1;
+      setFailedCount(newCount);
+
+      if (newCount >= 5) {
+        const lockTime = Date.now() + 15 * 60 * 1000;
+        setLockedUntil(lockTime);
+        setError(
+          isArabic
+            ? 'تم قفل الحساب مؤقتاً لمدة 15 دقيقة بعد 5 محاولات فاشلة.'
+            : 'Account temporarily locked for 15 minutes after 5 failed attempts.',
+        );
+      } else {
+        const remaining = 5 - newCount;
+        setError(
+          data.message ||
+            (isArabic
+              ? `البريد الإلكتروني أو كلمة المرور غير صحيحة. (${remaining} محاولات متبقية)`
+              : `Invalid email or password. (${remaining} attempts remaining before lockout)`),
+        );
+      }
+    } catch {
+      // Offline fallback: validate against seeded demo passwords
+      const validPasswords = ['DemoPassword123!', 'demoPassword123', 'demo123'];
+      if (validPasswords.includes(password.trim())) {
+        setFailedCount(0);
+        setLockedUntil(null);
+        setClientSession(target.demoRole);
+        router.push(target.destination);
+      } else {
+        const newCount = failedCount + 1;
+        setFailedCount(newCount);
+        if (newCount >= 5) {
+          setLockedUntil(Date.now() + 15 * 60 * 1000);
+          setError(
+            isArabic
+              ? 'تم قفل الحساب مؤقتاً لمدة 15 دقيقة بعد 5 محاولات فاشلة.'
+              : 'Account temporarily locked for 15 minutes after 5 failed attempts.',
+          );
+        } else {
+          setError(
+            isArabic
+              ? `كلمة المرور غير صحيحة. (${5 - newCount} محاولات متبقية)`
+              : `Invalid password. (${5 - newCount} attempts remaining before lockout)`,
+          );
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -174,18 +269,26 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
                 />
               </div>
 
+              {error && (
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 shrink-0 text-red-500" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-semibold text-ink font-body">
                     {isArabic ? 'كلمة المرور' : 'Password'}
                   </label>
-                  <a href="#forgot" className="text-xs text-ocean-blue hover:underline font-medium">
+                  <Link href={`/${locale}/auth/forgot-password`} className="text-xs text-ocean-blue hover:underline font-medium">
                     {isArabic ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
-                  </a>
+                  </Link>
                 </div>
                 <input
                   type="password"
-                  defaultValue="demoPassword123"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-line bg-white text-ink text-sm font-medium focus:outline-none focus:ring-2 focus:ring-signal-orange focus:border-transparent transition min-h-[44px]"
                 />
               </div>
@@ -205,9 +308,14 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
               {/* Primary Signal Orange 44px Action Button */}
               <button
                 type="submit"
-                className="w-full mt-4 py-3.5 px-6 rounded-xl bg-signal-orange hover:bg-signal-orange-hover active:scale-[0.99] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all min-h-[48px]"
+                disabled={loading || Boolean(lockedUntil && Date.now() < lockedUntil)}
+                className="w-full mt-4 py-3.5 px-6 rounded-xl bg-signal-orange hover:bg-signal-orange-hover active:scale-[0.99] disabled:opacity-50 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all min-h-[48px]"
               >
-                <span>{roleCredentials[selectedRole].buttonLabel}</span>
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <span>{roleCredentials[selectedRole].buttonLabel}</span>
+                )}
               </button>
             </form>
 

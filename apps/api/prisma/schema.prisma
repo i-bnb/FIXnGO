@@ -1611,3 +1611,30 @@ model AuditLog {
   @@index([timestamp(sort: Desc)])
   @@map("audit_logs")
 }
+
+model PasswordResetToken {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash   String   @map("token_hash")
+  expiresAt   DateTime @map("expires_at")
+  usedAt      DateTime? @map("used_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  createdBy   String?  @map("created_by")
+  deletedAt   DateTime? @map("deleted_at")
+  @@index([tokenHash])
+  @@map("password_reset_tokens")
+}
+
+model LoginAttempt {
+  id          String   @id @default(uuid())
+  email       String   @map("email")
+  ipAddress   String   @map("ip_address")
+  failedCount Int      @default(0) @map("failed_count")
+  lockedUntil DateTime? @map("locked_until")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  @@unique([email, ipAddress])
+  @@map("login_attempts")
+}

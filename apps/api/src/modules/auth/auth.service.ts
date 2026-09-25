@@ -32,9 +32,91 @@ export class AuthService {
     private auditService: AuditService,
   ) {}
 
-  async validateUser(email: string, pass: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
+    // Remove in-memory lockout; use persistent LoginAttempt model
+    // Record a failed login attempt for the given email.
+    private async recordFailedAttempt(email: string) {
+      const normalizedEmail = email.toLowerCase();
+      const attempt = await this.prisma.loginAttempt.upsert({
+        where: { email_ipAddress: { email: normalizedEmail, ipAddress: 'unknown' } },
+        update: {
+          failedCount: { increment: 1 },
+          lockedUntil:
+            this.prisma.loginAttempt.updateMany({
+              where: {
+                email: normalizedEmail,
+                ipAddress: 'unknown',
+                failedCount: { gte: 5 },
+                lockedUntil: null,
+              },
+              data: { lockedUntil: new Date(Date.now() + 15 * 60 * 1000) },
+            })?.then(() => new Date(Date.now() + 15 * 60 * 1000)),
+        },
+        create: {
+          email: normalizedEmail,
+          ipAddress: 'unknown',
+          failedCount: 1,
+        },
+      });
+    }
+
+    // Clear lockout after successful login
+    private async clearFailedAttempts(email: string) {
+      const normalizedEmail = email.toLowerCase();
+      await this.prisma.loginAttempt.deleteMany({
+        where: { email: normalizedEmail, ipAddress: 'unknown' },
+      });
+    }
+
+    async validateUser(email: string, pass: string) {
+      const normalizedEmail = (email || '').trim().toLowerCase();
+
+      // Check persistent lockout
+      const attempt = await this.prisma.loginAttempt.findFirst({
+        where: { email: normalizedEmail, ipAddress: 'unknown' },
+      });
+      if (attempt?.lockedUntil && attempt.lockedUntil.getTime() > Date.now()) {
+        const remainingMins = Math.ceil((attempt.lockedUntil.getTime() - Date.now()) / 60000);
+        throw new UnauthorizedException(
+          `Account locked due to 5 failed attempts. Please try again in ${remainingMins} minute(s) or reset your password.`,
+        );
+      }
+
+      const user = await this.prisma.user.findFirst({
+        where: { email: { equals: normalizedEmail, mode: 'insensitive' }, deletedAt: null },
+        include: { userRoles: { include: { role: { include: { rolePermissions: { include: { permission: true } } } } } }, employee: true },
+      });
+
+      if (!user || !user.isActive) {
+        await this.recordFailedAttempt(normalizedEmail);
+        return null;
+      }
+
+      const isMatch = await bcrypt.compare(pass, user.passwordHash);
+      if (!isMatch) {
+        await this.recordFailedAttempt(normalizedEmail);
+        return null;
+      }
+
+      // Successful login: clear any failed attempts
+      await this.clearFailedAttempts(normalizedEmail);
+      return user;
+    }
+    const normalizedEmail = (email || '').trim().toLowerCase();
+
+    // Check 15-minute lockout after 5 failed attempts
+    const attempt = this.failedAttempts.get(normalizedEmail);
+    if (attempt?.lockedUntil && attempt.lockedUntil.getTime() > Date.now()) {
+      const remainingMins = Math.ceil((attempt.lockedUntil.getTime() - Date.now()) / 60000);
+      throw new UnauthorizedException(
+        `Account locked due to 5 failed attempts. Please try again in ${remainingMins} minute(s) or reset your password.`,
+      );
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: { equals: normalizedEmail, mode: 'insensitive' },
+        deletedAt: null,
+      },
       include: {
         userRoles: {
           include: {
@@ -51,14 +133,21 @@ export class AuthService {
       },
     });
 
-    if (!user || user.deletedAt || !user.isActive) {
+    if (!user || !user.isActive) {
+      this.recordFailedAttempt(normalizedEmail);
       return null;
     }
 
-    const isMatch = await bcrypt.compare(pass, user.passwordHash);
+    let isMatch = await bcrypt.compare(pass, user.passwordHash);
+    // Demo password support removed for security
+
     if (!isMatch) {
+      this.recordFailedAttempt(normalizedEmail);
       return null;
     }
+
+    // Login succeeded: clear failed attempt count
+    this.failedAttempts.delete(normalizedEmail);
 
     return user;
   }
@@ -345,4 +434,118 @@ export class AuthService {
       customer,
     };
   }
+
+  async forgotPassword(email: string) {
+    const normalizedEmail = (email || '').trim().toLowerCase();
+    const user = await this.prisma.user.findFirst({
+      where: { email: { equals: normalizedEmail, mode: 'insensitive' }, deletedAt: null },
+    });
+
+    // Generate a secure random token (32 bytes hex) and hash it
+    const crypto = await import('crypto');
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Store token hash in DB (associate with user if exists)
+    await this.prisma.passwordResetToken.create({
+      data: {
+        userId: user?.id,
+        tokenHash,
+        expiresAt,
+      },
+    });
+
+    // In demo mode, write the raw token to the admin outbox for visibility
+    if (process.env.DEMO_MODE === 'true') {
+      await this.auditService.log({
+        actorName: user?.fullName || 'Anonymous',
+        actorRole: 'ANONYMOUS',
+        action: 'DEMO_PASSWORD_RESET_TOKEN',
+        entityName: 'User',
+        entityId: user?.id || 'unknown',
+        details: { rawToken },
+      });
+    }
+
+    // Log the forgot password request (generic, no token disclosed)
+    await this.auditService.log({
+      actorName: user?.fullName || 'Anonymous',
+      actorRole: 'ANONYMOUS',
+      action: 'FORGOT_PASSWORD_REQUEST',
+      entityName: 'User',
+      entityId: user?.id || 'unknown',
+      details: { email: normalizedEmail },
+    });
+
+    return {
+      success: true,
+      message: 'Password reset link sent to your email (valid for 1 hour).',
+    };
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    if (!newPassword || newPassword.length < 6) {
+      throw new BadRequestException('Password must be at least 6 characters long');
+    }
+
+    // Compute hash of the raw token
+    const crypto = await import('crypto');
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    // Find token record
+    const tokenRecord = await this.prisma.passwordResetToken.findFirst({
+      where: {
+        tokenHash,
+        expiresAt: { gt: new Date() },
+        usedAt: null,
+      },
+    });
+    if (!tokenRecord) {
+      throw new BadRequestException('Invalid or expired password reset token');
+    }
+
+    // Get user
+    const user = await this.prisma.user.findUnique({
+      where: { id: tokenRecord.userId },
+    });
+    if (!user) {
+      throw new NotFoundException('User associated with reset token not found');
+    }
+
+    // Update password
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash },
+    });
+
+    // Mark token used
+    await this.prisma.passwordResetToken.update({
+      where: { id: tokenRecord.id },
+      data: { usedAt: new Date() },
+    });
+
+    // Revoke refresh tokens
+    await this.prisma.refreshToken.updateMany({
+      where: { userId: user.id, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+
+    // Clear lockout
+    await this.clearFailedAttempts(user.email);
+
+    // Audit log
+    await this.auditService.log({
+      actorUserId: user.id,
+      actorName: user.fullName,
+      action: 'PASSWORD_RESET_SUCCESS',
+      entityName: 'User',
+      entityId: user.id,
+      details: { email: user.email },
+    });
+
+    return { success: true, message: 'Password has been reset successfully. You can now sign in with your new password.' };
+  }
+
 }

@@ -79,4 +79,38 @@ export class AuthController {
   async getMe(@CurrentUser('id') userId: string) {
     return this.authService.getMe(userId);
   }
+
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'Request password reset link and token' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', example: 'admin@fieldops.ae' },
+      },
+      required: ['email'],
+    },
+  })
+  async forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password with verification token' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: { type: 'string' },
+        password: { type: 'string', example: 'NewSecurePass123!' },
+      },
+      required: ['token', 'password'],
+    },
+  })
+  async resetPassword(
+    @Body('token') token: string,
+    @Body('password') password: string,
+  ) {
+    return this.authService.resetPassword(token, password);
+  }
 }
