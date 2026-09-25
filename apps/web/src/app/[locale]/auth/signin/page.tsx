@@ -27,12 +27,10 @@ export default function SignInPage({
     }, 150);
   };
 
-  const filteredPersonas = Object.entries(DEMO_PERSONAS).filter(([key]) => {
-    if (roleFilter === 'customer') return key === 'CUSTOMER';
-    if (roleFilter === 'technician') return key === 'TECHNICIAN';
-    if (roleFilter === 'admin') return ['SUPER_ADMIN', 'ACCOUNTANT', 'DISPATCHER'].includes(key);
-    return true;
-  });
+  const allowedRoles: DemoRole[] = ['CUSTOMER', 'TECHNICIAN', 'SUPER_ADMIN'];
+  const filteredPersonas = Object.entries(DEMO_PERSONAS).filter(
+    ([key]) => allowedRoles.includes(key as DemoRole)
+  );
 
   return (
     <div className="min-h-screen bg-ground dark:bg-slate-950 flex flex-col justify-center items-center p-4 sm:p-6">
