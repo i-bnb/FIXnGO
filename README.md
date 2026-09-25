@@ -9,7 +9,7 @@
 
 ---
 
-## 📌 Executive Overview
+##  Executive Overview
 
 **FIXnGO** is a modern, enterprise-grade Field Operations, Manpower Supply, and Heavy Plant Rental ERP engineered specifically for UAE MEP contractors, technical service providers, facilities management companies, and labor agencies. 
 
@@ -23,7 +23,7 @@ Designed for high-concurrency dispatch, real-time spatial telematics, UAE regula
 
 ---
 
-## 🏗️ Architecture & Technology Stack
+##  Architecture & Technology Stack
 
 The platform is structured as an enterprise **pnpm Monorepo** ensuring strict separation of concerns, end-to-end type safety, and zero drift across client and server boundaries:
 
@@ -63,7 +63,7 @@ FIXnGO/
 
 ---
 
-## 🌐 Three Dedicated User Experiences
+##  Three Dedicated User Experiences
 
 ### 1. 🏢 Admin Operations & Executive Command (`/[locale]/admin`)
 - **Realtime UAE Fleet Map**: Live telematics displaying technician vans across Dubai (Downtown, Business Bay, Al Quoz, JLT), Sharjah, and Abu Dhabi.
@@ -78,7 +78,7 @@ FIXnGO/
   - **Warehouse & Inventory**: Multi-depot stock control, automatic reordering when safety stock levels are breached, and van transfers.
   - **Finance & General Ledger**: Live P&L, balance sheet, trial balance, and receivables aging.
 
-### 2. 📱 Technician Field Mobile PWA (`/[locale]/tech`)
+### 2.  Technician Field Mobile PWA (`/[locale]/tech`)
 - **Engineered for Mobile Touch**: Large, thumb-friendly tap buttons for field engineers on the go.
 - **Job Life-Cycle Control**: Real-time status transitions (*Accept $\to$ En Route $\to$ Arrived $\to$ In Progress $\to$ Complete*).
 - **Safety Risk Checklist**: Interactive pre-work hazards and pressure checks before execution.
@@ -88,7 +88,7 @@ FIXnGO/
 - **Van Stock Deduction**: Select spare parts used on-site with automatic van inventory decrement.
 - **Digital Sign-Off**: Capture customer signature and photographic proof of completion.
 
-### 3. 🏠 Customer On-Demand App (`/[locale]/app`)
+### 3.  Customer On-Demand App (`/[locale]/app`)
 - **Instant Booking**: Choose from AC Diagnosis, Plumbing Leak Repairs, Electrical Tripping, and Handyman services.
 - **Dedicated Sub-Routes**:
   - `/[locale]/app/bookings`: Active & past bookings with status pills (Scheduled, In Progress, Completed).
@@ -99,7 +99,7 @@ FIXnGO/
 
 ---
 
-## 🤖 Google Gemini Operations Assistant ("Ask FIXnGO")
+##  Google Gemini Operations Assistant ("Ask FIXnGO")
 
 FIXnGO features an intelligent operational copilot accessible directly from the Admin ERP:
 - **Model**: Powered by Google Gemini 3.6 Flash (`gemini-3.6-flash`).
@@ -109,7 +109,7 @@ FIXnGO features an intelligent operational copilot accessible directly from the 
 
 ---
 
-## 🔒 Security Architecture & UAE Regulatory Alignment
+##  Security Architecture & UAE Regulatory Alignment
 
 The codebase is designed to adhere to enterprise security and Middle East operational requirements:
 
@@ -136,7 +136,7 @@ The codebase is designed to adhere to enterprise security and Middle East operat
 
 ---
 
-## 🔑 Demo Personas
+##  Demo Personas
 
 For sales demonstrations, executive walkthroughs, and evaluation:
 
@@ -153,7 +153,7 @@ For sales demonstrations, executive walkthroughs, and evaluation:
 
 ---
 
-## 🚀 Quickstart & Local Setup
+##  Quickstart & Local Setup
 
 ### Prerequisites
 - **Node.js**: `v20.x` or higher
@@ -203,7 +203,7 @@ Open your browser:
 
 ---
 
-## ☁️ Production Deployment Matrix
+##  Production Deployment Matrix
 
 | Component | Target Platform | Live Deployment URL / Environment Notes |
 |---|---|---|
@@ -216,7 +216,7 @@ For detailed step-by-step production configuration instructions, see [docs/DEPLO
 
 ---
 
-## 📚 Technical Documentation Index
+##  Technical Documentation Index
 
 For in-depth architectural and operational guides:
 - [Architecture & Sequence Diagrams](docs/ARCHITECTURE.md)
@@ -228,6 +228,6 @@ For in-depth architectural and operational guides:
 
 ---
 
-## 📄 License & Attribution
+##  License & Attribution
 
 Proprietary enterprise software developed for **FIXnGO Technical Services LLC — demo**. All rights reserved. Built with modern TypeScript and open web standards.
