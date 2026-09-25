@@ -48,8 +48,8 @@ export async function performLogout(locale: string = 'en') {
     }
   }
 
-  // 6. Hard redirect to sign-in page to purge React component and cache states
+  // 6. Hard redirect to home page to purge React component and cache states
   if (typeof window !== 'undefined') {
-    window.location.href = `/${locale}/auth/signin`;
+    window.location.href = `/${locale}`;
   }
 }

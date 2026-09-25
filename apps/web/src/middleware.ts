@@ -40,19 +40,33 @@ export default function middleware(request: NextRequest) {
   const locale = segments[0] && ['en', 'ar'].includes(segments[0]) ? segments[0] : 'en';
   const portal = segments[1]; // 'admin' | 'tech' | 'app' | 'auth'
 
+  // Legacy redirect: if user navigates to old /auth/signin, redirect to appropriate login or home
+  if (portal === 'auth' && segments[2] === 'signin') {
+    const roleParam = request.nextUrl.searchParams.get('role');
+    const returnUrlParam = request.nextUrl.searchParams.get('returnUrl') || request.nextUrl.searchParams.get('callbackUrl');
+    let target = `/${locale}`;
+    if (roleParam === 'admin') target = `/${locale}/login/admin`;
+    else if (roleParam === 'technician') target = `/${locale}/login/technician`;
+    else if (roleParam === 'customer') target = `/${locale}/login/customer`;
+    const redirectUrl = new URL(target, request.url);
+    if (returnUrlParam) redirectUrl.searchParams.set('returnUrl', returnUrlParam);
+    return NextResponse.redirect(redirectUrl);
+  }
+
   // Route protection for authenticated portals
   if (portal === 'admin' || portal === 'tech' || portal === 'app') {
     const sessionCookie = request.cookies.get('fixngo_session')?.value;
     const allowedPortals = sessionCookie ? ROLE_PERMISSIONS[sessionCookie] : null;
 
-    // 1. Unauthenticated -> redirect to sign-in page
+    // 1. Unauthenticated -> redirect to dedicated portal login page
     if (!sessionCookie) {
-      const signInUrl = new URL(`/${locale}/auth/signin`, request.url);
+      let loginPath = `/${locale}/login/customer`;
+      if (portal === 'admin') loginPath = `/${locale}/login/admin`;
+      if (portal === 'tech') loginPath = `/${locale}/login/technician`;
+
+      const signInUrl = new URL(loginPath, request.url);
       signInUrl.searchParams.set('returnUrl', pathname);
       signInUrl.searchParams.set('callbackUrl', pathname);
-      if (portal === 'app') signInUrl.searchParams.set('role', 'customer');
-      if (portal === 'tech') signInUrl.searchParams.set('role', 'technician');
-      if (portal === 'admin') signInUrl.searchParams.set('role', 'admin');
       return NextResponse.redirect(signInUrl);
     }
 

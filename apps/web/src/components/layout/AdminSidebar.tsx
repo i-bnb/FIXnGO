@@ -21,7 +21,6 @@ import {
   Settings,
   ShieldCheck,
   Lock,
-  UserCheck,
   Search,
   Sparkles,
   LogOut,
@@ -29,7 +28,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { clearClientSession, getClientSession } from '../../lib/auth/session';
 import { performLogout } from '../../lib/auth/logout';
-import { UserRole } from '@fieldops/shared';
 
 interface AdminSidebarProps {
   locale: string;
@@ -39,7 +37,6 @@ interface AdminSidebarProps {
 export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [currentRole, setCurrentRole] = useState<UserRole>(UserRole.SUPER_ADMIN);
 
   const navigationSections = [
     {
@@ -87,14 +84,6 @@ export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
     },
   ];
 
-  const roles = [
-    { role: UserRole.SUPER_ADMIN, label: 'Sultan (Super Admin)' },
-    { role: UserRole.OPERATIONS_MANAGER, label: 'Tariq (Ops Manager)' },
-    { role: UserRole.ACCOUNTANT, label: 'Mariam (Accountant)' },
-    { role: UserRole.DISPATCHER, label: 'Sarah (Dispatcher)' },
-    { role: UserRole.STOREKEEPER, label: 'Bilal (Storekeeper)' },
-  ];
-
   return (
     <aside className="w-72 bg-slate-900 text-slate-300 min-h-screen flex flex-col justify-between p-4 border-r border-slate-800 shrink-0 select-none">
       <div className="space-y-4">
@@ -102,7 +91,7 @@ export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
         <div>
           <button
             onClick={onOpenSearch}
-            className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-700/80 transition text-xs font-medium mb-3 group"
+            className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-700/80 transition text-xs font-medium mb-1 group"
           >
             <span className="flex items-center gap-2">
               <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-teal-400" />
@@ -112,28 +101,6 @@ export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
               Ctrl+K
             </kbd>
           </button>
-
-          {/* Role Persona Switcher for Client Demo */}
-          <div className="p-2.5 bg-slate-800/60 rounded-xl border border-slate-700/70">
-            <div className="flex items-center justify-between text-[11px] font-bold text-teal-400 mb-1 uppercase tracking-wider">
-              <span className="flex items-center gap-1.5">
-                <UserCheck className="w-3.5 h-3.5" />
-                <span>{locale === 'ar' ? 'الشخصية التجريبية' : 'Demo Persona'}</span>
-              </span>
-              <span className="text-[10px] text-slate-400 font-normal">RBAC</span>
-            </div>
-            <select
-              value={currentRole}
-              onChange={(e) => setCurrentRole(e.target.value as UserRole)}
-              className="w-full text-xs font-semibold bg-slate-900 border border-slate-700 text-white rounded-lg p-1.5 focus:ring-2 focus:ring-teal-500 focus:outline-none"
-            >
-              {roles.map((r) => (
-                <option key={r.role} value={r.role}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
 
         {/* Navigation Sections */}

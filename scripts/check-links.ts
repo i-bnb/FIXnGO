@@ -60,9 +60,9 @@ async function runAudit() {
 
   try {
     // -------------------------------------------------------------
-    // TEST 1: Public Landing Page & Sign-In Page
+    // TEST 1: Public Landing Page & Dedicated Login Pages
     // -------------------------------------------------------------
-    console.log(`[Group 1: Landing Page & Public Sign-In]`);
+    console.log(`[Group 1: Landing Page & Dedicated Login Pages]`);
     const landingRes = await page.goto(`${BASE_URL}/en`, { waitUntil: 'domcontentloaded' });
     if (landingRes && landingRes.status() === 200) {
       recordPass('Landing page loads with status 200');
@@ -70,11 +70,33 @@ async function runAudit() {
       recordFail('Landing page loads with status 200', `Status was ${landingRes?.status()}`);
     }
 
-    const signInRes = await page.goto(`${BASE_URL}/en/auth/signin`, { waitUntil: 'domcontentloaded' });
-    if (signInRes && signInRes.status() === 200) {
-      recordPass('/en/auth/signin loads successfully (No 404)');
+    const customerLoginRes = await page.goto(`${BASE_URL}/en/login/customer`, { waitUntil: 'domcontentloaded' });
+    if (customerLoginRes && customerLoginRes.status() === 200) {
+      recordPass('/en/login/customer loads successfully (200 OK)');
     } else {
-      recordFail('/en/auth/signin loads successfully', `Status was ${signInRes?.status()}`);
+      recordFail('/en/login/customer loads successfully', `Status was ${customerLoginRes?.status()}`);
+    }
+
+    const techLoginRes = await page.goto(`${BASE_URL}/en/login/technician`, { waitUntil: 'domcontentloaded' });
+    if (techLoginRes && techLoginRes.status() === 200) {
+      recordPass('/en/login/technician loads successfully (200 OK)');
+    } else {
+      recordFail('/en/login/technician loads successfully', `Status was ${techLoginRes?.status()}`);
+    }
+
+    const adminLoginRes = await page.goto(`${BASE_URL}/en/login/admin`, { waitUntil: 'domcontentloaded' });
+    if (adminLoginRes && adminLoginRes.status() === 200) {
+      recordPass('/en/login/admin loads successfully (200 OK)');
+    } else {
+      recordFail('/en/login/admin loads successfully', `Status was ${adminLoginRes?.status()}`);
+    }
+
+    // Verify legacy /en/auth/signin gracefully redirects without 404
+    const legacySignInRes = await page.goto(`${BASE_URL}/en/auth/signin`, { waitUntil: 'domcontentloaded' });
+    if (legacySignInRes && legacySignInRes.status() === 200) {
+      recordPass('/en/auth/signin gracefully redirects and loads (No 404)');
+    } else {
+      recordFail('/en/auth/signin redirect', `Status was ${legacySignInRes?.status()}`);
     }
 
     // -------------------------------------------------------------
@@ -206,26 +228,26 @@ async function runAudit() {
 
     await page.goto(`${BASE_URL}/en/admin`, { waitUntil: 'domcontentloaded' });
     const unauthAdminUrl = page.url();
-    if (unauthAdminUrl.includes('/auth/signin')) {
-      recordPass('Unauthenticated visit to /en/admin redirects to /auth/signin');
+    if (unauthAdminUrl.includes('/login/admin')) {
+      recordPass('Unauthenticated visit to /en/admin redirects to /login/admin');
     } else {
-      recordFail('Unauthenticated /en/admin', `Expected redirect to signin, got: ${unauthAdminUrl}`);
+      recordFail('Unauthenticated /en/admin', `Expected redirect to /login/admin, got: ${unauthAdminUrl}`);
     }
 
     await page.goto(`${BASE_URL}/en/tech`, { waitUntil: 'domcontentloaded' });
     const unauthTechUrl = page.url();
-    if (unauthTechUrl.includes('/auth/signin')) {
-      recordPass('Unauthenticated visit to /en/tech redirects to /auth/signin');
+    if (unauthTechUrl.includes('/login/technician')) {
+      recordPass('Unauthenticated visit to /en/tech redirects to /login/technician');
     } else {
-      recordFail('Unauthenticated /en/tech', `Expected redirect to signin, got: ${unauthTechUrl}`);
+      recordFail('Unauthenticated /en/tech', `Expected redirect to /login/technician, got: ${unauthTechUrl}`);
     }
 
     await page.goto(`${BASE_URL}/en/app`, { waitUntil: 'domcontentloaded' });
     const unauthAppUrl = page.url();
-    if (unauthAppUrl.includes('/auth/signin')) {
-      recordPass('Unauthenticated visit to /en/app redirects to /auth/signin');
+    if (unauthAppUrl.includes('/login/customer')) {
+      recordPass('Unauthenticated visit to /en/app redirects to /login/customer');
     } else {
-      recordFail('Unauthenticated /en/app', `Expected redirect to signin, got: ${unauthAppUrl}`);
+      recordFail('Unauthenticated /en/app', `Expected redirect to /login/customer, got: ${unauthAppUrl}`);
     }
 
     // -------------------------------------------------------------

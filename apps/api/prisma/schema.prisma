@@ -32,6 +32,7 @@ model User {
   notifications   Notification[]
   approvalRequests ApprovalRequest[] @relation("UserApprovalRequests")
   assignedApprovals ApprovalRequest[] @relation("ApproverUser")
+  passwordResetTokens PasswordResetToken[]
 
   @@index([email])
   @@index([isActive])
@@ -1613,11 +1614,11 @@ model AuditLog {
 }
 
 model PasswordResetToken {
-  id          String   @id @default(uuid())
-  userId      String   @map("user_id")
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash   String   @map("token_hash")
-  expiresAt   DateTime @map("expires_at")
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id")
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash   String    @map("token_hash")
+  expiresAt   DateTime  @map("expires_at")
   usedAt      DateTime? @map("used_at")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
