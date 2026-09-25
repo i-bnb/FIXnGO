@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Globe, Wrench, Shield, User, LogOut, ChevronDown, Check } from 'lucide-react';
 import { UAE_CONSTANTS } from '@fieldops/shared';
 import { Logo } from '../common/Logo';
+import { performLogout } from '../../lib/auth/logout';
 import {
   getClientSession,
   setClientSession,
@@ -44,10 +45,9 @@ export function AppNavbar({ locale }: AppNavbarProps) {
   };
 
   const handleSignOut = () => {
-    clearClientSession();
     setShowPersonaMenu(false);
     setCurrentSession(null);
-    router.push(`/${locale}/auth/signin`);
+    performLogout(locale);
   };
 
   const isCustomer = pathname.includes('/app');

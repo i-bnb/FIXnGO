@@ -3,12 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Wrench } from 'lucide-react';
-import { UAE_CONSTANTS } from '@fieldops/shared';
+import { getClientSession } from '../../lib/auth/session';
 
 interface LogoProps {
   locale?: string;
   role?: 'customer' | 'technician' | 'admin' | 'public';
+  variant?: 'default' | 'white';
   showBadge?: boolean;
   showTrn?: boolean;
   size?: 'sm' | 'md' | 'lg';
@@ -18,73 +18,68 @@ interface LogoProps {
 export function Logo({
   locale = 'en',
   role,
+  variant = 'default',
   showBadge = true,
   showTrn = false,
   size = 'md',
   className = '',
 }: LogoProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() || '';
 
-  // Determine home destination based on current portal or explicit role
+  // Determine user's home destination based on current portal, role prop, or active session cookie
   const getDestination = () => {
-    if (role === 'customer' || pathname.includes('/app')) return `/${locale}/app`;
-    if (role === 'technician' || pathname.includes('/tech')) return `/${locale}/tech`;
-    if (role === 'admin' || pathname.includes('/admin')) return `/${locale}/admin`;
+    // 1. Explicit prop override
+    if (role === 'customer') return `/${locale}/app`;
+    if (role === 'technician') return `/${locale}/tech`;
+    if (role === 'admin') return `/${locale}/admin`;
+    if (role === 'public') return `/${locale}`;
+
+    // 2. Active pathname context
+    if (pathname.includes('/app')) return `/${locale}/app`;
+    if (pathname.includes('/tech')) return `/${locale}/tech`;
+    if (pathname.includes('/admin')) return `/${locale}/admin`;
+
+    // 3. Fallback: inspect active client session cookie
+    const session = getClientSession();
+    if (session) {
+      if (session.role === 'CUSTOMER') return `/${locale}/app`;
+      if (session.role === 'TECHNICIAN') return `/${locale}/tech`;
+      if (['SUPER_ADMIN', 'ACCOUNTANT', 'DISPATCHER', 'OPERATIONS_MANAGER', 'STOREKEEPER'].includes(session.role)) {
+        return `/${locale}/admin`;
+      }
+    }
+
+    // 4. Default: public landing
     return `/${locale}`;
   };
 
-  const iconSizes = {
-    sm: 'w-7 h-7 rounded-lg',
-    md: 'w-9 h-9 rounded-xl',
-    lg: 'w-11 h-11 rounded-2xl',
+  const heights = {
+    sm: 32,
+    md: 40,
+    lg: 48,
   };
 
-  const wrenchSizes = {
-    sm: 'w-3.5 h-3.5',
-    md: 'w-5 h-5',
-    lg: 'w-6 h-6',
-  };
+  const height = heights[size];
+  const width = Math.round(height * 4); // 240:60 aspect ratio
 
-  const textSizes = {
-    sm: 'text-lg',
-    md: 'text-xl',
-    lg: 'text-2xl',
-  };
+  const logoSrc = variant === 'white' 
+    ? '/brand/fixngo-logo-white.svg' 
+    : '/brand/fixngo-logo.svg';
 
   return (
     <Link
       href={getDestination()}
-      className={`inline-flex items-center gap-2.5 group select-none ${className}`}
+      className={`inline-flex items-center group select-none transition-transform hover:opacity-95 ${className}`}
       title="FIXnGO - UAE Field Service Management"
     >
-      {/* Brand Icon SVG container */}
-      <div
-        className={`${iconSizes[size]} bg-signal-orange flex items-center justify-center text-white font-black shadow-xs group-hover:scale-105 transition-transform shrink-0`}
-      >
-        <Wrench className={`${wrenchSizes[size]} text-white`} />
-      </div>
-
-      {/* Brand Typography */}
-      <div className="flex flex-col justify-center">
-        <div
-          className={`font-extrabold text-navy dark:text-white tracking-tight leading-none flex items-center gap-1.5 font-display ${textSizes[size]}`}
-        >
-          <span>FIX</span>
-          <span className="text-signal-orange">nGO</span>
-
-          {showBadge && (
-            <span className="text-[9px] bg-red-600 text-white font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs leading-none">
-              DEMO
-            </span>
-          )}
-        </div>
-
-        {showTrn && (
-          <div className="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">
-            {UAE_CONSTANTS.COMPANY_TRN}
-          </div>
-        )}
-      </div>
+      <img
+        src={logoSrc}
+        alt="FIXnGO"
+        width={width}
+        height={height}
+        className="h-auto object-contain shrink-0"
+        style={{ height: `${height}px`, width: 'auto' }}
+      />
     </Link>
   );
 }

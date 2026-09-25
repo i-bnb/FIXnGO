@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { LeafletMap, MapMarker } from '../../../components/map/LeafletMap';
 import { CustomerHeader } from '../../../components/customer/CustomerHeader';
 import { CustomerMobileNav, CustomerTab } from '../../../components/customer/CustomerMobileNav';
@@ -90,6 +91,18 @@ export default function CustomerMobileAppPage({
   params: { locale: string };
 }) {
   const isArabic = locale === 'ar';
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [deniedToast, setDeniedToast] = useState(false);
+  const [quoteToast, setQuoteToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchParams.get('denied') === 'true') {
+      setDeniedToast(true);
+      const timer = setTimeout(() => setDeniedToast(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   // Navigation State
   const [activeTab, setActiveTab] = useState<CustomerTab>('HOME');
@@ -129,8 +142,8 @@ export default function CustomerMobileAppPage({
     subtotalAed: 365.0,
     vatAed: 18.25,
     totalAmountAed: 383.25,
-    beforePhotoUrl: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=400&q=80',
-    afterPhotoUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=400&q=80',
+    beforePhotoUrl: '/placeholders/hvac-before.svg',
+    afterPhotoUrl: '/placeholders/hvac-after.svg',
     partsFitted: [
       { name: 'Dual Run Capacitor 45/5 uF 440V', qty: 1, priceAed: 75.0 },
       { name: 'R410A Refrigerant Top-up (kg)', qty: 1.5, priceAed: 95.0 },
@@ -282,6 +295,32 @@ export default function CustomerMobileAppPage({
           user={user}
           onOpenAuth={() => setShowAuthModal(true)}
         />
+
+        {/* Access Denied / Role Restriction Toast Banner */}
+        {deniedToast && (
+          <div className="mx-4 mt-2 p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-bold flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{isArabic ? 'ليس لديك صلاحية الوصول إلى تلك الصفحة' : "You don't have access to that page"}</span>
+            </div>
+            <button onClick={() => setDeniedToast(false)} className="text-rose-500 hover:text-rose-700">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Quotation Status Toast Banner */}
+        {quoteToast && (
+          <div className="mx-4 mt-2 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs font-bold flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{quoteToast}</span>
+            </div>
+            <button onClick={() => setQuoteToast(null)} className="text-emerald-600 hover:text-emerald-800">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         {/* MAIN BODY CONTENT BASED ON TABS OR ACTIVE SUB-SCREEN */}
         <main className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -668,9 +707,9 @@ export default function CustomerMobileAppPage({
 
               <div className="space-y-3">
                 {[
-                  { name: 'Caterpillar 100 kVA Generator', daily: 450, deposit: 3000, img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Haulotte 12m Electric Scissor Lift', daily: 380, deposit: 2500, img: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Mobile Aluminium Scaffolding 6m', daily: 120, deposit: 1000, img: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Caterpillar 100 kVA Generator', daily: 450, deposit: 3000, img: '/placeholders/generator.svg' },
+                  { name: 'Haulotte 12m Electric Scissor Lift', daily: 380, deposit: 2500, img: '/placeholders/scissor-lift.svg' },
+                  { name: 'Mobile Aluminium Scaffolding 6m', daily: 120, deposit: 1000, img: '/placeholders/scaffolding.svg' },
                 ].map((eq, i) => (
                   <div key={i} className="p-3 bg-white border border-slate-200 rounded-2xl flex items-center gap-3 shadow-xs">
                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 shrink-0">
@@ -1020,17 +1059,27 @@ export default function CustomerMobileAppPage({
                     <button
                       onClick={() => {
                         setQuotation({ ...quotation, status: 'APPROVED' });
-                        alert('Quotation approved! Operations manager will schedule deployment.');
+                        setQuoteToast(isArabic ? 'تمت الموافقة على عرض السعر بنجاح وتم إرسال أمر العمل إلى العمليات' : 'Quotation approved! Work order dispatched to operations.');
+                        try {
+                          const existing = JSON.parse(localStorage.getItem('fixngo_approved_quotes') || '[]');
+                          existing.push({ ...quotation, status: 'APPROVED', approvedAt: new Date().toISOString() });
+                          localStorage.setItem('fixngo_approved_quotes', JSON.stringify(existing));
+                        } catch {}
+                        setTimeout(() => setQuoteToast(null), 5000);
                       }}
                       className="flex-1 py-2 bg-navy text-white rounded-xl font-bold hover:bg-slate-800 transition min-h-[44px]"
                     >
-                      Approve & Dispatch
+                      {isArabic ? 'موافقة وترحيل' : 'Approve & Dispatch'}
                     </button>
                     <button
-                      onClick={() => setQuotation({ ...quotation, status: 'REJECTED' })}
+                      onClick={() => {
+                        setQuotation({ ...quotation, status: 'REJECTED' });
+                        setQuoteToast(isArabic ? 'تم رفض عرض السعر' : 'Quotation declined.');
+                        setTimeout(() => setQuoteToast(null), 4000);
+                      }}
                       className="px-3 py-2 border border-line text-slate rounded-xl hover:bg-ground min-h-[44px]"
                     >
-                      Decline
+                      {isArabic ? 'رفض' : 'Decline'}
                     </button>
                   </div>
                 </div>
@@ -1550,9 +1599,9 @@ export default function CustomerMobileAppPage({
                   {isArabic ? 'تأجير المعدات الثقيلة' : 'Heavy Equipment Rental'}
                 </span>
                 {[
-                  { name: 'Caterpillar 100 kVA Generator', daily: 450, deposit: 3000, img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Haulotte 12m Electric Scissor Lift', daily: 380, deposit: 2500, img: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Mobile Aluminium Scaffolding 6m', daily: 120, deposit: 1000, img: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Caterpillar 100 kVA Generator', daily: 450, deposit: 3000, img: '/placeholders/generator.svg' },
+                  { name: 'Haulotte 12m Electric Scissor Lift', daily: 380, deposit: 2500, img: '/placeholders/scissor-lift.svg' },
+                  { name: 'Mobile Aluminium Scaffolding 6m', daily: 120, deposit: 1000, img: '/placeholders/scaffolding.svg' },
                 ].map((eq, i) => (
                   <div key={i} className="p-3 bg-white border border-line rounded-2xl flex items-center gap-3 shadow-xs">
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-ground shrink-0">
@@ -1678,6 +1727,10 @@ export default function CustomerMobileAppPage({
           onChangeTab={(tab) => {
             setActiveSubScreen('NONE');
             setActiveTab(tab);
+            if (tab === 'HOME') router.push(`/${locale}/app`);
+            if (tab === 'BOOKINGS') router.push(`/${locale}/app/bookings`);
+            if (tab === 'SHOP') router.push(`/${locale}/app/shop`);
+            if (tab === 'ACCOUNT') router.push(`/${locale}/app/account`);
           }}
           activeOrderCount={1}
         />

@@ -27,7 +27,8 @@ import {
   LogOut,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { clearClientSession } from '../../lib/auth/session';
+import { clearClientSession, getClientSession } from '../../lib/auth/session';
+import { performLogout } from '../../lib/auth/logout';
 import { UserRole } from '@fieldops/shared';
 
 interface AdminSidebarProps {
@@ -181,21 +182,39 @@ export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
         </nav>
       </div>
 
-      {/* Footer Info & Sign Out */}
-      <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-500 space-y-2">
+      {/* Footer User Avatar Menu & Info */}
+      <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-500 space-y-2.5">
+        {/* Profile Card */}
+        <div className="p-2 rounded-xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-signal-orange text-white font-black text-xs flex items-center justify-center shrink-0">
+              SF
+            </div>
+            <div className="overflow-hidden">
+              <div className="font-bold text-slate-200 text-xs truncate">Sultan Al-Falasi</div>
+              <div className="text-[10px] text-slate-400 truncate">Super Admin</div>
+            </div>
+          </div>
+          <Link
+            href={`/${locale}/admin/settings`}
+            className="p-1.5 hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition"
+            title={locale === 'ar' ? 'الملف الشخصي' : 'Profile & Settings'}
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
         <button
-          onClick={() => {
-            clearClientSession();
-            router.push(`/${locale}/auth/signin`);
-          }}
+          onClick={() => performLogout(locale)}
           className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-slate-800/80 hover:bg-rose-950/40 text-slate-300 hover:text-rose-300 rounded-xl border border-slate-700/60 font-bold transition text-xs"
         >
           <LogOut className="w-3.5 h-3.5" />
-          <span>{locale === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}</span>
+          <span>{locale === 'ar' ? 'تسجيل الخروج' : 'Log Out'}</span>
         </button>
-        <div className="font-bold text-slate-300 flex items-center justify-between">
+
+        <div className="font-bold text-slate-300 flex items-center justify-between text-[10px]">
           <span>FIXnGO Technical Services</span>
-          <span className="text-[10px] px-1.5 py-0.5 bg-teal-950 text-teal-400 rounded border border-teal-800">
+          <span className="text-[9px] px-1.5 py-0.5 bg-teal-950 text-teal-400 rounded border border-teal-800">
             UAE 5% VAT
           </span>
         </div>

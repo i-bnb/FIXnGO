@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" width="150" height="150">
+  <rect width="150" height="150" rx="30" fill="#0A192F"/>
+  <circle cx="75" cy="55" r="28" fill="#F97316"/>
+  <path d="M30 135c0-25 20-45 45-45s45 20 45 45" fill="#38BDF8"/>
+  <text x="75" y="62" font-family="system-ui, sans-serif" font-weight="900" font-size="20" fill="#FFFFFF" text-anchor="middle">RK</text>
+  <rect x="35" y="122" width="80" height="18" rx="9" fill="#0284C7"/>
+  <text x="75" y="134" font-family="system-ui, sans-serif" font-weight="800" font-size="9" fill="#FFFFFF" text-anchor="middle">LEAD TECH</text>
+</svg>

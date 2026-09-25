@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60" fill="none">
+  <!-- Brand Icon Box -->
+  <rect x="4" y="8" width="44" height="44" rx="12" fill="#F97316"/>
+  <!-- Wrench Icon -->
+  <path d="M33.5 18.5a7 7 0 0 0-8.2 1.3l-3.8 3.8 3.5 3.5 1.4-1.4 2.8 2.8-1.4 1.4 3.5 3.5 3.8-3.8a7 7 0 0 0 1.3-8.2l-3.2 3.2-3.5-3.5 3.8-3.8c-.6-.4-1.2-.7-1.9-.8zM19.5 32.5l-6 6a3 3 0 0 0 4.2 4.2l6-6-4.2-4.2z" fill="#FFFFFF"/>
+  <!-- Typography FIXnGO (White for dark headers) -->
+  <text x="58" y="38" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="28" letter-spacing="-0.5" fill="#FFFFFF">FIX<tspan fill="#F97316">nGO</tspan></text>
+  <!-- DEMO Badge -->
+  <rect x="172" y="18" width="46" height="18" rx="9" fill="#DC2626"/>
+  <text x="195" y="31" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="9" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">DEMO</text>
+  <!-- Subtitle -->
+  <text x="59" y="49" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="8" fill="#94A3B8" letter-spacing="1.5">TECHNICAL SERVICES LLC</text>
+</svg>

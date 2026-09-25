@@ -14,8 +14,11 @@ import {
   Phone,
   Sparkles,
   Wrench,
+  Calendar,
+  LogOut,
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
+import { performLogout } from '../../lib/auth/logout';
 
 interface CustomerHeaderProps {
   locale: string;
@@ -38,6 +41,7 @@ export function CustomerHeader({
   const pathname = usePathname();
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showNotificationDrawer, setShowNotificationDrawer] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const uaeLocations = [
     { name: 'Downtown Dubai, Burj Crown', lat: 25.1972, lng: 55.2744 },
@@ -120,6 +124,61 @@ export function CustomerHeader({
                 </span>
               )}
             </button>
+
+            {/* Customer Avatar & Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="w-8 h-8 rounded-xl bg-navy text-white text-xs font-black flex items-center justify-center hover:opacity-90 transition border border-line shadow-xs"
+                title={isArabic ? 'حساب العميل' : 'Customer Account'}
+              >
+                KM
+              </button>
+
+              {showUserMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowUserMenu(false)}
+                  />
+                  <div className="absolute end-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-line p-2 z-50 text-xs animate-in fade-in zoom-in-95">
+                    <div className="p-2 border-b border-line mb-1">
+                      <div className="font-bold text-ink">Khalid Al-Mansoor</div>
+                      <div className="text-[10px] text-slate truncate">customer@fieldops.demo</div>
+                      <span className="inline-block mt-1 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        {isArabic ? 'بوابة العميل' : 'Customer Portal'}
+                      </span>
+                    </div>
+                    <Link
+                      href={`/${locale}/app/bookings`}
+                      onClick={() => setShowUserMenu(false)}
+                      className="flex items-center gap-2 p-2 hover:bg-ground rounded-xl text-ink font-semibold transition"
+                    >
+                      <Calendar className="w-3.5 h-3.5 text-slate" />
+                      <span>{isArabic ? 'حجوزاتي' : 'My Bookings'}</span>
+                    </Link>
+                    <Link
+                      href={`/${locale}/app/account`}
+                      onClick={() => setShowUserMenu(false)}
+                      className="flex items-center gap-2 p-2 hover:bg-ground rounded-xl text-ink font-semibold transition"
+                    >
+                      <User className="w-3.5 h-3.5 text-slate" />
+                      <span>{isArabic ? 'إعدادات الحساب' : 'Account & Profile'}</span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        performLogout(locale);
+                      }}
+                      className="w-full flex items-center gap-2 p-2 text-rose-600 hover:bg-rose-50 rounded-xl font-bold transition mt-1 border-t border-line/60"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>{isArabic ? 'تسجيل الخروج' : 'Log Out'}</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>

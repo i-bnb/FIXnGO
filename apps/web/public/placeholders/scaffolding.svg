@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <rect width="400" height="300" fill="#0F172A"/>
+  <!-- Scaffold structure -->
+  <line x1="120" y1="30" x2="120" y2="240" stroke="#94A3B8" stroke-width="6"/>
+  <line x1="280" y1="30" x2="280" y2="240" stroke="#94A3B8" stroke-width="6"/>
+  <line x1="120" y1="50" x2="280" y2="50" stroke="#CBD5E1" stroke-width="4"/>
+  <line x1="120" y1="110" x2="280" y2="110" stroke="#CBD5E1" stroke-width="4"/>
+  <line x1="120" y1="170" x2="280" y2="170" stroke="#CBD5E1" stroke-width="4"/>
+  <line x1="120" y1="230" x2="280" y2="230" stroke="#CBD5E1" stroke-width="4"/>
+  <!-- Cross braces -->
+  <line x1="120" y1="50" x2="280" y2="170" stroke="#64748B" stroke-width="3"/>
+  <line x1="280" y1="50" x2="120" y2="170" stroke="#64748B" stroke-width="3"/>
+  <!-- Base wheels -->
+  <circle cx="120" cy="250" r="14" fill="#38BDF8"/>
+  <circle cx="280" cy="250" r="14" fill="#38BDF8"/>
+  <text x="200" y="285" font-family="system-ui, sans-serif" font-weight="800" font-size="12" fill="#E2E8F0" text-anchor="middle">Mobile Aluminium Scaffolding Tower 6m</text>
+</svg>

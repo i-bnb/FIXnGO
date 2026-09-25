@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { clearClientSession } from '../../../../lib/auth/session';
 import { CustomerMobileNav } from '../../../../components/customer/CustomerMobileNav';
+import { performLogout } from '../../../../lib/auth/logout';
 
 export default function CustomerAccountPage({
   params: { locale },
@@ -57,8 +58,7 @@ export default function CustomerAccountPage({
   };
 
   const handleSignOut = () => {
-    clearClientSession();
-    router.push(`/${locale}/auth/signin`);
+    performLogout(locale);
   };
 
   return (

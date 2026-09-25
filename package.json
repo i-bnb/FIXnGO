@@ -19,6 +19,7 @@
     "start:api": "corepack pnpm --filter @fieldops/api start:prod",
     "test:shared": "corepack pnpm --filter @fieldops/shared test",
     "test:api": "corepack pnpm --filter @fieldops/api test",
+    "test:links": "node --experimental-strip-types scripts/check-links.ts",
     "test": "corepack pnpm --filter @fieldops/shared test && corepack pnpm --filter @fieldops/api test",
     "lint": "corepack pnpm --filter @fieldops/api lint && corepack pnpm --filter @fieldops/web lint",
     "type-check": "corepack pnpm --filter @fieldops/shared build && corepack pnpm --filter @fieldops/api type-check && corepack pnpm --filter @fieldops/web type-check",

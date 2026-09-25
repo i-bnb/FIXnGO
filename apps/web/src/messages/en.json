@@ -1,7 +1,7 @@
 {
   "common": {
-    "appName": "FieldOps ERP",
-    "companyName": "FieldOps MEP & Contracting LLC",
+    "appName": "FIXnGO",
+    "companyName": "FIXnGO Technical Services LLC",
     "tagline": "UAE Premier Field Service, MEP Maintenance & Equipment Rental",
     "currency": "AED",
     "vat": "VAT (5%)",
@@ -17,10 +17,14 @@
     "submit": "Submit",
     "loading": "Loading...",
     "emergency": "Emergency (Immediate)",
-    "scheduled": "Scheduled"
+    "scheduled": "Scheduled",
+    "logOut": "Log Out",
+    "endShiftAndLogOut": "End Shift & Log Out",
+    "profile": "Profile & Settings",
+    "accessDenied": "You don't have access to that page"
   },
   "nav": {
-    "customerPortal": "Customer On-Demand",
+    "customerPortal": "Customer Portal",
     "techPortal": "Technician PWA",
     "adminPortal": "Admin ERP",
     "dispatchMap": "Live Dispatch Map",

@@ -32,9 +32,13 @@ import {
   Sparkles,
   MessageSquare,
   LogOut,
+  Key,
+  CreditCard,
+  User,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { clearClientSession } from '../../../lib/auth/session';
+import { performLogout } from '../../../lib/auth/logout';
 import { Logo } from '../../../components/common/Logo';
 import { JobStatus, Priority, ServiceType, calculateUaeVat } from '@fieldops/shared';
 import { fetchApi } from '../../../lib/api-client';
@@ -83,7 +87,7 @@ const PERSONAS = {
     trade: 'Master HVAC & Electrical',
     van: 'Van DXB-12 · Al Quoz Hub',
     phone: '+971 52 110 0001',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    avatar: '/placeholders/technician-lead.svg',
     canComplete: true,
   },
   HELPER: {
@@ -93,19 +97,34 @@ const PERSONAS = {
     trade: 'General Mechanical & AC Assistant',
     van: 'Van DXB-12 · Al Quoz Hub',
     phone: '+971 55 110 0002',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    avatar: '/placeholders/technician-helper.svg',
     canComplete: false,
   },
 };
 
 export default function TechnicianPortalPage({ params: { locale } }: { params: { locale: string } }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isArabic = locale === 'ar';
+
+  // Access Denied Notification Banner
+  const [deniedToast, setDeniedToast] = useState(false);
+  useEffect(() => {
+    if (searchParams.get('denied') === 'true') {
+      setDeniedToast(true);
+      const timer = setTimeout(() => setDeniedToast(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
+
   // Active Persona
   const [activePersona, setActivePersona] = useState(PERSONAS.LEAD);
 
-  // Active Tab
-  const [activeTab, setActiveTab] = useState<'JOBS' | 'VAN_STOCK' | 'PERFORMANCE'>('JOBS');
+  // Active Tab: JOBS, VAN_STOCK, PERFORMANCE, ME
+  const [activeTab, setActiveTab] = useState<'JOBS' | 'VAN_STOCK' | 'PERFORMANCE' | 'ME'>('JOBS');
+
+  // End Shift and Logout Modal State
+  const [showEndShiftModal, setShowEndShiftModal] = useState(false);
 
   // Attendance & GPS Geofence
   const [clockedIn, setClockedIn] = useState(true);
@@ -121,6 +140,14 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
 
   // Active Job Detail Navigation
   const [selectedJobId, setSelectedJobId] = useState<string>('wo-24817');
+
+  const handleInitiateLogout = () => {
+    if (clockedIn || isStopwatchRunning || activeJob.status === JobStatus.IN_PROGRESS || activeJob.status === JobStatus.EN_ROUTE) {
+      setShowEndShiftModal(true);
+    } else {
+      performLogout(locale);
+    }
+  };
 
   // Work Orders List (Page 8 Schedule)
   const [jobs, setJobs] = useState<JobItem[]>([
@@ -644,6 +671,19 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
         </div>
       )}
 
+      {/* Access Denied / Role Restriction Toast Banner */}
+      {deniedToast && (
+        <div className="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 text-xs font-bold flex items-center justify-between shadow-xs animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>{isArabic ? 'ليس لديك صلاحية الوصول إلى تلك الصفحة' : "You don't have access to that page"}</span>
+          </div>
+          <button onClick={() => setDeniedToast(false)} className="text-rose-500 hover:text-rose-700">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Top Dark Navy Bar (Page 8 of Design Specification) */}
       <div className="bg-navy text-white -mx-3.5 -mt-4 px-4 py-3 mb-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-2">
@@ -673,12 +713,9 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
             RK
           </div>
           <button
-            onClick={() => {
-              clearClientSession();
-              router.push(`/${locale}/auth/signin`);
-            }}
+            onClick={handleInitiateLogout}
             className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-rose-400 hover:bg-slate-700 transition"
-            title={isArabic ? 'تسجيل الخروج' : 'Sign Out'}
+            title={isArabic ? 'إنهاء المناوبة والخروج' : 'End Shift & Log Out'}
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>
@@ -787,35 +824,45 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="grid grid-cols-3 gap-1.5 p-1 bg-ground rounded-xl mb-4 text-xs font-bold border border-line">
+      <div className="grid grid-cols-4 gap-1 p-1 bg-ground rounded-xl mb-4 text-[11px] font-bold border border-line">
         <button
           onClick={() => setActiveTab('JOBS')}
-          className={`py-2 rounded-lg transition flex items-center justify-center gap-1.5 min-h-[38px] ${
+          className={`py-2 rounded-lg transition flex flex-col items-center justify-center min-h-[38px] ${
             activeTab === 'JOBS' ? 'bg-white text-ink shadow-xs' : 'text-slate hover:text-ink'
           }`}
         >
-          <Calendar className="w-3.5 h-3.5 text-signal-orange" />
-          <span>Today's Jobs</span>
+          <Calendar className="w-3.5 h-3.5 text-signal-orange mb-0.5" />
+          <span>{isArabic ? 'المهام' : 'Jobs'}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('VAN_STOCK')}
-          className={`py-2 rounded-lg transition flex items-center justify-center gap-1.5 min-h-[38px] ${
+          className={`py-2 rounded-lg transition flex flex-col items-center justify-center min-h-[38px] ${
             activeTab === 'VAN_STOCK' ? 'bg-white text-ink shadow-xs' : 'text-slate hover:text-ink'
           }`}
         >
-          <Truck className="w-3.5 h-3.5 text-ocean-blue" />
-          <span>Van Stock</span>
+          <Truck className="w-3.5 h-3.5 text-ocean-blue mb-0.5" />
+          <span>{isArabic ? 'المخزون' : 'Van'}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('PERFORMANCE')}
-          className={`py-2 rounded-lg transition flex items-center justify-center gap-1.5 min-h-[38px] ${
+          className={`py-2 rounded-lg transition flex flex-col items-center justify-center min-h-[38px] ${
             activeTab === 'PERFORMANCE' ? 'bg-white text-ink shadow-xs' : 'text-slate hover:text-ink'
           }`}
         >
-          <Award className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Scorecard</span>
+          <Award className="w-3.5 h-3.5 text-emerald-600 mb-0.5" />
+          <span>{isArabic ? 'الأداء' : 'Score'}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('ME')}
+          className={`py-2 rounded-lg transition flex flex-col items-center justify-center min-h-[38px] ${
+            activeTab === 'ME' ? 'bg-white text-ink shadow-xs' : 'text-slate hover:text-ink'
+          }`}
+        >
+          <User className="w-3.5 h-3.5 text-navy mb-0.5" />
+          <span>{isArabic ? 'حسابي' : 'Me'}</span>
         </button>
       </div>
 
@@ -1119,6 +1166,57 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
                     <span>Navigate with Google Maps</span>
                     <ExternalLink className="w-3 h-3 text-slate-300" />
                   </a>
+                </div>
+
+                {/* Site Access Notes & Gate Security */}
+                <div className="p-3 bg-ground rounded-xl border border-line text-xs space-y-2">
+                  <div className="text-[10px] font-extrabold uppercase text-slate font-display flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Key className="w-3.5 h-3.5 text-signal-orange" />
+                      <span>{isArabic ? 'تصريح ودخول الموقع' : 'Site Access & Gate Security'}</span>
+                    </span>
+                    <span className="text-[9px] font-mono bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200">
+                      CLEARANCE GRANTED
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <div className="bg-white p-2.5 rounded-lg border border-line">
+                      <span className="text-slate block text-[10px]">{isArabic ? 'رمز بوابة الدخول:' : 'Gate Security Code:'}</span>
+                      <span className="font-mono font-bold text-ink">#4092</span>
+                    </div>
+                    <div className="bg-white p-2.5 rounded-lg border border-line">
+                      <span className="text-slate block text-[10px]">{isArabic ? 'موقف الفنيين:' : 'Designated Parking:'}</span>
+                      <span className="font-bold text-ink">Bay 14 (Visitor)</span>
+                    </div>
+                  </div>
+                  <div className="text-[10px] text-slate-500 pt-0.5 flex items-center justify-between">
+                    <span>Community Gate 2 Guardhouse</span>
+                    <span className="font-mono text-slate-600">+971 4 000 0112</span>
+                  </div>
+                </div>
+
+                {/* Payment Status */}
+                <div className="p-3 bg-ground rounded-xl border border-line text-xs flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <div>
+                      <div className="text-[10px] font-extrabold uppercase text-slate font-display">
+                        {isArabic ? 'حالة الدفع والتحصيل' : 'Payment Collection Status'}
+                      </div>
+                      <div className="font-bold text-ink">
+                        {activeJob.status === JobStatus.COMPLETED
+                          ? (isArabic ? 'تم التحصيل بالكامل: ' : 'Paid in Full: ') + vat.totalAmount.toFixed(2) + ' AED'
+                          : (isArabic ? 'نقداً للتحصيل: ' : 'Cash to Collect: ') + vat.totalAmount.toFixed(2) + ' AED'}
+                      </div>
+                    </div>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                    activeJob.status === JobStatus.COMPLETED
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : 'bg-amber-100 text-amber-900 border border-amber-300'
+                  }`}>
+                    {activeJob.status === JobStatus.COMPLETED ? 'PAID' : 'PENDING'}
+                  </span>
                 </div>
 
                 {/* State Machine Action Bar (Signal Orange Primary, min-h-[44px]) */}
@@ -1702,6 +1800,99 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       )}
 
       {/* ========================================================================================= */}
+      {/* TAB 4: ME SCREEN (Profile, Today's Hours, Weekly Jobs, Rating, Van Stock, Log Out) */}
+      {/* ========================================================================================= */}
+      {activeTab === 'ME' && (
+        <div className="space-y-4 animate-in fade-in">
+          {/* Profile Card */}
+          <div className="bg-white rounded-2xl border border-line p-4 shadow-xs space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-2xl bg-navy text-white text-base font-black flex items-center justify-center shrink-0 border border-line overflow-hidden">
+                {activePersona.avatar ? (
+                  <img src={activePersona.avatar} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  'RK'
+                )}
+              </div>
+              <div className="overflow-hidden flex-1">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-extrabold text-base text-ink font-display">{activePersona.name}</h2>
+                  <span className="text-[10px] font-mono bg-ground text-navy px-2 py-0.5 rounded font-bold border border-line">
+                    {activePersona.id}
+                  </span>
+                </div>
+                <div className="text-xs text-signal-orange font-bold">{activePersona.role}</div>
+                <div className="text-[11px] text-slate mt-0.5">{activePersona.trade}</div>
+              </div>
+            </div>
+
+            <div className="p-3 bg-ground rounded-xl border border-line space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate">{isArabic ? 'المركبة المعينة:' : 'Assigned Fleet:'}</span>
+                <span className="font-bold text-ink">{activePersona.van}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate">{isArabic ? 'رقم الهاتف المباشر:' : 'Direct Phone:'}</span>
+                <span className="font-mono font-bold text-ink">{activePersona.phone}</span>
+              </div>
+              <div className="flex justify-between border-t border-line/60 pt-2">
+                <span className="text-slate">{isArabic ? 'حالة الحضور:' : 'Attendance:'}</span>
+                <span className="font-bold text-emerald-700">
+                  {clockedIn ? `${isArabic ? 'على رأس العمل منذ' : 'Clocked In at'} ${clockInTime}` : (isArabic ? 'خارج المناوبة' : 'Off Duty')}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Operational Metrics Cards */}
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="bg-white rounded-2xl border border-line p-3.5 shadow-xs">
+              <div className="text-[10px] font-extrabold uppercase text-slate font-display">{isArabic ? 'ساعات اليوم' : "Today's Hours"}</div>
+              <div className="text-2xl font-black text-navy font-display mt-1">6.5 <span className="text-xs font-bold text-slate">hrs</span></div>
+              <div className="text-[10px] text-emerald-700 font-semibold mt-1">1h 08m on active order</div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-line p-3.5 shadow-xs">
+              <div className="text-[10px] font-extrabold uppercase text-slate font-display">{isArabic ? 'إنجاز الأسبوع' : 'Weekly Jobs Done'}</div>
+              <div className="text-2xl font-black text-navy font-display mt-1">18</div>
+              <div className="text-[10px] text-emerald-700 font-semibold mt-1">98% First-Time Fix</div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-line p-3.5 shadow-xs">
+              <div className="text-[10px] font-extrabold uppercase text-slate font-display">{isArabic ? 'تقييم العملاء' : 'Customer Rating'}</div>
+              <div className="text-2xl font-black text-amber-500 font-display mt-1 flex items-center gap-1">
+                <span>4.9</span>
+                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+              </div>
+              <div className="text-[10px] text-slate mt-1">142 verified reviews</div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-line p-3.5 shadow-xs">
+              <div className="text-[10px] font-extrabold uppercase text-slate font-display">{isArabic ? 'مخزون المركبة' : 'Van Stock'}</div>
+              <div className="text-2xl font-black text-navy font-display mt-1">42 <span className="text-xs font-bold text-slate">parts</span></div>
+              <button
+                onClick={() => setActiveTab('VAN_STOCK')}
+                className="text-[10px] text-ocean-blue font-bold mt-1 underline block text-start"
+              >
+                Inspect Van DXB-12 →
+              </button>
+            </div>
+          </div>
+
+          {/* Log Out Button */}
+          <div className="pt-2">
+            <button
+              onClick={handleInitiateLogout}
+              className="w-full py-3.5 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition min-h-[44px]"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>{isArabic ? 'إنهاء المناوبة وتسجيل الخروج' : 'End Shift & Log Out'}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================================= */}
       {/* MODALS */}
       {/* ========================================================================================= */}
 
@@ -2163,6 +2354,46 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
             >
               Close Asset View
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* 7. END SHIFT & LOGOUT CONFIRMATION MODAL */}
+      {showEndShiftModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl border border-line text-xs space-y-3.5 animate-in fade-in zoom-in-95">
+            <div className="flex items-center gap-2 text-amber-600">
+              <AlertTriangle className="w-5 h-5 shrink-0" />
+              <h3 className="font-black text-sm text-navy font-display">
+                {isArabic ? 'إنهاء المناوبة وتسجيل الخروج؟' : 'End shift and log out?'}
+              </h3>
+            </div>
+            <p className="text-slate-600">
+              {isArabic
+                ? 'أنت على رأس العمل حالياً ولديك مهام نشطة. تسجيل الخروج سينهي مناوبتك ويوقف مشاركة الموقع المباشر.'
+                : 'You are currently on duty with an active work order in progress. Logging out will end your shift and stop live GPS telemetry.'}
+            </p>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowEndShiftModal(false)}
+                className="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition"
+              >
+                {isArabic ? 'إلغاء' : 'Cancel'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEndShiftModal(false);
+                  setClockedIn(false);
+                  setIsStopwatchRunning(false);
+                  performLogout(locale);
+                }}
+                className="py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl transition shadow"
+              >
+                {isArabic ? 'تأكيد الخروج' : 'End Shift & Log Out'}
+              </button>
+            </div>
           </div>
         </div>
       )}

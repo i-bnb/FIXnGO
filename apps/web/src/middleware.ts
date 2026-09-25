@@ -18,6 +18,16 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
   CUSTOMER: ['app'],
 };
 
+const ROLE_HOMES: Record<string, string> = {
+  SUPER_ADMIN: 'admin',
+  ACCOUNTANT: 'admin',
+  DISPATCHER: 'admin',
+  OPERATIONS_MANAGER: 'admin',
+  STOREKEEPER: 'admin',
+  TECHNICIAN: 'tech',
+  CUSTOMER: 'app',
+};
+
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -35,7 +45,8 @@ export default function middleware(request: NextRequest) {
     const sessionCookie = request.cookies.get('fixngo_session')?.value;
     const allowedPortals = sessionCookie ? ROLE_PERMISSIONS[sessionCookie] : null;
 
-    if (!sessionCookie || !allowedPortals || !allowedPortals.includes(portal)) {
+    // 1. Unauthenticated -> redirect to sign-in page
+    if (!sessionCookie) {
       const signInUrl = new URL(`/${locale}/auth/signin`, request.url);
       signInUrl.searchParams.set('returnUrl', pathname);
       signInUrl.searchParams.set('callbackUrl', pathname);
@@ -44,6 +55,19 @@ export default function middleware(request: NextRequest) {
       if (portal === 'admin') signInUrl.searchParams.set('role', 'admin');
       return NextResponse.redirect(signInUrl);
     }
+
+    // 2. Authenticated but unauthorized for this portal -> redirect to user's OWN home portal
+    if (!allowedPortals || !allowedPortals.includes(portal)) {
+      const homePortal = ROLE_HOMES[sessionCookie] || 'app';
+      const homeUrl = new URL(`/${locale}/${homePortal}`, request.url);
+      homeUrl.searchParams.set('denied', 'true');
+      return NextResponse.redirect(homeUrl);
+    }
+
+    // 3. User is authorized -> disable client/proxy page caching so Back button cannot leak data after logout
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
   }
 
   // Security Headers Hardening
