@@ -24,7 +24,10 @@ import {
   UserCheck,
   Search,
   Sparkles,
+  LogOut,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { clearClientSession } from '../../lib/auth/session';
 import { UserRole } from '@fieldops/shared';
 
 interface AdminSidebarProps {
@@ -34,6 +37,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [currentRole, setCurrentRole] = useState<UserRole>(UserRole.SUPER_ADMIN);
 
   const navigationSections = [
@@ -177,15 +181,25 @@ export function AdminSidebar({ locale, onOpenSearch }: AdminSidebarProps) {
         </nav>
       </div>
 
-      {/* Footer Info */}
-      <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-500">
+      {/* Footer Info & Sign Out */}
+      <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-500 space-y-2">
+        <button
+          onClick={() => {
+            clearClientSession();
+            router.push(`/${locale}/auth/signin`);
+          }}
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-slate-800/80 hover:bg-rose-950/40 text-slate-300 hover:text-rose-300 rounded-xl border border-slate-700/60 font-bold transition text-xs"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>{locale === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}</span>
+        </button>
         <div className="font-bold text-slate-300 flex items-center justify-between">
-          <span>FieldOps Technical LLC</span>
+          <span>FIXnGO Technical Services</span>
           <span className="text-[10px] px-1.5 py-0.5 bg-teal-950 text-teal-400 rounded border border-teal-800">
             UAE 5% VAT
           </span>
         </div>
-        <div className="text-[10px] mt-0.5">TRN: 100482910300003 • Dubai</div>
+        <div className="text-[10px] mt-0.5">TRN: 100000000000003 (demo) • Dubai</div>
       </div>
     </aside>
   );

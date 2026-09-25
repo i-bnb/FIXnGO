@@ -20,6 +20,12 @@ export async function fetchApi<T>(endpoint: string, options?: RequestInit): Prom
 
     return await res.json();
   } catch (error) {
+    // In production, never silently hide database/network failures with mock data
+    if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ALLOW_MOCK_FALLBACK !== 'true') {
+      console.error(`Production API request to ${endpoint} failed:`, error);
+      throw error;
+    }
+
     console.warn(`API call to ${endpoint} failed or offline, using fallback state:`, error);
     return getFallbackData<T>(endpoint, options);
   }

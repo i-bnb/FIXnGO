@@ -31,7 +31,11 @@ import {
   X,
   Sparkles,
   MessageSquare,
+  LogOut,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { clearClientSession } from '../../../lib/auth/session';
+import { Logo } from '../../../components/common/Logo';
 import { JobStatus, Priority, ServiceType, calculateUaeVat } from '@fieldops/shared';
 import { fetchApi } from '../../../lib/api-client';
 import confetti from 'canvas-confetti';
@@ -95,6 +99,7 @@ const PERSONAS = {
 };
 
 export default function TechnicianPortalPage({ params: { locale } }: { params: { locale: string } }) {
+  const router = useRouter();
   const isArabic = locale === 'ar';
   // Active Persona
   const [activePersona, setActivePersona] = useState(PERSONAS.LEAD);
@@ -251,6 +256,9 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
   const [documents, setDocuments] = useState<string[]>([
     'Dubai Municipality PTW-9921 Approved.pdf',
   ]);
+
+  // Asset Detail Modal
+  const [showAssetModal, setShowAssetModal] = useState(false);
 
   // Job Hold Reason Modal
   const [showHoldModal, setShowHoldModal] = useState(false);
@@ -639,17 +647,10 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       {/* Top Dark Navy Bar (Page 8 of Design Specification) */}
       <div className="bg-navy text-white -mx-3.5 -mt-4 px-4 py-3 mb-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-signal-orange flex items-center justify-center text-white">
-            <Wrench className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <div className="font-display font-extrabold text-sm tracking-tight leading-none">
-              FIX<span className="text-signal-orange">nGO</span> <span className="text-[10px] text-slate-300 font-medium tracking-wider">TECHNICIAN</span>
-            </div>
-            <div className="text-[10px] text-slate-400 font-body mt-0.5">
-              {isArabic ? 'الأربعاء، ٢٣ سبتمبر ٢٠٢٦' : 'Wednesday, 23 September 2026'}
-            </div>
-          </div>
+          <Logo locale={locale} size="sm" showBadge={false} />
+          <span className="text-[10px] text-slate-300 font-medium tracking-wider border-s border-slate-700 ps-2">
+            TECHNICIAN
+          </span>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -671,6 +672,16 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
           <div className="w-8 h-8 rounded-full bg-signal-orange text-white font-display font-extrabold text-xs flex items-center justify-center shrink-0 ring-2 ring-white/20">
             RK
           </div>
+          <button
+            onClick={() => {
+              clearClientSession();
+              router.push(`/${locale}/auth/signin`);
+            }}
+            className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-rose-400 hover:bg-slate-700 transition"
+            title={isArabic ? 'تسجيل الخروج' : 'Sign Out'}
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
 
@@ -1007,6 +1018,62 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
                   </div>
                   <h1 className="font-extrabold text-base text-ink leading-snug font-display">{activeJob.title}</h1>
                   <p className="text-xs text-slate mt-1">{activeJob.description}</p>
+                </div>
+
+                {/* SLA Countdown Timer */}
+                <div className="flex items-center justify-between p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-xs">
+                  <div className="flex items-center gap-1.5 font-bold text-amber-900">
+                    <Clock className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                    <span>SLA Response Target:</span>
+                  </div>
+                  <span className="font-mono font-extrabold text-amber-800 bg-white px-2 py-0.5 rounded-lg border border-amber-300">
+                    1h 23m remaining
+                  </span>
+                </div>
+
+                {/* Registered Asset Information */}
+                <div className="p-3 bg-ground rounded-xl border border-line flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <Package className="w-4 h-4 text-ocean-blue shrink-0" />
+                    <div>
+                      <div className="font-bold text-ink">Asset: AST-VIL-041 (Daikin 4-Ton VRV)</div>
+                      <div className="text-[10px] text-slate font-mono">SN: DKN-VRV-901842-DXB · Roof Platform</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowAssetModal(true)}
+                    className="px-2.5 py-1.5 bg-white hover:bg-slate-100 text-ocean-blue border border-line rounded-lg font-bold text-xs transition"
+                  >
+                    View Asset
+                  </button>
+                </div>
+
+                {/* Assigned Team & Helper Section */}
+                <div className="p-3 bg-ground rounded-xl border border-line space-y-2 text-xs">
+                  <div className="text-[10px] font-extrabold uppercase text-slate font-display flex items-center justify-between">
+                    <span>Assigned Team & Helper</span>
+                    <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono text-[9px] border border-emerald-200">
+                      ACTIVE
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-navy text-white text-xs font-bold flex items-center justify-center">
+                        IK
+                      </div>
+                      <div>
+                        <div className="font-bold text-ink">Imran Khan (Helper Technician)</div>
+                        <div className="text-[10px] text-slate font-mono">+971 50 000 0204</div>
+                      </div>
+                    </div>
+                    <a
+                      href="tel:+971500000204"
+                      className="p-2 rounded-xl bg-white border border-line text-emerald-700 hover:bg-emerald-50 transition"
+                      title="Call Helper"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 </div>
 
                 {/* Customer Contact & Actions (Page 9) */}
@@ -2027,6 +2094,75 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 6. ASSET DETAILS MODAL */}
+      {showAssetModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl border border-line animate-in fade-in zoom-in-95 duration-150 text-xs space-y-3.5">
+            <div className="flex items-center justify-between border-b border-line pb-2.5">
+              <div className="flex items-center gap-2">
+                <Package className="w-4 h-4 text-ocean-blue" />
+                <h3 className="font-black text-sm text-navy">Asset Details</h3>
+              </div>
+              <button onClick={() => setShowAssetModal(false)} className="text-slate-400 hover:text-slate-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-3 bg-ground rounded-xl border border-line space-y-2">
+              <div className="flex justify-between">
+                <span className="text-slate">Asset Tag:</span>
+                <span className="font-mono font-bold text-ocean-blue">AST-VIL-041</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate">Equipment Model:</span>
+                <span className="font-bold text-ink">Daikin VRV-IV X 4-Ton</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate">Serial Number:</span>
+                <span className="font-mono font-bold text-ink">DKN-VRV-901842-DXB</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate">Installation Date:</span>
+                <span className="font-bold text-ink">15 Jan 2024</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate">Location:</span>
+                <span className="font-bold text-ink">Roof Platform Deck</span>
+              </div>
+              <div className="flex justify-between border-t border-line/60 pt-1.5">
+                <span className="text-slate">Coverage Status:</span>
+                <span className="font-bold text-emerald-700">Gold AMC 24/7 (Active)</span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="text-[10px] font-extrabold uppercase text-slate">Service History Log</div>
+              <div className="p-2.5 bg-white border border-line rounded-xl space-y-1.5 text-[11px]">
+                <div className="flex justify-between text-slate-500">
+                  <span>14 Jun 2026: Compressor oil & filter replacement</span>
+                  <span className="font-mono text-emerald-600 font-bold">Passed</span>
+                </div>
+                <div className="flex justify-between text-slate-500">
+                  <span>10 Mar 2026: Quarterly PPM electrical torque test</span>
+                  <span className="font-mono text-emerald-600 font-bold">Passed</span>
+                </div>
+                <div className="flex justify-between text-slate-500">
+                  <span>12 Dec 2025: R410A pressure recalibration</span>
+                  <span className="font-mono text-emerald-600 font-bold">Passed</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowAssetModal(false)}
+              className="w-full py-2.5 bg-navy text-white font-bold rounded-xl"
+            >
+              Close Asset View
+            </button>
           </div>
         </div>
       )}

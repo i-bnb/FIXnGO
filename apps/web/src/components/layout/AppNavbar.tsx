@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Globe, Wrench, Shield, User, LogOut, ChevronDown, Check } from 'lucide-react';
 import { UAE_CONSTANTS } from '@fieldops/shared';
+import { Logo } from '../common/Logo';
 import {
   getClientSession,
   setClientSession,
@@ -58,21 +59,7 @@ export function AppNavbar({ locale }: AppNavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo & UAE Badge */}
         <div className="flex items-center gap-3">
-          <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-signal-orange flex items-center justify-center text-white font-black text-lg shadow-sm group-hover:scale-105 transition-transform">
-              <Wrench className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div className="font-extrabold text-navy text-xl tracking-tight flex items-center gap-1 font-display">
-                <span>FIX</span>
-                <span className="text-signal-orange">nGO</span>
-                <span className="text-[10px] bg-red-600 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
-                  DEMO
-                </span>
-              </div>
-              <div className="text-[10px] text-slate-500 font-medium">{UAE_CONSTANTS.COMPANY_TRN}</div>
-            </div>
-          </Link>
+          <Logo locale={locale} showTrn={true} />
         </div>
 
         {/* Portal Switcher - ONLY displayed on root or admin, NOT on customer and tech headers */}
@@ -131,7 +118,14 @@ export function AppNavbar({ locale }: AppNavbarProps) {
                   </div>
 
                   <div className="p-1 space-y-0.5">
-                    {Object.entries(DEMO_PERSONAS).map(([key, persona]) => {
+                    {Object.entries(DEMO_PERSONAS)
+                      .filter(([key]) => {
+                        if (isAdmin) return ['SUPER_ADMIN', 'ACCOUNTANT', 'DISPATCHER'].includes(key);
+                        if (isCustomer) return key === 'CUSTOMER';
+                        if (isTech) return key === 'TECHNICIAN';
+                        return true;
+                      })
+                      .map(([key, persona]) => {
                       const role = key as DemoRole;
                       const isActive = currentSession.role === role;
 

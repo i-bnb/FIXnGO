@@ -15,6 +15,7 @@ import {
   Sparkles,
   Wrench,
 } from 'lucide-react';
+import { Logo } from '../common/Logo';
 
 interface CustomerHeaderProps {
   locale: string;
@@ -78,12 +79,7 @@ export function CustomerHeader({
         <div className="flex items-center justify-between max-w-lg mx-auto">
           {/* Left: FIXnGO Logo & Location Dropdown */}
           <div className="flex items-center gap-2">
-            <Link href={`/${locale}`} className="flex items-center gap-1.5 font-display font-black text-navy text-lg shrink-0">
-              <div className="w-7 h-7 rounded-lg bg-signal-orange flex items-center justify-center text-white">
-                <Wrench className="w-3.5 h-3.5" />
-              </div>
-              <span className="hidden xs:inline">FIX<span className="text-signal-orange">nGO</span></span>
-            </Link>
+            <Logo locale={locale} size="sm" showBadge={false} />
 
             <button
               onClick={() => setShowLocationModal(true)}

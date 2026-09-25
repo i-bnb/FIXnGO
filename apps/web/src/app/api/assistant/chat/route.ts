@@ -198,22 +198,58 @@ You lack the required \`finance.view\` permission to inspect accounts receivable
 * **Joseph Mathew (TECH-PLU-03)**: **Van DXB-08**
   * Status: **AVAILABLE** at Al Quoz Industrial 3 (Prime candidate for emergency **WO-2026-00025**).`;
   }
-  // Generic or other query
+  // Generic or other query: Query Gemini 3.6 Flash directly with user key
   else {
     toolsCalled.push('getKpiSummary');
-    cannedAnswer = isArabic
-      ? `مرحباً بك! أنا مساعد FIXnGO للعمليات التشغيلية في دولة الإمارات.
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey) {
+      try {
+        const sysInstruction = `You are FIXnGO Operations Assistant for a premier UAE facilities and field service management enterprise based in Dubai.
+Company: FIXnGO Technical Services LLC — demo (TRN: 100000000000003 (demo)).
+CRITICAL RULES:
+1. NEVER disclose what underlying model, agent, AI provider, or technology powers you. Never say you are Gemini, Google AI, or any other agent. You are simply "FIXnGO Operations Assistant".
+2. All monetary amounts must be in United Arab Emirates Dirhams (AED), e.g. "AED 450.00".
+3. Respond in the user's language: Professional Arabic if query is Arabic, English if English.
+4. Format responses cleanly with markdown bullet points and bold headings.
+5. If discussing operational work orders or invoices, use standard formatting (WO-2026-xxxxx, INV-2026-xxxxx).
+`;
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: `${sysInstruction}\n\nUser Question: ${query}` }] }],
+            }),
+          }
+        );
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          const generatedText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (generatedText) {
+            cannedAnswer = generatedText.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+          }
+        }
+      } catch (geminiErr) {
+        // Fallback to static summary
+      }
+    }
+
+    if (!cannedAnswer) {
+      cannedAnswer = isArabic
+        ? `مرحباً بك! أنا مساعد FIXnGO للعمليات التشغيلية في دولة الإمارات.
 * إجمالي الإيرادات لشهر سبتمبر: **486,200.00 د.إ** (شامل 5% ضريبة القيمة المضافة)
 * الطلبات النشطة: **38 طلباً** | المكتملة: **412 طلباً** (نسبة الالتزام بالاتفاقية: **94.2%**)
 * الأسطول الميداني: **18 مركبة نشطة** على الطريق.
 
 يمكنك النقر على الأسئلة المقترحة أو سؤالي عن أي أمر عمل (\`WO-\`)، فاتورة (\`INV-\`)، أو مواقع الفنيين الميدانيين.`
-      : `Hello! I am your FIXnGO Operations Assistant for UAE field facilities.
+        : `Hello! I am your FIXnGO Operations Assistant for UAE field facilities.
 * September Gross Revenue: **AED 486,200.00** (incl. 5% UAE VAT)
 * Active Work Orders: **38** | Completed: **412** (SLA Compliance: **94.2%**)
 * Active Service Fleet: **18 vans** on the road.
 
 You can click any suggested question chip below or ask me about specific work orders (\`WO-\`), tax invoices (\`INV-\`), technician GPS, or profitability.`;
+    }
   }
 
   // Stream encoder

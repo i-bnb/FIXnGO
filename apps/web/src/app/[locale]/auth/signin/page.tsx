@@ -13,18 +13,26 @@ export default function SignInPage({
   const isArabic = locale === 'ar';
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl');
+  const returnUrl = searchParams.get('returnUrl') || searchParams.get('callbackUrl');
+  const roleFilter = searchParams.get('role')?.toLowerCase();
 
   const [loadingRole, setLoadingRole] = useState<string | null>(null);
 
   const handleSignIn = (role: DemoRole, targetPath: string) => {
     setLoadingRole(role);
     setClientSession(role);
-    const dest = callbackUrl || `/${locale}${targetPath}`;
+    const dest = returnUrl || `/${locale}${targetPath}`;
     setTimeout(() => {
       router.push(dest);
     }, 150);
   };
+
+  const filteredPersonas = Object.entries(DEMO_PERSONAS).filter(([key]) => {
+    if (roleFilter === 'customer') return key === 'CUSTOMER';
+    if (roleFilter === 'technician') return key === 'TECHNICIAN';
+    if (roleFilter === 'admin') return ['SUPER_ADMIN', 'ACCOUNTANT', 'DISPATCHER'].includes(key);
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-ground dark:bg-slate-950 flex flex-col justify-center items-center p-4 sm:p-6">
@@ -43,11 +51,25 @@ export default function SignInPage({
               ? 'اختر شخصية تجريبية موثقة للدخول إلى لوحة التحكم بصلاحيات محددة'
               : 'Select an authorized demo persona to access role-protected operations with zero configuration'}
           </p>
+
+          {roleFilter && (
+            <div className="pt-2 flex items-center justify-center gap-2">
+              <span className="text-[11px] font-bold text-signal-orange uppercase bg-orange-50 dark:bg-orange-950/40 px-2.5 py-0.5 rounded-full border border-orange-200">
+                Persona filter: {roleFilter}
+              </span>
+              <button
+                onClick={() => router.push(`/${locale}/auth/signin`)}
+                className="text-[11px] text-slate-400 hover:text-navy dark:hover:text-white underline"
+              >
+                Show all personas
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Personas Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-          {Object.entries(DEMO_PERSONAS).map(([key, persona]) => {
+          {filteredPersonas.map(([key, persona]) => {
             const role = key as DemoRole;
             const isLoading = loadingRole === role;
 

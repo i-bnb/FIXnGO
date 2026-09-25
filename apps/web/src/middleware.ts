@@ -9,9 +9,11 @@ const intlMiddleware = createMiddleware({
 });
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
-  SUPER_ADMIN: ['admin', 'tech', 'app'],
+  SUPER_ADMIN: ['admin'],
   ACCOUNTANT: ['admin'],
   DISPATCHER: ['admin'],
+  OPERATIONS_MANAGER: ['admin'],
+  STOREKEEPER: ['admin'],
   TECHNICIAN: ['tech'],
   CUSTOMER: ['app'],
 };
@@ -35,7 +37,11 @@ export default function middleware(request: NextRequest) {
 
     if (!sessionCookie || !allowedPortals || !allowedPortals.includes(portal)) {
       const signInUrl = new URL(`/${locale}/auth/signin`, request.url);
+      signInUrl.searchParams.set('returnUrl', pathname);
       signInUrl.searchParams.set('callbackUrl', pathname);
+      if (portal === 'app') signInUrl.searchParams.set('role', 'customer');
+      if (portal === 'tech') signInUrl.searchParams.set('role', 'technician');
+      if (portal === 'admin') signInUrl.searchParams.set('role', 'admin');
       return NextResponse.redirect(signInUrl);
     }
   }

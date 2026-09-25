@@ -54,7 +54,7 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(roleCredentials[selectedRole].destination);
+    router.push(`/${locale}/auth/signin?role=${selectedRole}&returnUrl=${encodeURIComponent(roleCredentials[selectedRole].destination)}`);
   };
 
   return (
