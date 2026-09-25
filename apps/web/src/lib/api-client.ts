@@ -46,7 +46,7 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
           currentLongitude: 55.2744,
           ratingAverage: 4.95,
           completedJobsCount: 142,
-          user: { fullName: 'Rashid Al-Nuaimi', phone: '+971521100001', role: 'TECHNICIAN' },
+          user: { fullName: 'Rashid Al-Nuaimi', phone: 'xxxxxxxxx', role: 'TECHNICIAN' },
         },
         {
           id: 'tech-2',
@@ -56,7 +56,7 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
           currentLongitude: 55.2708,
           ratingAverage: 4.88,
           completedJobsCount: 98,
-          user: { fullName: 'Vikram Sharma', phone: '+971521100002', role: 'TECHNICIAN' },
+          user: { fullName: 'Vikram Sharma', phone: 'xxxxxxxxx', role: 'TECHNICIAN' },
         },
         {
           id: 'tech-3',
@@ -66,7 +66,7 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
           currentLongitude: 55.2341,
           ratingAverage: 4.92,
           completedJobsCount: 120,
-          user: { fullName: 'Mohammad Rizwan', phone: '+971521100003', role: 'TECHNICIAN' },
+          user: { fullName: 'Mohammad Rizwan', phone: 'xxxxxxxxx', role: 'TECHNICIAN' },
         },
         {
           id: 'tech-4',
@@ -76,7 +76,7 @@ function getFallbackData<T>(endpoint: string, options?: RequestInit): T {
           currentLongitude: 55.1403,
           ratingAverage: 4.79,
           completedJobsCount: 85,
-          user: { fullName: 'Kareem Mostafa', phone: '+971521100004', role: 'TECHNICIAN' },
+          user: { fullName: 'Kareem Mostafa', phone: 'xxxxxxxxx', role: 'TECHNICIAN' },
         },
       ],
       unassignedOrders: [

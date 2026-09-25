@@ -44,7 +44,7 @@ const INITIAL_REQUESTS: ServiceRequest[] = [
     id: 'SR-101',
     ticketNumber: 'SR-2026-0491',
     customerName: 'Palm Crest Villa 124',
-    phone: '+971 50 000 0118',
+    phone: 'xxxxxxxxx',
     siteName: 'Villa 124, Palm Crest Residences',
     area: 'Palm Crest Residences, Dubai',
     category: 'HVAC',
@@ -62,7 +62,7 @@ const INITIAL_REQUESTS: ServiceRequest[] = [
     id: 'SR-102',
     ticketNumber: 'SR-2026-0492',
     customerName: 'Crescent Bay Commercial Complex',
-    phone: '+971 4 000 0102',
+    phone: 'xxxxxxxxx',
     siteName: 'Main Lobby & Restaurant',
     area: 'Downtown Dubai',
     category: 'PLUMBING',
@@ -80,7 +80,7 @@ const INITIAL_REQUESTS: ServiceRequest[] = [
     id: 'SR-103',
     ticketNumber: 'SR-2026-0493',
     customerName: 'Al-Mansoor Trading LLC',
-    phone: '+971 52 890 1122',
+    phone: 'xxxxxxxxx',
     siteName: 'Warehouse 14, Al Quoz 3',
     area: 'Al Quoz, Dubai',
     category: 'ELECTRICAL',
@@ -98,7 +98,7 @@ const INITIAL_REQUESTS: ServiceRequest[] = [
     id: 'SR-104',
     ticketNumber: 'SR-2026-0494',
     customerName: 'Mrs. Fatima Al-Hashimi',
-    phone: '+971 55 412 9003',
+    phone: 'xxxxxxxxx',
     siteName: 'Penthouse 32A, Burj Crown',
     area: 'Downtown Dubai',
     category: 'HVAC',
@@ -116,7 +116,7 @@ const INITIAL_REQUESTS: ServiceRequest[] = [
     id: 'SR-105',
     ticketNumber: 'SR-2026-0495',
     customerName: 'Dr. Tariq Al-Suwaidi',
-    phone: '+971 50 771 4455',
+    phone: 'xxxxxxxxx',
     siteName: 'Villa 88, Palm Jumeirah Frond M',
     area: 'Palm Jumeirah, Dubai',
     category: 'PLUMBING',
@@ -453,7 +453,7 @@ export default function ServiceRequestsAdminPage({
                       <Phone className="w-3.5 h-3.5" />
                     </a>
                     <a
-                      href={`https://wa.me/${selectedRequest.phone.replace(/[^0-9]/g, '')}`}
+                      href="https://wa.me/xxxxxxxxx"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 hover:bg-emerald-100 transition"

@@ -120,10 +120,10 @@ const SAMPLE_POS: PurchaseOrder[] = [
 ];
 
 const SAMPLE_SUPPLIERS: Supplier[] = [
-  { id: 's-1', name: 'Danfoss Middle East FZE', trn: '100288190000003', contactPerson: 'Hassan Jaber', phone: '+971 4 810 5500', email: 'sales@danfoss.ae', paymentTerms: 'Net 30 Days', category: 'HVAC & Refrigeration', rating: 4.9 },
-  { id: 's-2', name: 'Schneider Electric UAE', trn: '100499218800003', contactPerson: 'Rania El-Gohary', phone: '+971 4 709 9000', email: 'orders.uae@se.com', paymentTerms: 'Net 45 Days', category: 'Electrical & Automation', rating: 4.8 },
-  { id: 's-3', name: 'Ducab Cables LLC', trn: '100144558800003', contactPerson: 'Biju Nair', phone: '+971 4 815 8888', email: 'commercial@ducab.com', paymentTerms: 'Net 30 Days', category: 'Cables & Wiring', rating: 4.95 },
-  { id: 's-4', name: 'Grohe Middle East Trading', trn: '100311229900003', contactPerson: 'Patrick Simon', phone: '+971 4 456 2200', email: 'me.orders@grohe.com', paymentTerms: 'Net 30 Days', category: 'Plumbing & Sanitary', rating: 4.7 },
+  { id: 's-1', name: 'Danfoss Middle East FZE', trn: '100288190000003', contactPerson: 'Hassan Jaber', phone: 'xxxxxxxxx', email: 'test@i-bnb.com', paymentTerms: 'Net 30 Days', category: 'HVAC & Refrigeration', rating: 4.9 },
+  { id: 's-2', name: 'Schneider Electric UAE', trn: '100499218800003', contactPerson: 'Rania El-Gohary', phone: 'xxxxxxxxx', email: 'test@i-bnb.com', paymentTerms: 'Net 45 Days', category: 'Electrical & Automation', rating: 4.8 },
+  { id: 's-3', name: 'Ducab Cables LLC', trn: '100144558800003', contactPerson: 'Biju Nair', phone: 'xxxxxxxxx', email: 'test@i-bnb.com', paymentTerms: 'Net 30 Days', category: 'Cables & Wiring', rating: 4.95 },
+  { id: 's-4', name: 'Grohe Middle East Trading', trn: '100311229900003', contactPerson: 'Patrick Simon', phone: 'xxxxxxxxx', email: 'test@i-bnb.com', paymentTerms: 'Net 30 Days', category: 'Plumbing & Sanitary', rating: 4.7 },
 ];
 
 const SAMPLE_GRNS: GoodsReceiptNote[] = [

@@ -30,21 +30,21 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
 
   const roleCredentials = {
     customer: {
-      email: 'fatima@fixngo.ae',
+      email: 'test@i-bnb.com',
       title: 'Customer',
       subtitle: 'Book & track',
       destination: `/${locale}/app`,
       buttonLabel: isArabic ? 'الدخول كعميل ←' : 'Sign in to customer app →',
     },
     technician: {
-      email: 'rashid@fixngo.ae',
+      email: 'test@i-bnb.com',
       title: 'Technician',
       subtitle: 'Jobs & helpers',
       destination: `/${locale}/tech`,
       buttonLabel: isArabic ? 'الدخول كتطبيق فني ←' : 'Sign in to technician PWA →',
     },
     admin: {
-      email: 'sara@fixngo.ae',
+      email: 'test@i-bnb.com',
       title: 'Admin',
       subtitle: 'Office & finance',
       destination: `/${locale}/admin`,

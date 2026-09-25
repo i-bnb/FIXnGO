@@ -95,8 +95,8 @@ export default function CustomerAccountPage({
                     Verified
                   </span>
                 </div>
-                <div className="text-xs text-slate-500 font-mono mt-0.5">+971 50 000 0005</div>
-                <div className="text-xs text-slate-400 truncate">customer@fixngo.example</div>
+                <div className="text-xs text-slate-500 font-mono mt-0.5">xxxxxxxxx</div>
+                <div className="text-xs text-slate-400 truncate">test@i-bnb.com</div>
               </div>
             </div>
 

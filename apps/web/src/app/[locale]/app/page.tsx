@@ -111,11 +111,11 @@ export default function CustomerMobileAppPage({
   // Authentication State
   const [user, setUser] = useState<CustomerUser | null>({
     fullName: 'Eng. Tariq Al-Hashimi',
-    phone: '+971 50 000 0101',
-    email: 'facilities@palmcrest.example',
+    phone: 'xxxxxxxxx',
+    email: 'test@i-bnb.com',
   });
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [otpPhone, setOtpPhone] = useState('+971 50 123 4567');
+  const [otpPhone, setOtpPhone] = useState('xxxxxxxxx');
   const [otpCode, setOtpCode] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
 
@@ -132,7 +132,7 @@ export default function CustomerMobileAppPage({
     coordinates: [25.1972, 55.2744],
     technician: {
       name: 'Rashid Al-Nuaimi',
-      phone: '+971 52 110 0001',
+      phone: 'xxxxxxxxx',
       vanCode: 'Van-01 (Toyota HiAce)',
       rating: 4.95,
       completedJobs: 142,
@@ -1783,7 +1783,7 @@ export default function CustomerMobileAppPage({
                       setUser({
                         fullName: 'Eng. Tariq Al-Hashimi',
                         phone: otpPhone,
-                        email: 'facilities@palmcrest.example',
+                        email: 'test@i-bnb.com',
                       });
                       setShowAuthModal(false);
                       setIsOtpSent(false);

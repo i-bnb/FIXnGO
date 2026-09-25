@@ -87,8 +87,8 @@ export const CANONICAL_TECHNICIANS: CanonicalTechnician[] = [
     name: 'Tariq Al-Mansoor',
     nameAr: 'طارق المنصور',
     trade: 'PLUMBING',
-    phone: '+971 50 000 0111',
-    email: 'tech.tariq@fieldops.demo',
+    phone: 'xxxxxxxxx',
+    email: 'test@i-bnb.com',
     vanCode: 'Van DXB-02 (Toyota HiAce)',
     rating: 4.88,
     lat: 25.1856,
@@ -100,8 +100,8 @@ export const CANONICAL_TECHNICIANS: CanonicalTechnician[] = [
     name: 'Rashid Al-Nuaimi',
     nameAr: 'راشد النعيمي',
     trade: 'HVAC',
-    phone: '+971 50 000 0112',
-    email: 'tech.rashid@fieldops.demo',
+    phone: 'xxxxxxxxx',
+    email: 'test@i-bnb.com',
     vanCode: 'Van DXB-12 (Toyota HiAce)',
     rating: 4.95,
     lat: 25.1972,
@@ -113,8 +113,8 @@ export const CANONICAL_TECHNICIANS: CanonicalTechnician[] = [
     name: 'Zayd Al-Falasi',
     nameAr: 'زيد الفلاسي',
     trade: 'ELECTRICAL',
-    phone: '+971 50 000 0113',
-    email: 'tech.zayd@fieldops.demo',
+    phone: 'xxxxxxxxx',
+    email: 'test@i-bnb.com',
     vanCode: 'Van DXB-07 (Nissan Urvan)',
     rating: 4.91,
     lat: 25.1325,
@@ -126,8 +126,8 @@ export const CANONICAL_TECHNICIANS: CanonicalTechnician[] = [
     name: 'Omar Al-Sayed',
     nameAr: 'عمر السيد',
     trade: 'EQUIPMENT',
-    phone: '+971 50 000 0114',
-    email: 'tech.omar@fieldops.demo',
+    phone: 'xxxxxxxxx',
+    email: 'test@i-bnb.com',
     vanCode: 'Van DXB-09 (Ford Transit)',
     rating: 4.85,
     lat: 25.0762,
@@ -139,8 +139,8 @@ export const CANONICAL_TECHNICIANS: CanonicalTechnician[] = [
     name: 'Bilal Al-Qasim',
     nameAr: 'بلال القاسم',
     trade: 'LABOUR_SUPPLY',
-    phone: '+971 50 000 0115',
-    email: 'tech.bilal@fieldops.demo',
+    phone: 'xxxxxxxxx',
+    email: 'test@i-bnb.com',
     vanCode: 'Van DXB-04 (Toyota Coaster)',
     rating: 4.82,
     lat: 25.1215,
@@ -183,8 +183,8 @@ export const CANONICAL_CUSTOMERS: CanonicalCustomer[] = Array.from({ length: 60 
     nameAr,
     trn: `1000000000000${num.toString().padStart(2, '0')} (demo)`,
     contactPerson,
-    email: `contact@${domain}`,
-    phone: `+971 50 000 0${num.toString().padStart(3, '0')}`,
+    email: 'test@i-bnb.com',
+    phone: 'xxxxxxxxx',
     emirate: seed.emirate,
     area: seed.area,
     creditLimit: isCorporate ? 150000 : 25000,
@@ -676,20 +676,11 @@ export function getCanonicalTechnicianLeaderboard(period: 'SEP' | '6M' = 'SEP') 
 // 9. PII Masking & Timer Format Helpers
 // --------------------------------------------------------------------------
 export function maskPhone(phone?: string): string {
-  if (!phone) return '+971 50 *** 0000';
-  const clean = phone.trim();
-  // +971 50 000 0111 -> +971 50 *** 0111
-  if (clean.length >= 10) {
-    return clean.slice(0, 8) + '*** ' + clean.slice(-4);
-  }
-  return clean.slice(0, 3) + '***' + clean.slice(-2);
+  return 'xxxxxxxxx';
 }
 
 export function maskEmail(email?: string): string {
-  if (!email || !email.includes('@')) return 'user***@example.com';
-  const [user, domain] = email.split('@');
-  const visible = user.slice(0, 1);
-  return `${visible}***@${domain}`;
+  return 'test@i-bnb.com';
 }
 
 export function formatTimer(seconds: number): string {

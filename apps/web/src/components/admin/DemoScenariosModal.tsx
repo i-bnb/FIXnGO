@@ -41,7 +41,7 @@ export const ALL_SCENARIOS: ScenarioDefinition[] = [
     category: 'Customer On-Demand',
     triggerEvent: 'Customer submits service request',
     targetRole: 'CUSTOMER',
-    targetUser: 'Zaid Al-Harbi (+971 50 998 8112)',
+    targetUser: 'Zaid Al-Harbi (xxxxxxxxx)',
     channel: 'WHATSAPP',
     description: 'Instant WhatsApp confirmation acknowledging the maintenance issue and setting service expectations.',
     sampleMessage: 'Thank you Zaid! Your request #SR-2026-0812 for Emergency Plumbing has been received. Our dispatch team is assigning a technician.',

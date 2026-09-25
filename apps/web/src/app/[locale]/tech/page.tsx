@@ -86,7 +86,7 @@ const PERSONAS = {
     role: 'Lead AC & MEP Specialist',
     trade: 'Master HVAC & Electrical',
     van: 'Van DXB-12 · Al Quoz Hub',
-    phone: '+971 52 110 0001',
+    phone: 'xxxxxxxxx',
     avatar: '/placeholders/technician-lead.svg',
     canComplete: true,
   },
@@ -96,7 +96,7 @@ const PERSONAS = {
     role: 'Helper Technician',
     trade: 'General Mechanical & AC Assistant',
     van: 'Van DXB-12 · Al Quoz Hub',
-    phone: '+971 55 110 0002',
+    phone: 'xxxxxxxxx',
     avatar: '/placeholders/technician-helper.svg',
     canComplete: false,
   },
@@ -156,7 +156,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       orderNumber: 'WO-24810',
       title: 'AC Filter Deep Chemical Wash & Sanitization',
       clientName: 'Omar T.',
-      clientPhone: '+971501122334',
+      clientPhone: 'xxxxxxxxx',
       address: 'Burj Residences, Downtown Dubai',
       serviceType: 'HVAC',
       status: JobStatus.COMPLETED,
@@ -172,7 +172,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       orderNumber: 'WO-24814',
       title: 'Smart Digital Thermostat Replacement',
       clientName: 'Sarah D.',
-      clientPhone: '+971502233445',
+      clientPhone: 'xxxxxxxxx',
       address: 'Marina Gate 2, Dubai Marina',
       serviceType: 'HVAC',
       status: JobStatus.COMPLETED,
@@ -188,7 +188,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       orderNumber: 'WO-24817',
       title: 'AC not cooling · Bedroom 2',
       clientName: 'Fatima Al Mansoori',
-      clientPhone: '+971501234567',
+      clientPhone: 'xxxxxxxxx',
       address: 'Villa 14, Arabian Ranches, Dubai',
       serviceType: 'HVAC',
       status: JobStatus.IN_PROGRESS,
@@ -204,7 +204,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
       orderNumber: 'WO-24822',
       title: 'Capacitor Replacement & Preventive Check',
       clientName: 'Tariq K.',
-      clientPhone: '+971503344556',
+      clientPhone: 'xxxxxxxxx',
       address: 'District 12, Jumeirah Village Circle',
       serviceType: 'HVAC',
       status: JobStatus.ASSIGNED,
@@ -1110,11 +1110,11 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
                       </div>
                       <div>
                         <div className="font-bold text-ink">Imran Khan (Helper Technician)</div>
-                        <div className="text-[10px] text-slate font-mono">+971 50 000 0204</div>
+                        <div className="text-[10px] text-slate font-mono">xxxxxxxxx</div>
                       </div>
                     </div>
                     <a
-                      href="tel:+971500000204"
+                      href="tel:xxxxxxxxx"
                       className="p-2 rounded-xl bg-white border border-line text-emerald-700 hover:bg-emerald-50 transition"
                       title="Call Helper"
                     >
@@ -1137,7 +1137,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
 
                     <div className="flex items-center gap-1.5">
                       <a
-                        href={`https://wa.me/971501234567?text=Hello%20Fatima,%20this%20is%20Rashid%20from%20FIXnGO`}
+                        href={`https://wa.me/xxxxxxxxx?text=Hello%20Fatima,%20this%20is%20Rashid%20from%20FIXnGO`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2.5 bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 transition shadow-xs border border-emerald-200 flex items-center justify-center shrink-0 min-h-[44px] min-w-[44px]"
@@ -1191,7 +1191,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
                   </div>
                   <div className="text-[10px] text-slate-500 pt-0.5 flex items-center justify-between">
                     <span>Community Gate 2 Guardhouse</span>
-                    <span className="font-mono text-slate-600">+971 4 000 0112</span>
+                    <span className="font-mono text-slate-600">xxxxxxxxx</span>
                   </div>
                 </div>
 

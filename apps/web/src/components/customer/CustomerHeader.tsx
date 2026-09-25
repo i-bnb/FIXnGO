@@ -144,7 +144,7 @@ export function CustomerHeader({
                   <div className="absolute end-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-line p-2 z-50 text-xs animate-in fade-in zoom-in-95">
                     <div className="p-2 border-b border-line mb-1">
                       <div className="font-bold text-ink">Khalid Al-Mansoor</div>
-                      <div className="text-[10px] text-slate truncate">customer@fieldops.demo</div>
+                      <div className="text-[10px] text-slate truncate">test@i-bnb.com</div>
                       <span className="inline-block mt-1 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                         {isArabic ? 'بوابة العميل' : 'Customer Portal'}
                       </span>

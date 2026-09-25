@@ -99,7 +99,7 @@ export default function AdminDispatchBoardPage({
       eta: null,
       rating: 4.89,
       jobsCompleted: 342,
-      phone: '+971 52 201 0003',
+      phone: 'xxxxxxxxx',
       skills: ['DEWA Master Plumber', 'PPR Fusion Welder', 'Drain Camera Rig', 'Hydrostatic Test'],
       stockHighlights: ['PPR 32mm Pipes (6)', 'Pressure Valves (4)', 'Heavy Flange Kit (2)'],
       avatar: 'JM',
@@ -120,7 +120,7 @@ export default function AdminDispatchBoardPage({
       eta: 12,
       rating: 4.96,
       jobsCompleted: 480,
-      phone: '+971 52 101 0001',
+      phone: 'xxxxxxxxx',
       skills: ['Senior HVAC Lead', 'VRV / VRF Specialist', 'Chiller Overhaul', 'FTA Gas Certified'],
       stockHighlights: ['R410A Cylinders (2)', '45µF Capacitors (3)', 'Manifold Kit'],
       avatar: 'RK',
@@ -141,7 +141,7 @@ export default function AdminDispatchBoardPage({
       eta: 8,
       rating: 4.92,
       jobsCompleted: 412,
-      phone: '+971 52 101 0002',
+      phone: 'xxxxxxxxx',
       skills: ['DEWA Grade-A Electrician', 'MDB Busbar', 'Infrared Thermography', 'UPS Systems'],
       stockHighlights: ['32A MCB Breakers (8)', '100A Busbars (2)', 'Megger Tester'],
       avatar: 'VP',
@@ -162,7 +162,7 @@ export default function AdminDispatchBoardPage({
       eta: 0,
       rating: 4.85,
       jobsCompleted: 390,
-      phone: '+971 50 000 0111',
+      phone: 'xxxxxxxxx',
       skills: ['Booster Pumps', 'Water Tank Sanitization', 'Sewer Rodding', 'High Pressure Jetting'],
       stockHighlights: ['Booster Impellers', 'Check Valves', 'PPR Sleeves'],
       avatar: 'TM',
@@ -183,7 +183,7 @@ export default function AdminDispatchBoardPage({
       eta: null,
       rating: 4.88,
       jobsCompleted: 355,
-      phone: '+971 52 301 0001',
+      phone: 'xxxxxxxxx',
       skills: ['Package Units', 'Compressor Rebuilding', 'Fan Coil Motors', 'Air Duct Balancing'],
       stockHighlights: ['Contactors', 'Dual Run Capacitors', 'Recovery Machine'],
       avatar: 'FS',
@@ -204,7 +204,7 @@ export default function AdminDispatchBoardPage({
       eta: null,
       rating: 4.90,
       jobsCompleted: 320,
-      phone: '+971 52 101 0004',
+      phone: 'xxxxxxxxx',
       skills: ['Industrial Switchgear', 'VFD Drives', 'Emergency Lighting', 'ATS Panels'],
       stockHighlights: ['Schneider MCBs', 'Contactor Coils', 'Safety Disconnects'],
       avatar: 'AM',
@@ -218,7 +218,7 @@ export default function AdminDispatchBoardPage({
       orderNumber: 'WO-2026-00025',
       title: 'Emergency Water Pipe Burst & Ceiling Inundation',
       customer: 'Fatima Al Mansoori',
-      phone: '+971 50 000 0119',
+      phone: 'xxxxxxxxx',
       trade: 'PLUMBING',
       priority: 'EMERGENCY',
       address: 'Flat 402, Al Rigga St, Deira, Dubai',
@@ -233,7 +233,7 @@ export default function AdminDispatchBoardPage({
       orderNumber: 'WO-2026-00026',
       title: 'Carrier 5-Ton Rooftop Chiller High Temp Alarm',
       customer: 'Palm Crest Properties LLC',
-      phone: '+971 4 000 0101',
+      phone: 'xxxxxxxxx',
       trade: 'HVAC',
       priority: 'CRITICAL',
       address: 'Palm Crest Residences Phase 3, Dubai',
@@ -248,7 +248,7 @@ export default function AdminDispatchBoardPage({
       orderNumber: 'WO-2026-00027',
       title: 'Sub-DB Tripping Floor 14 Server Rack UPS',
       customer: 'Blue Sky Towers Owners Association',
-      phone: '+971 4 000 0105',
+      phone: 'xxxxxxxxx',
       trade: 'ELECTRICAL',
       priority: 'CRITICAL',
       address: 'DIFC Gate District, Dubai',
@@ -263,7 +263,7 @@ export default function AdminDispatchBoardPage({
       orderNumber: 'WO-2026-00028',
       title: 'Preventive HVAC Coil Cleaning & Gas Top-up',
       customer: 'Arabian Ranches Villa 88',
-      phone: '+971 55 000 0120',
+      phone: 'xxxxxxxxx',
       trade: 'HVAC',
       priority: 'MEDIUM',
       address: 'Arabian Ranches 2, Dubai',
@@ -783,7 +783,7 @@ export default function AdminDispatchBoardPage({
                     <span>Call Tech</span>
                   </a>
                   <a
-                    href={`https://wa.me/${selectedTech.phone.replace(/[^0-9]/g, '')}`}
+                    href="https://wa.me/xxxxxxxxx"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 text-emerald-700 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 transition min-h-[40px]"

@@ -30,3 +30,7 @@ coverage/
 Thumbs.db
 Desktop.ini
 
+# Agent / Tool skills
+.agents/
+skills-lock.json
+

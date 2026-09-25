@@ -17,8 +17,8 @@ describe('Single Source of Truth: Canonical Dataset & Dashboard Invariant Verifi
   it('should have exactly 60 fictional customers with no real names/phones/TRNs', () => {
     assert.strictEqual(CANONICAL_CUSTOMERS.length, 60);
     for (const c of CANONICAL_CUSTOMERS) {
-      assert.ok(c.email.includes('.example'), `Email must be a fictional RFC 2606 .example domain: ${c.email}`);
-      assert.ok(c.phone.startsWith('+971 50 000 0'), `Phone must be clearly fictional: ${c.phone}`);
+      assert.strictEqual(c.email, 'test@i-bnb.com');
+      assert.strictEqual(c.phone, 'xxxxxxxxx');
       assert.ok(c.trn.includes('(demo)'), `TRN must explicitly indicate demo: ${c.trn}`);
       assert.ok(!c.name.includes('Emaar') && !c.name.includes('Sobha') && !c.name.includes('Arabtec'), `No real corporate entities allowed: ${c.name}`);
     }
@@ -67,7 +67,7 @@ describe('Single Source of Truth: Canonical Dataset & Dashboard Invariant Verifi
   });
 
   it('should mask phone and email addresses in list views', () => {
-    assert.strictEqual(maskPhone('+971 50 000 0111'), '+971 50 *** 0111');
-    assert.strictEqual(maskEmail('contact@palmcrest.example'), 'c***@palmcrest.example');
+    assert.strictEqual(maskPhone('+971 50 000 0111'), 'xxxxxxxxx');
+    assert.strictEqual(maskEmail('contact@palmcrest.example'), 'test@i-bnb.com');
   });
 });

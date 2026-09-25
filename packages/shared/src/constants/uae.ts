@@ -8,8 +8,8 @@ export const UAE_CONSTANTS = {
   DEFAULT_TIMEZONE: 'Asia/Dubai',
   PHONE_PREFIX: '+971',
   HEAD_OFFICE_ADDRESS: 'Al Quoz Industrial Area 3, Street 8, Warehouse 14, Dubai, UAE',
-  SUPPORT_PHONE: '+971 50 000 0100',
-  SUPPORT_EMAIL: 'support@fieldops.demo',
+  SUPPORT_PHONE: 'xxxxxxxxx',
+  SUPPORT_EMAIL: 'test@i-bnb.com',
 } as const;
 
 export interface UaeLocationArea {
