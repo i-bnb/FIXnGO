@@ -2,6 +2,7 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
 
 export interface MapMarker {
   id: string;
@@ -13,20 +14,29 @@ export interface MapMarker {
   status?: string;
 }
 
-interface LeafletMapProps {
+export interface LeafletMapProps {
   center?: [number, number];
   zoom?: number;
   markers?: MapMarker[];
   className?: string;
   onMarkerClick?: (marker: MapMarker) => void;
+  onMapClick?: (coords: [number, number]) => void;
 }
 
 // Dynamically import Leaflet components to prevent SSR 'window is not defined'
 const DynamicMap = dynamic(
   async () => {
     const L = await import('leaflet');
-    const { MapContainer, TileLayer, Marker, Popup, useMap } = await import('react-leaflet');
+    const { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } = await import('react-leaflet');
     const { useEffect, useRef } = await import('react');
+
+    // Fix default marker icon assets path to prevent broken icon 404s
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    });
 
     // Create custom SVG markers conforming to FIXnGO brand tokens
     const createCustomIcon = (type: 'tech' | 'customer' | 'job', status?: string) => {
@@ -68,29 +78,89 @@ const DynamicMap = dynamic(
       });
     };
 
-    function RecenterMap({ center }: { center?: [number, number] }) {
+    /**
+     * MapController:
+     * 1. Handles map clicks for interactive location picking
+     * 2. Re-centers smoothly when coordinates or zoom change
+     * 3. Solves the grey tiles / unrendered edges bug on all sides by running
+     *    map.invalidateSize() on mount, delayed animations, ResizeObserver, and window resize.
+     */
+    function MapController({
+      center,
+      zoom,
+      onMapClick,
+    }: {
+      center?: [number, number];
+      zoom?: number;
+      onMapClick?: (coords: [number, number]) => void;
+    }) {
       const map = useMap();
       const prevCenterRef = useRef<[number, number] | null>(null);
+      const prevZoomRef = useRef<number | null>(null);
 
       const lat = center?.[0] ?? 25.1972;
       const lng = center?.[1] ?? 55.2744;
+      const targetZoom = zoom ?? map.getZoom();
 
-      // Only re-center if coordinates have significantly changed (> 0.001 deg)
-      // to prevent interrupting user manual pan/zoom or unnecessary jitter
+      // Listen for map clicks if onMapClick is provided
+      useMapEvents({
+        click(e) {
+          if (onMapClick) {
+            onMapClick([e.latlng.lat, e.latlng.lng]);
+          }
+        },
+      });
+
+      // Smooth recenter when center or zoom changes
       useEffect(() => {
         const prev = prevCenterRef.current;
-        if (!prev || Math.abs(prev[0] - lat) > 0.001 || Math.abs(prev[1] - lng) > 0.001) {
-          map.setView([lat, lng], map.getZoom(), { animate: true });
-          prevCenterRef.current = [lat, lng];
-        }
-      }, [lat, lng, map]);
+        const prevZoom = prevZoomRef.current;
+        const centerChanged = !prev || Math.abs(prev[0] - lat) > 0.0005 || Math.abs(prev[1] - lng) > 0.0005;
+        const zoomChanged = prevZoom !== null && prevZoom !== targetZoom;
 
-      // Handle container resize when opened in drawers/tabs
+        if (centerChanged || zoomChanged) {
+          map.setView([lat, lng], targetZoom, { animate: true });
+          prevCenterRef.current = [lat, lng];
+          prevZoomRef.current = targetZoom;
+        }
+      }, [lat, lng, targetZoom, map]);
+
+      // Eliminate grey tiles on all sides with aggressive resize observers
       useEffect(() => {
-        const timer = setTimeout(() => {
-          map.invalidateSize();
-        }, 150);
-        return () => clearTimeout(timer);
+        const invalidate = () => {
+          if (map) {
+            map.invalidateSize();
+          }
+        };
+
+        // Run immediately and staggered after CSS transitions / modal animations complete
+        invalidate();
+        const t1 = setTimeout(invalidate, 100);
+        const t2 = setTimeout(invalidate, 300);
+        const t3 = setTimeout(invalidate, 600);
+
+        // ResizeObserver on map container and parent element
+        const container = map.getContainer();
+        let observer: ResizeObserver | null = null;
+        if (typeof ResizeObserver !== 'undefined' && container) {
+          observer = new ResizeObserver(() => {
+            invalidate();
+          });
+          observer.observe(container);
+          if (container.parentElement) {
+            observer.observe(container.parentElement);
+          }
+        }
+
+        window.addEventListener('resize', invalidate);
+
+        return () => {
+          clearTimeout(t1);
+          clearTimeout(t2);
+          clearTimeout(t3);
+          if (observer) observer.disconnect();
+          window.removeEventListener('resize', invalidate);
+        };
       }, [map]);
 
       return null;
@@ -101,6 +171,7 @@ const DynamicMap = dynamic(
       zoom = 12,
       markers = [],
       onMarkerClick,
+      onMapClick,
     }: LeafletMapProps) {
       return (
         <MapContainer
@@ -113,7 +184,7 @@ const DynamicMap = dynamic(
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <RecenterMap center={center} />
+          <MapController center={center} zoom={zoom} onMapClick={onMapClick} />
           {markers.map((m) => {
             if (typeof m.lat !== 'number' || typeof m.lng !== 'number' || isNaN(m.lat) || isNaN(m.lng)) {
               return null;
@@ -156,12 +227,19 @@ const DynamicMap = dynamic(
   }
 );
 
-export function LeafletMap(props: LeafletMapProps) {
+export function LeafletMap({
+  className = '',
+  ...props
+}: LeafletMapProps) {
+  // If no height utility is passed in className, provide a default min-height
+  const hasHeightClass = /(^|\s)(h-|min-h-)/.test(className);
+  const defaultHeightClass = hasHeightClass ? '' : 'min-h-[260px]';
+
   return (
     <div
-      className={`relative w-full h-full min-h-[300px] overflow-hidden rounded-xl border border-line shadow-xs ${
-        props.className || ''
-      }`}
+      dir="ltr"
+      className={`relative w-full h-full overflow-hidden rounded-xl border border-line shadow-xs ${defaultHeightClass} ${className}`}
+      style={{ direction: 'ltr', textAlign: 'left' }}
     >
       <DynamicMap {...props} />
     </div>

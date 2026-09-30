@@ -853,21 +853,35 @@ export default function CustomerMobileAppPage({
 
                   {/* Service Location */}
                   <div>
-                    <label className="font-bold text-ink block mb-1">
-                      {isArabic ? 'موقع تقديم الخدمة' : 'Service Address'}
-                    </label>
-                    <div className="h-36 rounded-xl overflow-hidden border border-line relative shadow-xs">
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="font-bold text-ink block">
+                        {isArabic ? 'موقع تقديم الخدمة' : 'Service Address'}
+                      </label>
+                      <span className="text-[10px] text-slate-500">
+                        {isArabic ? 'انقر على الخريطة لتحديد الموقع' : 'Tap map to adjust pin'}
+                      </span>
+                    </div>
+                    <div className="h-56 rounded-xl overflow-hidden border border-line relative shadow-xs">
                       <LeafletMap
                         center={bookingCoords}
-                        zoom={13}
+                        zoom={14}
                         markers={[
                           { id: 'pin', lat: bookingCoords[0], lng: bookingCoords[1], title: 'Selected Location', type: 'customer' },
                         ]}
+                        onMapClick={(coords) => {
+                          setBookingCoords(coords);
+                          setBookingAddress(`Pinned Location (${coords[0].toFixed(4)}° N, ${coords[1].toFixed(4)}° E)`);
+                        }}
                         className="w-full h-full"
                       />
-                      <div className="absolute bottom-2 start-2 end-2 bg-white/95 backdrop-blur-xs p-2 rounded-lg text-xs font-bold text-ink shadow-sm flex items-center gap-1.5 border border-line">
-                        <MapPin className="w-3.5 h-3.5 text-signal-orange shrink-0" />
-                        <span className="truncate">{bookingAddress}</span>
+                      <div className="absolute bottom-2 start-2 end-2 z-20 bg-white/95 backdrop-blur-xs p-2.5 rounded-lg text-xs font-bold text-ink shadow-md flex items-center justify-between gap-1.5 border border-line">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <MapPin className="w-3.5 h-3.5 text-signal-orange shrink-0" />
+                          <span className="truncate">{bookingAddress}</span>
+                        </div>
+                        <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold shrink-0">
+                          {isArabic ? 'محدد' : 'Pinned'}
+                        </span>
                       </div>
                     </div>
                   </div>

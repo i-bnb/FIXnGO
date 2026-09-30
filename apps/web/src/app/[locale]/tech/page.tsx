@@ -42,6 +42,7 @@ import { performLogout } from '../../../lib/auth/logout';
 import { Logo } from '../../../components/common/Logo';
 import { JobStatus, Priority, ServiceType, calculateUaeVat, isSkillMatching } from '@fieldops/shared';
 import { fetchApi } from '../../../lib/api-client';
+import { LeafletMap } from '../../../components/map/LeafletMap';
 import confetti from 'canvas-confetti';
 
 interface QueuedAction {
@@ -1271,6 +1272,35 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
                     </div>
                   </div>
 
+                  {/* Interactive Site Location Map */}
+                  <div className="h-44 w-full rounded-xl overflow-hidden border border-line relative shadow-xs">
+                    <LeafletMap
+                      center={[activeJob.lat, activeJob.lng]}
+                      zoom={14}
+                      markers={[
+                        {
+                          id: 'tech-van-location',
+                          lat: activeJob.lat - 0.004,
+                          lng: activeJob.lng - 0.004,
+                          title: activePersona.name,
+                          subtitle: `${activePersona.vanCode} • My Van`,
+                          type: 'tech',
+                          status: activeJob.status,
+                        },
+                        {
+                          id: 'active-job-site',
+                          lat: activeJob.lat,
+                          lng: activeJob.lng,
+                          title: activeJob.title,
+                          subtitle: activeJob.address,
+                          type: 'job',
+                          status: activeJob.priority,
+                        },
+                      ]}
+                      className="w-full h-full"
+                    />
+                  </div>
+
                   {/* Deep link to Google Maps */}
                   <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${activeJob.lat},${activeJob.lng}`}
@@ -1279,7 +1309,7 @@ export default function TechnicianPortalPage({ params: { locale } }: { params: {
                     className="w-full py-2.5 bg-navy hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-xs min-h-[44px]"
                   >
                     <Navigation className="w-3.5 h-3.5 text-signal-orange" />
-                    <span>Navigate with Google Maps</span>
+                    <span>{isArabic ? 'فتح الملاحة عبر خرائط جوجل' : 'Navigate with Google Maps'}</span>
                     <ExternalLink className="w-3 h-3 text-slate-300" />
                   </a>
                 </div>

@@ -49,15 +49,30 @@
   }
 }
 
-/* Ensure Leaflet tiles render smoothly */
+/* Ensure Leaflet tiles render smoothly across all locales and containers */
 .leaflet-container {
   width: 100%;
   height: 100%;
   z-index: 10;
   border-radius: inherit;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Strip default white square box Leaflet places behind custom HTML divIcons */
+.custom-leaflet-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Ensure Leaflet popups in RTL locales display text properly */
+[dir="rtl"] .leaflet-popup-content {
+  direction: rtl;
+  text-align: right;
 }
 
 /* RTL Layout adjustments */
 [dir="rtl"] {
   text-align: right;
 }
+
