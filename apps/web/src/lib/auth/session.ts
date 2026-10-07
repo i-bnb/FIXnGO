@@ -54,10 +54,10 @@ export const DEMO_PERSONAS: Record<DemoRole, DemoPersona> = {
   },
   CUSTOMER: {
     id: 'persona-customer',
-    name: 'Khalid Al-Mansoor',
+    name: 'Fatima Al Mansoori',
     role: 'CUSTOMER',
     email: 'customer@fixngo.ae',
-    avatar: 'KM',
+    avatar: 'FA',
     defaultPath: '/app',
     description: 'Client Portal · Service Tracking & Approvals',
     phone: '+971 50 900 3001',
